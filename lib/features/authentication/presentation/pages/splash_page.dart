@@ -22,7 +22,7 @@ class _SplashPageState extends State<SplashPage> {
     context.read<AuthBloc>().add(CheckAuthenticationStatusEvent());
   }
 
-  // دالة لتحديد وجهة التنقل بعد التحقق
+
   Future<void> _navigateBasedOnBoarding() async {
     final bool hasSeenOnboarding = await context.read<OnboardingCubit>().checkOnboardingStatus();
     if (mounted) {
