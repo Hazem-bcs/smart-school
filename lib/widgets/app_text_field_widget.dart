@@ -38,7 +38,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:smart_school/theme/colors.dart';
+import 'package:smart_school/theme/constants/colors.dart';
 
 class AppTextFieldWidget extends StatelessWidget {
   final String? hint;
@@ -50,6 +50,7 @@ class AppTextFieldWidget extends StatelessWidget {
   final Widget? suffixIcon;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final int? maxLines;
 
   const AppTextFieldWidget({
     Key? key,
@@ -62,6 +63,7 @@ class AppTextFieldWidget extends StatelessWidget {
     this.suffixIcon,
     this.onChanged,
     this.validator,
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -72,6 +74,7 @@ class AppTextFieldWidget extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       validator: validator,
+      maxLines: maxLines,
       style: const TextStyle(color: Colors.black87),
       decoration: InputDecoration(
         filled: true,

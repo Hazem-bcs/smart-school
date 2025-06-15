@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class LoadingWidget extends StatefulWidget {
+class AppLoadingWidget extends StatefulWidget {
   final double size;
 
-  const LoadingWidget({super.key, this.size = 60.0});
+  const AppLoadingWidget({super.key, this.size = 60.0});
 
   @override
-  State<LoadingWidget> createState() => _LoadingWidgetState();
+  State<AppLoadingWidget> createState() => _LoadingWidgetState();
 }
 
-class _LoadingWidgetState extends State<LoadingWidget> {
+class _LoadingWidgetState extends State<AppLoadingWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(

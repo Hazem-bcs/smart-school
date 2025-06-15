@@ -11,7 +11,9 @@ import 'features/authentication/presentation/blocs/auth_bloc.dart';
 import 'dependency_injection.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
-import 'features/authentication/presentation/pages/on_boarding.dart'; // استيراد ملف الاعتماديات
+import 'features/authentication/presentation/pages/on_boarding.dart';
+import 'features/post/presentation/pages/add_post_page.dart';
+/// استيراد ملف الاعتماديا
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +52,7 @@ class MyApp extends StatelessWidget {
           '/onBoarding': (context) => OnBoardingPage(),
           '/login': (context) => LoginPage(),
           '/home' : (context) => HomePage(),
+          '/addPost' : (context) => AddPostPage(),
       },
       ),
     );

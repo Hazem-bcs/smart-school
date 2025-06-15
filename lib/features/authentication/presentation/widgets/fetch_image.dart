@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../blocs/fetch_image/fetch_image_cubit.dart';
 import '../../../../blocs/fetch_image/fetch_image_state.dart';
 import '../../../../generated/locale_keys.g.dart';
-import '../../../../theme/colors.dart';
+import '../../../../theme/constants/colors.dart';
 
 class FetchImage extends StatefulWidget {
   const FetchImage({Key? key}) : super(key: key);
