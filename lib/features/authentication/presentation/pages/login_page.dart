@@ -1,14 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_school/theme/constants/colors.dart';
-import 'package:smart_school/widgets/app_bar_image_widget.dart';
-import 'package:smart_school/widgets/app_loading_widget.dart';
-import 'package:smart_school/widgets/app_round_button_widget.dart';
-import 'package:smart_school/widgets/app_text_field_widget.dart';
-
+import 'package:smart_school/widgets/app_exports.dart';
 
 import '../blocs/auth_bloc.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -60,7 +52,11 @@ class _LoginPageState extends State<LoginPage> {
           key: formState,
           child: Column(
             children: [
-              AppBarImageWidget(),
+              AppBarImageWidget(
+                isImage: true,
+                height: 400,
+                imageName: 'assets/images/graduation-hat.png',
+              ),
               SizedBox(height: 30),
               // email
               AppTextFieldWidget(

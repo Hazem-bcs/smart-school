@@ -13,6 +13,8 @@ import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'features/authentication/presentation/pages/on_boarding.dart';
 import 'features/post/presentation/pages/add_post_page.dart';
+import 'features/teacher/presentation/pages/teacher_page.dart';
+import 'features/teacher/presentation/pages/teachers_page.dart';
 /// استيراد ملف الاعتماديا
 
 void main() async {
@@ -53,6 +55,8 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(),
           '/home' : (context) => HomePage(),
           '/addPost' : (context) => AddPostPage(),
+          '/teachersPage' : (context) => TeachersPage(),
+          '/teacherPage' : (context) => TeacherPage(),
       },
       ),
     );

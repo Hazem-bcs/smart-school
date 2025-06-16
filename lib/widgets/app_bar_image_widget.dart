@@ -4,12 +4,23 @@ import '../generated/locale_keys.g.dart';
 import '../theme/constants/colors.dart';
 
 class AppBarImageWidget extends StatelessWidget {
-  const AppBarImageWidget({super.key});
+  final double? height;
+  final bool? isImage;
+  final String? title;
+  final String? imageName;
+
+  const AppBarImageWidget({
+    super.key,
+    this.height = 20,
+    this.isImage,
+    this.title,
+    this.imageName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: height,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
@@ -22,14 +33,17 @@ class AppBarImageWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            'assets/images/graduation-hat.png',
-            color: secondaryColor,
-            height: 150,
-          ),
+          if (isImage == true)
+            Image.asset(
+              imageName!,
+              // 'assets/images/graduation-hat.png',
+              color: secondaryColor,
+              height: 150,
+            ),
+
           const SizedBox(height: 10),
           Text(
-            LocaleKeys.stellar.tr(),
+            title ?? LocaleKeys.stellar.tr(),
             style: const TextStyle(
               color: secondaryColor,
               fontSize: 22,

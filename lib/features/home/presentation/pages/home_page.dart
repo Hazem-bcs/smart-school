@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:smart_school/features/post/presentation/widgets/post_widget.dart';
-import 'package:smart_school/theme/constants/colors.dart';
+import 'package:smart_school/widgets/app_exports.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,8 +8,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,17 +18,20 @@ class _HomePageState extends State<HomePage> {
         },
         child: Icon(Icons.add, color: Colors.white),
       ),
-      drawer: Drawer(),
+      drawer: AppDrawerWidget(),
       appBar: AppBar(
+        title: Text(AppStrings.smartSchool,style: TextStyle(color: Colors.white),),
         iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Smart School",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
         backgroundColor: primaryColor,
+        centerTitle: true,
       ),
-      body: PostWidget(),
+
+      body: Column(
+        children: [
+          // AppBarImageWidget(isImage: false,height: 80,title: AppStrings.smartSchool,),
+          PostWidget(),
+        ],
+      ),
     );
   }
 }
