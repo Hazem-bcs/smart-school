@@ -1,0 +1,34 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+import '../../data/models/homework_model.dart';
+import '../widgets/homework_card.dart';
+
+
+class HomeworkPage extends StatefulWidget {
+  const HomeworkPage({super.key});
+
+  @override
+  State<HomeworkPage> createState() => _HomeworkPageState();
+}
+
+class _HomeworkPageState extends State<HomeworkPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView(
+        children: [
+          SizedBox(height: 100,width: 500,),
+          HomeworkCard(homework: HomeworkModel(id: '1', title: 'الدرس العاشر', subject: "رياضيات", assignedDate: DateTime(2025,6,16), dueDate: DateTime(2025,6,19), status: HomeworkStatus.completed),)
+        ],
+      ),
+    );
+  }
+}
+
+// main.dart or a new file e.g., 'homework_card.dart'
+
+
+// Make sure you have the Homework model from the previous step
+
