@@ -1,8 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
-import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
+import 'package:smart_school/features/homework/presentation/pages/homework_page.dart';
 import 'blocs/fetch_image/fetch_image_cubit.dart';
 import 'blocs/focus_node_cubit/focus_node_cubit.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -15,8 +17,16 @@ import 'features/authentication/presentation/pages/on_boarding.dart'; // است�
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await di.setupDependencies();
-  runApp(const MyApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -43,14 +53,17 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        home: const SplashPage(),
+        home: const HomeworkPage(),
         routes: {
           '/onBoarding': (context) => OnBoardingPage(),
           '/login': (context) => LoginPage(),
           '/home' : (context) => HomePage(),
-      },
+        },
       ),
     );
   }

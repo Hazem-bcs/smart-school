@@ -1,6 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:smart_school/core/network/dio_exception.dart';
 
 import '../../../../core/network/failures.dart';
 import '../../../core/network/network_info.dart';
