@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../theme/colors.dart';
+import '../../theme/constants/colors.dart';
 import 'edited_spinkit_three_bounce.dart';
 
 class LoaderIndicator extends StatelessWidget {

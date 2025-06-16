@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_school/theme/colors.dart';
+import 'package:smart_school/theme/constants/colors.dart';
 import '../blocs/auth_bloc.dart';
 import '../cuibts/on_boarding_cubit.dart';
 import '../../../../generated/locale_keys.g.dart';

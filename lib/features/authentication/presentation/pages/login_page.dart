@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_school/theme/colors.dart';
+import 'package:smart_school/theme/constants/colors.dart';
 import 'package:smart_school/widgets/app_bar_image_widget.dart';
+import 'package:smart_school/widgets/app_loading_widget.dart';
 import 'package:smart_school/widgets/app_round_button_widget.dart';
 import 'package:smart_school/widgets/app_text_field_widget.dart';
-import 'package:smart_school/widgets/loading_widget.dart';
+
 
 import '../blocs/auth_bloc.dart';
 
@@ -32,12 +33,14 @@ class _LoginPageState extends State<LoginPage> {
       // debugPrint("name=$email,pass=$password");
     }
   }
+
   @override
   void dispose() {
     emailController.dispose();
     passController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: emailController,
                 hint: "   email",
                 label: "name",
+                maxLines: 1,
                 validator: (value) {
                   if (value!.isEmpty ||
                       value.length > 20 ||
@@ -79,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: passController,
                 hint: "   password",
                 label: "password",
+                maxLines: 1,
                 obscureText: _obscurePassword,
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -101,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   if (state is AuthChecking) {
-                    return LoadingWidget();
+                    return AppLoadingWidget();
                   }
                   return Align(
                     alignment: Alignment.center,
@@ -115,6 +120,14 @@ class _LoginPageState extends State<LoginPage> {
                       backGroundColor: primaryColor,
                     ),
                   );
+                },
+              ),
+
+              //  هااد للحذف
+              AppRoundButtonWidget(
+                title: "go to main",
+                onPress: () {
+                  Navigator.pushReplacementNamed(context, '/home');
                 },
               ),
             ],

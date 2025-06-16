@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cuibts/on_boarding_cubit.dart';
 import '../../../../generated/locale_keys.g.dart';
-import '../../../../theme/colors.dart';
+import '../../../../theme/constants/colors.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});

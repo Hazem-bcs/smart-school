@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../generated/locale_keys.g.dart';
-import '../theme/colors.dart';
+import '../theme/constants/colors.dart';
 
 class AppBarImageWidget extends StatelessWidget {
   const AppBarImageWidget({super.key});

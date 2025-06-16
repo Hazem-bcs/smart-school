@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../blocs/focus_node_cubit/focus_node_cubit.dart';
 import '../../blocs/focus_node_cubit/focus_node_state.dart';
-import '../theme/colors.dart';
+import '../theme/constants/colors.dart';
 
 
 class CustomTextInput extends StatefulWidget {
