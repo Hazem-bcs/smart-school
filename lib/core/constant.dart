@@ -1,4 +1,4 @@
 class Constants {
-  static String baseUrl = 'https://jsonplaceholder.typicode.com';
-  static String postsEndpoint = '123.com';
+  static String baseUrl = 'http://127.0.0.1:8000';
+  static String loginEndpoint = '/auth/login';
 }

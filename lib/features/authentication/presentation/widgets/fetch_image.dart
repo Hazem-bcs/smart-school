@@ -9,7 +9,7 @@ import '../../../../generated/locale_keys.g.dart';
 import '../../../../theme/colors.dart';
 
 class FetchImage extends StatefulWidget {
-  const FetchImage({Key? key}) : super(key: key);
+  const FetchImage({super.key});
 
   @override
   _FetchImageState createState() => _FetchImageState();

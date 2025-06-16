@@ -28,15 +28,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<bool> hasSeenOnboarding() async {
-    print('herrrrreeeeeeeeeeeeee');
-    print(prefs.getBool('on_boarding_viewed'));
     return prefs.getBool('on_boarding_viewed') ?? false;
   }
 
   @override
   Future<void> cacheOnboardingStatus() async {
-    print('-------------------------ok--------------------------');
     await prefs.setBool('on_boarding_viewed', true);
-    print(prefs.getBool('on_boarding_viewed'));
   }
 }

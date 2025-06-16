@@ -10,7 +10,6 @@ class OnboardingCubit extends Cubit<bool> {
   // دالة للتحقق من الحالة عند بدء التطبيق
   Future<bool> checkOnboardingStatus() async {
     final hasSeen = await _authRepository.hasSeenOnboarding();
-    print('is seeen ? $hasSeen');
     emit(hasSeen);
     return hasSeen;
   }

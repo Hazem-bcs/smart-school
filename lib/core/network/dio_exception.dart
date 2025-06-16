@@ -4,6 +4,11 @@ import 'package:dio/dio.dart';
 import 'failures.dart';
 
 Failure handleDioException(DioException error) {
+  // أضف هذا التحقق أولاً
+  if (error.response != null && error.response!.statusCode != null) {
+    return _handleBadResponse(error);
+  }
+
   switch (error.type) {
     case DioExceptionType.connectionTimeout:
     case DioExceptionType.sendTimeout:
@@ -23,14 +28,20 @@ Failure handleDioException(DioException error) {
       return const ServerFailure(
           message: 'Bad certificate', statusCode: 400);
     case DioExceptionType.connectionError:
+    // تحقق إضافي إذا كان هناك response مخفي
+      if (error.response != null) {
+        return _handleBadResponse(error);
+      }
       return const ConnectionFailure(
           message: 'Connection error, please try again');
   }
 }
 
 Failure _handleBadResponse(DioException error) {
-  final statusCode = error.response?.statusCode;
-  final message = error.response?.statusMessage ?? 'Server error occurred';
+  final statusCode = error.response?.statusCode ?? 500;
+  final message = error.response?.data?['message']?.toString() ??
+      error.response?.statusMessage ??
+      'Server error occurred';
 
   switch (statusCode) {
     case 400:
