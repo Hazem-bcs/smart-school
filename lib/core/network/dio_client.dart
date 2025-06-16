@@ -4,7 +4,7 @@ import '../constant.dart';
 
 class DioClient {
   final Dio dio;
-
+  final int maxRetries = 3;
   DioClient({required this.dio}) {
     dio
       ..options.baseUrl = Constants.baseUrl
@@ -27,16 +27,20 @@ class DioClient {
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await dio.get(
-        url,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } catch (e) {
-      rethrow;
+    int attempt = 0;
+    while (true) {
+      try {
+        return await dio.get(
+          url,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress,
+        );
+      } catch (e) {
+        if (++attempt >= maxRetries) rethrow;
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
   }
 
@@ -48,17 +52,23 @@ class DioClient {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await dio.post(
-        url,
-        data: data,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } catch (e) {
-      rethrow;
+    int attempt = 0;
+    while (true) {
+      try {
+        return await dio.post(
+          url,
+          data: data,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress,
+        );
+      }
+      catch
+      (e) {
+        if (++attempt >= maxRetries) rethrow;
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
   }
 
@@ -70,17 +80,22 @@ class DioClient {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      return await dio.put(
-        url,
-        data: data,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-    } catch (e) {
-      rethrow;
+    int attempt = 0;
+    while (true) {
+      try {
+        return await dio.put(
+          url,
+          data: data,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress,
+        );
+      }
+      catch (e) {
+        if (++attempt >= maxRetries) rethrow;
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
   }
 
@@ -90,15 +105,20 @@ class DioClient {
     Options? options,
     CancelToken? cancelToken,
   }) async {
-    try {
-      return await dio.delete(
-        url,
-        data: data,
-        options: options,
-        cancelToken: cancelToken,
-      );
-    } catch (e) {
-      rethrow;
+    int attempt = 0;
+    while (true) {
+      try {
+        return await dio.delete(
+          url,
+          data: data,
+          options: options,
+          cancelToken: cancelToken,
+        );
+      }
+      catch (e) {
+        if (++attempt >= maxRetries) rethrow;
+        await Future.delayed(const Duration(seconds: 1));
+      }
     }
   }
 }

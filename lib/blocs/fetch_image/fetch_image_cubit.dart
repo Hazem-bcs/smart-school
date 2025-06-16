@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:bloc/bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../fetch_image/fetch_image_state.dart';
 import 'package:image_picker/image_picker.dart';
 

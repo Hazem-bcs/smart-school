@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:smart_school/features/authentication/data/models/user_modle.dart';
+import 'package:dio/dio.dart';
+import 'package:smart_school/core/network/dio_exception.dart';
 
 import '../../../../core/network/failures.dart';
 import '../../../core/network/network_info.dart';
@@ -24,36 +25,30 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    try {
-      final userModel = await remoteDataSource.login(email, password);
-
-      // تخزين الـ token محلياً عند الحصول عليه
-      if (userModel.token != null) {
-        await localDataSource.cacheToken(userModel.token!);
-      }
-
-      return Right(userModel.toEntity());
-    } on Failure catch (e) {
-      return Left(e);
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
+    final result = await remoteDataSource.login(email, password);
+    return result.fold(
+          (failure) => left(failure),
+          (userModel) {
+        if (userModel.token != null) {
+          localDataSource.cacheToken(userModel.token!);
+        }
+        return Right(userModel.toEntity());
+      },
+    );
   }
 
   @override
   Future<Either<Failure, UserEntity>> checkAuthStatus() async {
     if (await networkInfo.isConnected) {
-      try {
-        final token = await localDataSource.getToken();
-        final userModel = await remoteDataSource.validateToken(token ?? '');
-        // final userModel = UserModel(email: 'admin123@gmail.com', password: '12345678',name: 'admin',token: 'sdadasdnkadwkasjxklajldjaskldjlkadjalksjdlkasjdlkajdlkajdlkasjdaslkdjaksljd');
+      final token = await localDataSource.getToken();
+      final result = await remoteDataSource.validateToken(token ?? '');
+      return result.fold(
+      (failure) => left(failure),
+      (userModel) async {
         await localDataSource.cacheToken(userModel.token!);
-        return Right(userModel.toEntity()); // أعد بيانات المستخدم
-      }  on Failure catch (e) {
-        return Left(e);
-      } catch (e) {
-        return Left(UnknownFailure(message: e.toString()));
+        return Right(userModel.toEntity());
       }
+      );
     } else {
       return Left(ConnectionFailure(message: ''));
     }
@@ -63,6 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> hasSeenOnboarding() async {
     return await localDataSource.hasSeenOnboarding();
   }
+
   @override
   Future<void> cacheOnboardingStatus() async {
     await localDataSource.cacheOnboardingStatus();

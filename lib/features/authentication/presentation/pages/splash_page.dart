@@ -6,7 +6,6 @@ import 'package:smart_school/theme/constants/colors.dart';
 import '../blocs/auth_bloc.dart';
 import '../cuibts/on_boarding_cubit.dart';
 import '../../../../generated/locale_keys.g.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

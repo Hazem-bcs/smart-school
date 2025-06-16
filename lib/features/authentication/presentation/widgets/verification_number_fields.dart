@@ -1,17 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 
 
 class VerificationNumberFields extends StatefulWidget {
   const VerificationNumberFields({
-    Key? key,
+    super.key,
     required this.onCompleted,
     this.validator,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onCompleted;
   final ValueChanged<String> onChanged;
