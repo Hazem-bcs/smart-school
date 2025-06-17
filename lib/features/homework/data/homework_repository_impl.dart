@@ -23,11 +23,7 @@ class HomeworkRepositoryImpl implements HomeworkRepository {
       return result.fold(
               (failure) => left(failure),
               (homeWorkList) async {
-                final List<HomeworkEntity> homeWorkEntityList = [];
-                for(int i=0; i<homeWorkList.length;i++) {
-                  homeWorkEntityList.add(homeWorkList[i].toEntity());
-                }
-            return Right(homeWorkEntityList);
+                return Right(homeWorkList.map((ele) => ele.toEntity()).toList());
           }
       );
     } else {

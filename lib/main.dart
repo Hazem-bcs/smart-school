@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
+import 'package:smart_school/features/homework/presentation/blocs/homework_bloc.dart';
 import 'blocs/fetch_image/fetch_image_cubit.dart';
 import 'blocs/focus_node_cubit/focus_node_cubit.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -16,7 +17,6 @@ import 'features/authentication/presentation/pages/on_boarding.dart';
 import 'features/post/presentation/pages/add_post_page.dart';
 import 'features/teacher/presentation/pages/teacher_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
-/// استيراد ملف الاعتماديا
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => FetchImageCubit(),
         ),
+        BlocProvider(create: (context) => di.getIt<HomeworkBloc>()),
       ],
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,

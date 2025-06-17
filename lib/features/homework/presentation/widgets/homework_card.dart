@@ -1,10 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_school/features/homework/domain/entites/homework_entity.dart';
 
 import '../../data/models/homework_model.dart';
 
 class HomeworkCard extends StatelessWidget {
-  final HomeworkModel homework;
+  final HomeworkEntity homework;
 
   const HomeworkCard({
     super.key,
