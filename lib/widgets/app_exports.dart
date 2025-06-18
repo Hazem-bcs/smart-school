@@ -7,9 +7,25 @@ export 'app_text_button_widget.dart';
 export 'app_text_field_widget.dart';
 export 'app_text_widget.dart';
 export '../../../../widgets/app_loading_widget.dart';
-export 'package:smart_school/features/post/presentation/widgets/post_widget.dart';
+export '../../../../widgets/app_bar_widget.dart';
+
+//subject
+export 'package:smart_school/features/subject/presentation/widget/app_subject_card.dart';
+
+//teacher
+export 'package:smart_school/features/teacher/presentation/widget/teacher_profile_card.dart';
+
+//home
 export 'package:smart_school/features/home/presentation/widgets/app_drawer_item.dart';
 export 'package:smart_school/features/home/presentation/widgets/app_drawer.dart';
+
+//post
+export 'package:smart_school/features/post/presentation/widgets/post_widget.dart';
+
+
+//homeWork
+export 'package:smart_school/features/homework/data/models/homework_model.dart';
+export 'package:smart_school/features/homework/presentation/widgets/homework_card.dart';
 
 
 //package
@@ -23,3 +39,4 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 //constant
 export '../../../../theme/constants/colors.dart';
 export 'package:smart_school/theme/constants/app_strings.dart';
+export '../theme/constants/app_text_style.dart';

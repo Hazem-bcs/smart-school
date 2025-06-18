@@ -6,10 +6,7 @@ import '../../data/models/homework_model.dart';
 class HomeworkCard extends StatelessWidget {
   final HomeworkModel homework;
 
-  const HomeworkCard({
-    super.key,
-    required this.homework,
-  });
+  const HomeworkCard({super.key, required this.homework});
 
   IconData _getSubjectIcon(String subject) {
     switch (subject.toLowerCase()) {
@@ -28,91 +25,101 @@ class HomeworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = homework.status == HomeworkStatus.pending
-        ? Colors.orangeAccent
-        : Colors.green;
+    final statusColor =
+        homework.status == HomeworkStatus.pending
+            ? Colors.orangeAccent
+            : Colors.green;
 
-    return Card(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: 10.0,
-              decoration: BoxDecoration(
-                color: statusColor,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(12.0),
-                  bottomRight: Radius.circular(12.0),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed('/homeWorkPage');
+      },
+      child: Card(
+        elevation: 3,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                width: 10.0,
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12.0),
+                    bottomRight: Radius.circular(12.0),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            // Main content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Subject and Icon
-                    Row(
-                      children: [
-                        Icon(
-                          _getSubjectIcon(homework.subject),
-                          color: Theme.of(context).primaryColor,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          homework.subject,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+              const SizedBox(width: 12),
+              // Main content
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Subject and Icon
+                      Row(
+                        children: [
+                          Icon(
+                            _getSubjectIcon(homework.subject),
                             color: Theme.of(context).primaryColor,
-                            fontSize: 14,
+                            size: 20,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // Homework Title
-                    Text(
-                      homework.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        height: 1.3, // لتحسين المسافة بين السطور
+                          const SizedBox(width: 8),
+                          Text(
+                            homework.subject,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Spacer(), // لدفع التاريخ إلى الأسفل
-                    // Due Date
-                    Row(
-                      children: [
-                        Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey[600]),
-                        const SizedBox(width: 6),
-                        Text(
-                          'تاريخ الاستحقاق: ${DateFormat.yMMMd('ar').format(homework.dueDate)}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[700],
-                          ),
+                      const SizedBox(height: 8),
+                      // Homework Title
+                      Text(
+                        homework.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          height: 1.3, // لتحسين المسافة بين السطور
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Spacer(), // لدفع التاريخ إلى الأسفل
+                      // Due Date
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: 16,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'تاريخ الاستحقاق: ${DateFormat.yMMMd('ar').format(homework.dueDate)}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-          ],
+              const SizedBox(width: 12),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:smart_school/widgets/app_exports.dart';
 
+import '../../../../widgets/app_bar_widget.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -19,16 +21,9 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add, color: Colors.white),
       ),
       drawer: AppDrawerWidget(),
-      appBar: AppBar(
-        title: Text(AppStrings.smartSchool,style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: primaryColor,
-        centerTitle: true,
-      ),
-
+      appBar: AppBarWidget(title: AppStrings.smartSchool),
       body: Column(
         children: [
-          // AppBarImageWidget(isImage: false,height: 80,title: AppStrings.smartSchool,),
           PostWidget(),
         ],
       ),
