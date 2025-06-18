@@ -9,29 +9,59 @@ class TeachersPage extends StatefulWidget {
 }
 
 class _TeachersPageState extends State<TeachersPage> {
+  final List<Map<String, String>> teacherProfiles = [
+    {
+      'imageUrl': 'assets/images/user.png',
+      'name': 'Teacher One',
+    },
+    {
+      'imageUrl': 'assets/images/user_2.png',
+      'name': 'Teacher Two',
+    },
+    {
+      'imageUrl': 'assets/images/user_3.png',
+      'name': 'Teacher Three',
+    },
+    {
+      'imageUrl': 'assets/images/user_4.png',
+      'name': 'Teacher Four',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backGround,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(AppStrings.teachers, style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        backgroundColor: primaryColor,
-      ),
+      appBar:AppBarWidget(title: "Teachers"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TeacherProfileCard(
-              imageUrl: "assets/images/user.png",
-              name: "name",
+        child:GridView.count(
+          shrinkWrap: true,  // حتى ياخذ مساحة حسب المحتوى
+          physics: NeverScrollableScrollPhysics(), // لمنع التمرير داخل عمود كبير
+          crossAxisCount: 2,  // عدد الكروت في كل صف
+          children: List.generate(
+            teacherProfiles.length, // عدد العناصر (مصفوفة بيانات المعلمين مثلاً)
+                (index) => TeacherProfileCard(
+              imageUrl: teacherProfiles[index]['imageUrl']!,
+              name: teacherProfiles[index]['name']!,
               onTap: () {
                 Navigator.of(context).pushNamed('/teacherPage');
               },
             ),
-          ],
+          ),
         ),
+
+        // Column(
+        //   children: [
+        //     TeacherProfileCard(
+        //       imageUrl: "assets/images/user.png",
+        //       name: "name",
+        //       onTap: () {
+        //         Navigator.of(context).pushNamed('/teacherPage');
+        //       },
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

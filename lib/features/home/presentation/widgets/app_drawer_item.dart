@@ -5,11 +5,13 @@ class DrawerItem extends StatelessWidget {
   final VoidCallback onTap;
   final String imageUrl;
   final String title;
+  final IconData? icon;
 
   const DrawerItem({
     required this.onTap,
     required this.imageUrl,
     required this.title,
+    required this.icon,
   });
 
   @override
@@ -23,7 +25,7 @@ class DrawerItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            AppIconWidget(icon: Icons.person),
+            AppIconWidget(icon: icon),
             SizedBox(width: 20,),
             AppTextWidget(text: title),
           ],

@@ -14,6 +14,8 @@ import 'dependency_injection.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'features/authentication/presentation/pages/on_boarding.dart';
+import 'features/home/presentation/widgets/app_drawer.dart';
+import 'features/homework/presentation/pages/homeworks_page.dart';
 import 'features/post/presentation/pages/add_post_page.dart';
 import 'features/teacher/presentation/pages/teacher_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
           '/addPost' : (context) => AddPostPage(),
           '/teachersPage' : (context) => TeachersPage(),
           '/teacherPage' : (context) => TeacherPage(),
+          '/appDrawerWidget' : (context) => AppDrawerWidget(),
+          '/homeWorkPage' : (context) => HomeworkPage(),
       },
       ),
     );

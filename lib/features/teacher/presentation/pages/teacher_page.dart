@@ -1,7 +1,5 @@
 import 'package:smart_school/widgets/app_exports.dart';
 
-import '../../../subject/presentation/widget/app_subject_card.dart';
-
 class TeacherPage extends StatefulWidget {
   const TeacherPage({super.key});
 
@@ -15,12 +13,9 @@ class _TeacherPageState extends State<TeacherPage> {
     return Scaffold(
       backgroundColor: backGround,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          AppStrings.teacherDetails,
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(AppStrings.teacherDetails,style: TextStyle(color: Colors.white),),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: primaryColor,
       ),
       body: Column(
@@ -73,7 +68,11 @@ class _TeacherPageState extends State<TeacherPage> {
                 ),
                 Align(
                   alignment: Alignment.bottomLeft,
-                  child: AppSubjectCard(nameSubject: 'math', onTap: () {},level: "التاسع",),
+                  child: AppSubjectCard(
+                    nameSubject: 'math',
+                    onTap: () {},
+                    level: "التاسع",
+                  ),
                 ),
               ],
             ),
