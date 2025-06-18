@@ -6,10 +6,10 @@ abstract class HomeWorkLocalDataSource {
   Future<String?> getToken();
 }
 
-class AuthLocalDataSourceImpl implements HomeWorkLocalDataSource {
+class HomeWorkLocalDataSourceImpl implements HomeWorkLocalDataSource {
   final SharedPreferences prefs;
 
-  AuthLocalDataSourceImpl({required this.prefs});
+  HomeWorkLocalDataSourceImpl({required this.prefs});
 
   @override
   Future<String?> getToken() async {

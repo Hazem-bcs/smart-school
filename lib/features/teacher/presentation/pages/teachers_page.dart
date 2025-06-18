@@ -1,4 +1,4 @@
-import 'package:smart_school/features/teacher/presentation/widget/teacher_profile_card.dart';
+
 import 'package:smart_school/widgets/app_exports.dart';
 
 class TeachersPage extends StatefulWidget {
@@ -36,11 +36,11 @@ class _TeachersPageState extends State<TeachersPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child:GridView.count(
-          shrinkWrap: true,  // حتى ياخذ مساحة حسب المحتوى
-          physics: NeverScrollableScrollPhysics(), // لمنع التمرير داخل عمود كبير
-          crossAxisCount: 2,  // عدد الكروت في كل صف
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
           children: List.generate(
-            teacherProfiles.length, // عدد العناصر (مصفوفة بيانات المعلمين مثلاً)
+            teacherProfiles.length,
                 (index) => TeacherProfileCard(
               imageUrl: teacherProfiles[index]['imageUrl']!,
               name: teacherProfiles[index]['name']!,
@@ -50,18 +50,6 @@ class _TeachersPageState extends State<TeachersPage> {
             ),
           ),
         ),
-
-        // Column(
-        //   children: [
-        //     TeacherProfileCard(
-        //       imageUrl: "assets/images/user.png",
-        //       name: "name",
-        //       onTap: () {
-        //         Navigator.of(context).pushNamed('/teacherPage');
-        //       },
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }
