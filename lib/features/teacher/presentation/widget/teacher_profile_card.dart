@@ -16,6 +16,7 @@ class TeacherProfileCard extends StatelessWidget {
    required this.onTap,
   });
 
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
