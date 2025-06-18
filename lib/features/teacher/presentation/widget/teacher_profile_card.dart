@@ -21,7 +21,9 @@ class TeacherProfileCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.all(8),
+
+
+      margin: EdgeInsets.all(8),
         width: width,
         height: height,
         padding: const EdgeInsets.all(12),
