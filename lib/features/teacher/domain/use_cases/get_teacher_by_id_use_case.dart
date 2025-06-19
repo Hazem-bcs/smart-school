@@ -1,0 +1,17 @@
+import 'package:dartz/dartz.dart';
+import 'package:smart_school/core/network/failures.dart';
+
+import '../teacher_entity.dart';
+import '../teatcher_repository.dart';
+
+
+
+class GetTeacherByIdUseCase {
+  final TeacherRepository repository;
+
+  GetTeacherByIdUseCase({required this.repository});
+
+  Future<Either<Failure, TeacherEntity>> call(int teacherId) async {
+    return await repository.getTeacherById(teacherId);
+  }
+}

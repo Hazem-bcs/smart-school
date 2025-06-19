@@ -1,17 +1,18 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-abstract class HomeWorkLocalDataSource {
+abstract class SubjectLocalDataSource {
   Future<String?> getToken();
 }
 
-class HomeWorkLocalDataSourceImpl implements HomeWorkLocalDataSource {
+class SubjectLocalDataSourceImpl implements SubjectLocalDataSource {
   final SharedPreferences prefs;
 
-  HomeWorkLocalDataSourceImpl({required this.prefs});
+  SubjectLocalDataSourceImpl({required this.prefs});
 
   @override
   Future<String?> getToken() async {
     return prefs.getString('auth_token');
   }
+
 }

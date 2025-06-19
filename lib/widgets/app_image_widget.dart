@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'app_icon_widget.dart';
 
 class AppImageWidget extends StatelessWidget {
   final String path;

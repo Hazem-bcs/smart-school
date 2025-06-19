@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school/features/post/presentation/widgets/app_button_like_widget.dart';
-import 'package:smart_school/theme/constants/colors.dart';
-import 'package:smart_school/widgets/app_round_button_widget.dart';
 
 import '../../../../widgets/app_avatar_widget.dart';
 import '../../../../widgets/app_circle_button_widget.dart';

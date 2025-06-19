@@ -8,7 +8,7 @@ part 'homework_state.dart';
 
 class HomeworkBloc extends Bloc<HomeworkEvent, HomeworkState> {
   final GetHomeworkUseCase getHomework;
-  // final UpdateHomeworkStatus updateHomeworkStatus; // You would inject this too
+  // final UpdateHomeworkStatus updateHomeworkStatus;
 
   HomeworkBloc({required this.getHomework}) : super(HomeworkInitial()) {
     on<GetHomeworksEvent>(_onGetHomeworks);

@@ -1,10 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:smart_school/features/authentication/data/models/user_modle.dart';
 
-import '../../../../core/constant.dart';
 import '../../../../core/network/dio_client.dart';
-import '../../../../core/network/dio_exception.dart';
 import '../../../../core/network/failures.dart';
 import '../models/homework_model.dart';
 
