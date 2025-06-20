@@ -1,14 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-abstract class ProfileLocalDataSource {
+abstract class DuesLocalDataSource {
   Future<int?> getId();
 }
 
-class AuthLocalDataSourceImpl implements ProfileLocalDataSource {
+class DuesLocalDataSourceImpl implements DuesLocalDataSource {
   final SharedPreferences prefs;
 
-  AuthLocalDataSourceImpl({required this.prefs});
+  DuesLocalDataSourceImpl({required this.prefs});
 
   @override
   Future<int?> getId() async {
