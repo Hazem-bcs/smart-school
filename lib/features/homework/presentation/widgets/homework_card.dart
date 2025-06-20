@@ -33,7 +33,7 @@ class HomeworkCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed('/homeWorkPage');
+        Navigator.of(context).pushNamed( '/oneHomeworkPage' );
       },
       child: Card(
         elevation: 3,

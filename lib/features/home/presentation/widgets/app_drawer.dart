@@ -21,7 +21,7 @@ class AppDrawerWidget extends StatelessWidget {
           SizedBox(height: 10),
           DrawerItem(
             onTap: () {
-              Navigator.of(context).pushNamed(   '/oneHomeworkPage');
+              Navigator.of(context).pushNamed(   '/homeWorkPage');
             },
             imageUrl: "imageUrl",
             title: AppStrings.homeWork,
