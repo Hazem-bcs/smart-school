@@ -11,6 +11,8 @@ import 'dependency_injection.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'features/authentication/presentation/pages/on_boarding.dart';
+import 'features/dues/presentation/blocs/dues_bloc.dart';
+import 'features/dues/presentation/pages/dues_page.dart';
 import 'features/homework/presentation/pages/homework_page.dart';
 import 'features/homework/presentation/pages/one_homework_page.dart';
 import 'features/post/presentation/pages/add_post_page.dart';
@@ -56,6 +58,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => FetchImageCubit(),
         ),
         BlocProvider(create: (context) => di.getIt<HomeworkBloc>()),
+        BlocProvider(create: (context) => di.getIt<DuesBloc>()),
       ],
       child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
@@ -74,6 +77,7 @@ class MyApp extends StatelessWidget {
           '/appDrawerWidget' : (context) => AppDrawerWidget(),
           '/homeWorkPage' : (context) => HomeworkPage(),
           '/oneHomeworkPage' : (context) => OneHomeworkPage(),
+          '/duesPage' : (context) => DuesPage(),
       },
       ),
     );

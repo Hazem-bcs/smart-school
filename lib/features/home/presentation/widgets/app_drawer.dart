@@ -6,6 +6,7 @@ class AppDrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: secondaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -14,18 +15,23 @@ class AppDrawerWidget extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed('/teachersPage');
             },
-            imageUrl: "imageUrl",
+            imageUrl:  "assets/svg/profile.svg",
             title: AppStrings.teachers,
             icon: Icons.person,
           ),
-          SizedBox(height: 10),
           DrawerItem(
             onTap: () {
               Navigator.of(context).pushNamed(   '/homeWorkPage');
             },
-            imageUrl: "imageUrl",
+            imageUrl: "assets/svg/homework.svg",
             title: AppStrings.homeWork,
             icon: Icons.home_work,
+          ),
+          DrawerItem(
+            onTap: () {
+              Navigator.of(context).pushNamed(   '/duesPage');
+            },
+            title: AppStrings.dues,
           ),
         ],
       ),
