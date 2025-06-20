@@ -5,5 +5,6 @@ class Constants {
   static String getSubjectListEndpoint = '/auth/login';
   static String getTeacherById = '/auth/login';
   static String getTeacherList = '/auth/login';
+  static String getProfileData = '/auth/login';
 
 }

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:smart_school/core/network/failures.dart';
 import 'package:smart_school/features/teacher/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/domain/use_cases/get_teacher_by_id_use_case.dart';
 import 'package:smart_school/features/teacher/domain/use_cases/get_teacher_list_use_case.dart';

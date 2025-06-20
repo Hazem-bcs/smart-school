@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/network/failures.dart';
 import '../../../core/network/network_info.dart';
+import '../../../core/shared/domain/entites/user_entity.dart';
 import '../domain/auth_repository.dart';
-import '../domain/entites/user_entity.dart';
 import 'data_sources/auth_local_data_source.dart';
 import 'data_sources/auth_remote_data_source.dart';
 

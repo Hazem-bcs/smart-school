@@ -5,7 +5,7 @@ import 'package:smart_school/core/network/failures.dart';
 import '../../../../core/constant.dart';
 import '../../../../core/network/dio_exception.dart';
 import '../../../../core/network/dio_client.dart';
-import '../models/user_modle.dart';
+import '../../../../core/shared/data/models/user_modle.dart';
 
 
 abstract class AuthRemoteDataSource {

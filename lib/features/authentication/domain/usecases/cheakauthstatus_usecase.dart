@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/network/failures.dart';
+import '../../../../core/shared/domain/entites/user_entity.dart';
 import '../auth_repository.dart';
-import '../entites/user_entity.dart';
 
 class CheckAuthStatusUseCase {
   final AuthRepository repository;

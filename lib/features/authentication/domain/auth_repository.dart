@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 
 import '../../../core/network/failures.dart';
-import 'entites/user_entity.dart';
+import '../../../core/shared/domain/entites/user_entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> login({

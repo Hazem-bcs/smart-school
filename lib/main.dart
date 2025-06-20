@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
-import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/homework_bloc.dart';
 import 'blocs/fetch_image/fetch_image_cubit.dart';
 import 'blocs/focus_node_cubit/focus_node_cubit.dart';
