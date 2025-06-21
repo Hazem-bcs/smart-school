@@ -13,22 +13,29 @@ class TeacherProfileCard extends StatelessWidget {
     required this.name,
     this.width = 150,
     this.height = 180,
-   required this.onTap,
+    required this.onTap,
   });
-
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
-      margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         width: width,
         height: height,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          border: Border.all(color: tertiaryColor, width: 1.5),
+          border: Border.all( color: tertiaryColor,width: 1.5),
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -37,8 +44,14 @@ class TeacherProfileCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               name,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.deepPurple,
+                letterSpacing: 0.5,
+              ),
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

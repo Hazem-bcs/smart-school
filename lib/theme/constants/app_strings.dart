@@ -7,9 +7,10 @@ abstract class AppStrings {
   static const String subject = "Subject";
   static const String dues = "Dues";
   static const String teacherDetails = "Teacher Details";
+  static const String editProfile = "edit Profile";
 
   static const String post = "post";
 
-  static const String glimpse = "Glimpse : ";
+  static const String bio = "bio : ";
   static const String subjects = "Subject : ";
 }

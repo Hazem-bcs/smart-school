@@ -1,4 +1,3 @@
-
 import 'package:smart_school/widgets/app_exports.dart';
 
 class TeachersPage extends StatefulWidget {
@@ -45,7 +44,7 @@ class _TeachersPageState extends State<TeachersPage> {
               imageUrl: teacherProfiles[index]['imageUrl']!,
               name: teacherProfiles[index]['name']!,
               onTap: () {
-                Navigator.of(context).pushNamed('/teacherPage');
+                Navigator.of(context).pushNamed('/teacherDetailsPage');
               },
             ),
           ),

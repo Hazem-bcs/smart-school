@@ -21,7 +21,7 @@ class AppDrawerWidget extends StatelessWidget {
           SizedBox(height: 40),
           DrawerItem(
             onTap: () {
-              Navigator.of(context).pushNamed('/teachersPage');
+              Navigator.of(context).pushNamed('/teacherPage');
             },
             imageUrl: "assets/svg/profile.svg",
             title: AppStrings.teachers,
@@ -71,12 +71,13 @@ class _BuildCurrentUserRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(width: 20),
           AppAvatarWidget(imageUrl: imageUrl ?? "assets/images/img.png"),
           SizedBox(width: 20),
           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppTextWidget(text: "user name"),
               AppTextWidget(text: "level"),

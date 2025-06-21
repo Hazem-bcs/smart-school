@@ -32,6 +32,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     //   return Left(UnknownFailure(message: 'Unknown error occurred'));
     // }
 
-    return Right(UserModel(id: studentId, name: 'mazen', email: 'mazen@gmail.com', password: '00000000', profilePhotoUrl: 'https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a.png', token: 'asdasdadas'));
+    return Right(UserModel(id: studentId, name: 'mazen', email: 'mazen@gmail.com', password: '00000000', profilePhotoUrl: "assets/images/user_3.png", token: 'asdasdadas'));
   }
 }

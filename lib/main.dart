@@ -19,10 +19,9 @@ import 'features/post/presentation/pages/add_post_page.dart';
 import 'features/profile/presentation/bolcs/profile_bloc.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/subject/presentation/blocs/subject_bloc.dart';
-import 'features/subject/presentation/pages/subject_details_page.dart';
 import 'features/subject/presentation/pages/subjects_page.dart';
 import 'features/teacher/presentation/blocs/teacher_bloc.dart';
-import 'features/teacher/presentation/pages/teacher_page.dart';
+import 'features/teacher/presentation/pages/teacher_details_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 
@@ -77,8 +76,8 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginPage(),
           '/home': (context) => HomePage(),
           '/addPost': (context) => AddPostPage(),
-          '/teachersPage': (context) => TeachersPage(),
-          '/teacherPage': (context) => TeacherPage(),
+          '/teacherDetailsPage': (context) => TeacherDetailsPage(),
+          '/teacherPage': (context) => TeachersPage(),
           '/appDrawerWidget': (context) => AppDrawerWidget(),
           '/homeWorkPage': (context) => HomeworkPage(),
           '/oneHomeworkPage': (context) => OneHomeworkPage(),
