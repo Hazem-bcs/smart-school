@@ -2,7 +2,9 @@ abstract class AppStrings {
   //headers
   static const String smartSchool = "Smart School";
   static const String teachers = "Teachers";
+  static const String profile = "Profile";
   static const String homeWork = "HomeWork";
+  static const String subject = "Subject";
   static const String dues = "Dues";
   static const String teacherDetails = "Teacher Details";
 

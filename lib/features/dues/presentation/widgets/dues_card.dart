@@ -29,11 +29,8 @@ class _DueCardState extends State<DueCard> {
     final dateFormat = DateFormat('d MMMM');
     final formattedDate = dateFormat.format(widget.dueEntity.dueDate);
 
-    final String currency = widget.dueEntity.currency; // استخدام العملة من DueEntity
+    final String currency = widget.dueEntity.currency;
 
-    // ** افتراض قيم لـ totalAmount و paidAmount لأنها غير موجودة في DueEntity **
-    // هذا يسمح للـ UI بالعمل دون تعديل DueEntity.
-    // إذا كنت تحتاج هذه القيم بدقة، يجب أن تأتي من الـ DueEntity أو من مكان آخر في طبقة البيانات.
     final double totalAmount = widget.dueEntity.amount;
     final double paidAmount = widget.dueEntity.isPaid ? widget.dueEntity.amount : 0.0;
 

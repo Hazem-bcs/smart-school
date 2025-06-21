@@ -7,10 +7,8 @@ import '../../../../core/network/dio_exception.dart';
 import '../../../../core/network/dio_client.dart';
 import '../models/subject_model.dart';
 
-
 abstract class SubjectRemoteDataSource {
   Future<Either<Failure, SubjectModel>> getSubject(int id);
-
 }
 
 class SubjectRemoteDataSourceImpl implements SubjectRemoteDataSource {
@@ -31,7 +29,13 @@ class SubjectRemoteDataSourceImpl implements SubjectRemoteDataSource {
     // } catch (e) {
     //   return Left(UnknownFailure(message: 'Unknown error occurred'));
     // }
-    return Right(SubjectModel(id: 1, name: 'رياضيات', image: 'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70'));
+    return Right(
+      SubjectModel(
+        id: 1,
+        name: 'رياضيات',
+        image:
+            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
+      ),
+    );
   }
-
 }

@@ -8,3 +8,4 @@ class GetSubjectEvent extends SubjectEvent {
 
   GetSubjectEvent({required this.id});
 }
+// class GetAllSubjectsEvent extends SubjectEvent {}

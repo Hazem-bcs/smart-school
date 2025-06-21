@@ -1,5 +1,7 @@
 import 'package:smart_school/widgets/app_exports.dart';
 
+import '../../../subject/domain/subject_entity.dart';
+
 class TeacherPage extends StatefulWidget {
   const TeacherPage({super.key});
 
@@ -8,6 +10,7 @@ class TeacherPage extends StatefulWidget {
 }
 
 class _TeacherPageState extends State<TeacherPage> {
+  late final SubjectEntity subject;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,14 +69,12 @@ class _TeacherPageState extends State<TeacherPage> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: AppSubjectCard(
-                    nameSubject: 'math',
-                    onTap: () {},
-                    level: "التاسع",
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.bottomLeft,
+                //   child: AppSubjectCard(
+                //     subject:subject.id ,
+                //   ),
+                // ),
               ],
             ),
           ),

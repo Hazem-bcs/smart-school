@@ -19,6 +19,7 @@ class ProfilePage extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBarWidget(title:AppStrings.profile ),
           body: state is GetDataLoadingState
               ? const CircularProgressIndicator()
               : state is ProfileDataLoadedState
@@ -33,7 +34,7 @@ class ProfilePage extends StatelessWidget {
 
               // Name
               ListTile(
-                title: Text(state.userEntity.name!),
+                title: Text(state.userEntity.name??"reham"),
                 leading: const Icon(Icons.person),
               ),
               const SizedBox(height: 16),

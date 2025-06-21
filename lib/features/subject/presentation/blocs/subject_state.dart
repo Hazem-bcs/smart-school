@@ -16,3 +16,11 @@ final class SubjectFailure extends SubjectState {
   final String message;
   SubjectFailure({required this.message});
 }
+// // NEW
+// final class AllSubjectsLoading extends SubjectState {}
+//
+// // NEW
+// final class AllSubjectsLoaded extends SubjectState {
+//   final List<SubjectEntity> subjects;
+//   AllSubjectsLoaded({required this.subjects});
+// }

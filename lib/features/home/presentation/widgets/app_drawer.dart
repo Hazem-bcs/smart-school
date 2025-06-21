@@ -40,6 +40,11 @@ class AppDrawerWidget extends StatelessWidget {
               Navigator.of(context).pushNamed('/duesPage');
             },
             title: AppStrings.dues,
+          ), DrawerItem(
+            onTap: () {
+              Navigator.of(context).pushNamed('/subjectsPage');
+            },
+            title: AppStrings.subject,
           ),
         ],
       ),
