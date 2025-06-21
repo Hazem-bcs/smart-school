@@ -1,17 +1,18 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:smart_school/widgets/app_icon_widget.dart';
 
 class DrawerItem extends StatelessWidget {
   final VoidCallback onTap;
-  final String imageUrl;
+  final String? imageUrl;
   final String title;
   final IconData? icon;
 
   const DrawerItem({
     required this.onTap,
-    required this.imageUrl,
+    this.imageUrl,
     required this.title,
-    required this.icon,
+    this.icon,
   });
 
   @override
@@ -25,8 +26,12 @@ class DrawerItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            AppIconWidget(icon: icon),
-            SizedBox(width: 20,),
+            SvgPicture.asset(
+              imageUrl ?? "assets/svg/fee.svg",
+              height: 30,
+              width: 30,
+            ),
+            SizedBox(width: 20),
             AppTextWidget(text: title),
           ],
         ),

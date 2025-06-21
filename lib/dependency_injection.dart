@@ -14,13 +14,13 @@ import 'features/authentication/data/auth_repository_impl.dart';
 import 'features/authentication/data/data_sources/auth_local_data_source.dart';
 import 'features/authentication/data/data_sources/auth_remote_data_source.dart';
 import 'features/authentication/domain/auth_repository.dart';
+import 'features/dues/data/datasources/dues_local_data_source.dart';
+import 'features/dues/data/datasources/dues_remote_datasource.dart';
+import 'features/dues/data/dues_repository_impl.dart';
 import 'features/dues/domain/dues_repository.dart';
 import 'features/authentication/domain/usecases/cheakauthstatus_usecase.dart';
 import 'features/authentication/domain/usecases/login_usecase.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
-import 'features/dues/data/datasources/dues_local_data_source.dart';
-import 'features/dues/data/datasources/dues_remote_datasource.dart';
-import 'features/dues/data/dues_repository_impl.dart';
 import 'features/dues/domain/usecases/get_my_dues.dart';
 import 'features/dues/presentation/blocs/dues_bloc.dart';
 import 'features/homework/presentation/blocs/homework_bloc.dart';
@@ -139,7 +139,7 @@ Future<void> setupDependencies() async {
       )
   );
 // --------------------------  U  S  E  C  A  S  E   -----------------------------------
-  
+
   getIt.registerFactory(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerFactory(() => CheckAuthStatusUseCase(getIt<AuthRepository>()));
   getIt.registerFactory(() => GetHomeworkUseCase(getIt<HomeworkRepository>()));
@@ -149,8 +149,8 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(() => GetTeacherByIdUseCase(getIt<TeacherRepository>()));
   getIt.registerFactory(() => GetTeacherListUseCase(getIt<TeacherRepository>()));
 
-// --------------------------  B  L  O  C   ----------------------------------- 
-  
+// --------------------------  B  L  O  C   -----------------------------------
+
   getIt.registerFactory(() => AuthBloc(checkAuthStatusUseCase:getIt<CheckAuthStatusUseCase>(), loginUseCase: getIt<LoginUseCase>()));
   getIt.registerFactory(() => HomeworkBloc(getHomework: getIt<GetHomeworkUseCase>()));
   getIt.registerFactory(() => DuesBloc(getMyDuesUseCase: getIt<GetMyDuesUseCase>()));

@@ -1,9 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:smart_school/features/dues/presentation/blocs/dues_bloc.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/homework_bloc.dart';
-import 'package:smart_school/features/subject/presentation/blocs/subject_bloc.dart';
 import 'blocs/fetch_image/fetch_image_cubit.dart';
 import 'blocs/focus_node_cubit/focus_node_cubit.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -13,10 +11,14 @@ import 'dependency_injection.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
 import 'features/authentication/presentation/pages/on_boarding.dart';
+import 'features/dues/presentation/blocs/dues_bloc.dart';
+import 'features/dues/presentation/pages/dues_page.dart';
 import 'features/homework/presentation/pages/homework_page.dart';
 import 'features/homework/presentation/pages/one_homework_page.dart';
 import 'features/post/presentation/pages/add_post_page.dart';
 import 'features/profile/presentation/bolcs/profile_bloc.dart';
+import 'features/profile/presentation/pages/profile_page.dart';
+import 'features/subject/presentation/blocs/subject_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_bloc.dart';
 import 'features/teacher/presentation/pages/teacher_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
@@ -82,6 +84,8 @@ class MyApp extends StatelessWidget {
           '/appDrawerWidget' : (context) => AppDrawerWidget(),
           '/homeWorkPage' : (context) => HomeworkPage(),
           '/oneHomeworkPage' : (context) => OneHomeworkPage(),
+          '/duesPage' : (context) => DuesPage(),
+          '/profilePage' : (context) => ProfilePage(),
       },
       ),
     );
