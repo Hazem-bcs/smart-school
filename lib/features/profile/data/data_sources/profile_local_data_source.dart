@@ -5,10 +5,10 @@ abstract class ProfileLocalDataSource {
   Future<int?> getId();
 }
 
-class AuthLocalDataSourceImpl implements ProfileLocalDataSource {
+class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
   final SharedPreferences prefs;
 
-  AuthLocalDataSourceImpl({required this.prefs});
+  ProfileLocalDataSourceImpl({required this.prefs});
 
   @override
   Future<int?> getId() async {

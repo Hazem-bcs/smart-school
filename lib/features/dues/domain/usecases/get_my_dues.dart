@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/network/failures.dart';
-import '../../../authentication/domain/dues_repository.dart';
+import '../dues_repository.dart';
 import '../entities/due_entity.dart';
 
 // حالة الاستخدام الوحيدة هي جلب المستحقات

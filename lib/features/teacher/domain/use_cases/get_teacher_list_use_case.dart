@@ -8,7 +8,7 @@ import '../teatcher_repository.dart';
 class GetTeacherListUseCase {
   final TeacherRepository repository;
 
-  GetTeacherListUseCase({required this.repository});
+  GetTeacherListUseCase(this.repository);
 
   Future<Either<Failure,List<TeacherEntity>>> call(int studentId) async {
     return await repository.getTeacherList();

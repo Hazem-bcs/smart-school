@@ -7,7 +7,7 @@ import '../../../core/network/failures.dart';
 class GetSubjectUseCase {
   final SubjectRepository repository;
 
-  GetSubjectUseCase({required this.repository});
+  GetSubjectUseCase(this.repository);
 
   Future<Either<Failure, SubjectEntity>> call(int id) async {
     return await repository.getSubject(id);

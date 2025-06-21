@@ -29,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           (failure) {
         emit(Unauthenticated());
       },
-          (userEntity) {
+          (success) {
         emit(Authenticated());
       },
     );

@@ -20,17 +20,18 @@ class SubjectRemoteDataSourceImpl implements SubjectRemoteDataSource {
 
   @override
   Future<Either<Failure, SubjectModel>> getSubject(int id) async {
-    try {
-      final response = await dioClient.post(
-        Constants.getSubjectListEndpoint,
-        data: {'id': id},
-      );
-      return Right(SubjectModel.fromJson(response.data));
-    } on DioException catch (e) {
-      return Left(handleDioException(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: 'Unknown error occurred'));
-    }
+    // try {
+    //   final response = await dioClient.post(
+    //     Constants.getSubjectListEndpoint,
+    //     data: {'id': id},
+    //   );
+    //   return Right(SubjectModel.fromJson(response.data));
+    // } on DioException catch (e) {
+    //   return Left(handleDioException(e));
+    // } catch (e) {
+    //   return Left(UnknownFailure(message: 'Unknown error occurred'));
+    // }
+    return Right(SubjectModel(id: 1, name: 'رياضيات', image: 'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70'));
   }
 
 }

@@ -27,8 +27,8 @@ class AuthRepositoryImpl implements AuthRepository {
     return result.fold(
           (failure) => left(failure),
           (userModel) {
-        if (userModel.token != null) {
-          localDataSource.cacheToken(userModel.token!);
+        if (userModel.id != null) {
+          localDataSource.cacheId(userModel.id!);
         }
         return Right(userModel.toEntity());
       },
@@ -36,17 +36,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> checkAuthStatus() async {
+  Future<Either<Failure, bool>> checkAuthStatus() async {
     if (await networkInfo.isConnected) {
-      final token = await localDataSource.getToken();
-      final result = await remoteDataSource.validateToken(token ?? '');
-      return result.fold(
-      (failure) => left(failure),
-      (userModel) async {
-        await localDataSource.cacheToken(userModel.token!);
-        return Right(userModel.toEntity());
-      }
-      );
+      final studentId = await localDataSource.getId();
+       if (studentId != null )
+           {return left(CacheFailure(message: 'the user un authenticated'));}
+      else {
+           // await localDataSource.cacheId(userModel.id!);
+           return Right(true);
+           }
     } else {
       return Left(ConnectionFailure(message: ''));
     }

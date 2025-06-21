@@ -9,7 +9,7 @@ import '../teatcher_repository.dart';
 class GetTeacherByIdUseCase {
   final TeacherRepository repository;
 
-  GetTeacherByIdUseCase({required this.repository});
+  GetTeacherByIdUseCase(this.repository);
 
   Future<Either<Failure, TeacherEntity>> call(int teacherId) async {
     return await repository.getTeacherById(teacherId);

@@ -13,23 +13,25 @@ abstract class ProfileRemoteDataSource {
 
 }
 
-class AuthRemoteDataSourceImpl implements ProfileRemoteDataSource {
+class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final DioClient dioClient;
 
-  AuthRemoteDataSourceImpl({required this.dioClient});
+  ProfileRemoteDataSourceImpl({required this.dioClient});
 
   @override
   Future<Either<Failure, UserModel>> getProfileData(int studentId) async {
-    try {
-      final response = await dioClient.post(
-        Constants.getProfileData,
-        data: {'student_id': studentId},
-      );
-      return Right(UserModel.fromJson(response.data));
-    } on DioException catch (e) {
-      return Left(handleDioException(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: 'Unknown error occurred'));
-    }
+    // try {
+    //   final response = await dioClient.post(
+    //     Constants.getProfileData,
+    //     data: {'student_id': studentId},
+    //   );
+    //   return Right(UserModel.fromJson(response.data));
+    // } on DioException catch (e) {
+    //   return Left(handleDioException(e));
+    // } catch (e) {
+    //   return Left(UnknownFailure(message: 'Unknown error occurred'));
+    // }
+
+    return Right(UserModel(id: studentId, name: 'mazen', email: 'mazen@gmail.com', password: '00000000', profilePhotoUrl: 'https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a.png', token: 'asdasdadas'));
   }
 }

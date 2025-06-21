@@ -10,7 +10,7 @@ abstract class AuthRepository {
     required String password,
   });
 
-  Future<Either<Failure, UserEntity>> checkAuthStatus();
+  Future<Either<Failure, bool>> checkAuthStatus();
 
   Future<bool> hasSeenOnboarding();
   Future<void> cacheOnboardingStatus ();

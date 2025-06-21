@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/network/failures.dart';
-import '../../dues/domain/entities/due_entity.dart';
+import 'entities/due_entity.dart';
 
 // العقد الآن أبسط بكثير
 abstract class DuesRepository {

@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../dependency_injection.dart';
 
 abstract class AuthLocalDataSource {
-  Future<void> cacheToken(String token);
-  Future<String?> getToken();
+  Future<void> cacheId(int token);
+  Future<int?> getId();
   // on Boarding
   Future<bool> hasSeenOnboarding();
   Future<void> cacheOnboardingStatus();
@@ -17,13 +17,13 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   AuthLocalDataSourceImpl({required this.prefs});
 
   @override
-  Future<void> cacheToken(String token) async {
-    await getIt<SharedPreferences>().setString('auth_token', token);
+  Future<void> cacheId(int studentId) async {
+    await getIt<SharedPreferences>().setInt('student_id', studentId);
   }
 
   @override
-  Future<String?> getToken() async {
-    return prefs.getString('auth_token');
+  Future<int?> getId() async {
+    return prefs.getInt('student_id');
   }
 
   @override
