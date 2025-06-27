@@ -1,0 +1,5 @@
+name: smart_school # اسم مشروعك الكلي
+
+packages:
+  - apps/* # ابحث عن كل المشاريع داخل مجلد apps
+  - packages/* # وابحث عن كل الحزم داخل مجلد packages

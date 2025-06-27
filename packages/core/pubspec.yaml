@@ -1,0 +1,60 @@
+name: core
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.7.2
+
+# Add regular dependencies here.
+dependencies:
+  flutter:
+    sdk: flutter
+  # path: ^1.8.0
+  dio: ^5.3.3
+  flutter_bloc: ^8.1.6
+  easy_localization: ^3.0.7+1
+  flutter_spinkit: ^5.2.0
+  connectivity_plus: ^5.0.1
+  fluttertoast: ^8.2.2
+  shared_preferences: ^2.2.3
+  calendar_date_picker2: ^2.0.1
+  image_picker: ^1.1.2
+  equatable: ^2.0.7
+  dartz: ^0.10.1
+  get_it: ^8.0.3
+  url_launcher: ^6.3.1
+  go_router: ^15.1.3
+  flutter_svg: ^1.1.6
+  flutter_countdown_timer: ^4.1.0
+  pinput: ^2.2.12
+  cupertino_icons: ^1.0.8
+  intl: ^0.19.0
+  google_generative_ai: ^0.4.7
+  flutter_chat_ui: ^2.5.2
+  flutter_chat_core: ^2.0.0
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^5.0.0
+  test: ^1.24.0
+  easy_localization_generator: ^0.3.3
+  build_runner: ^2.5.0
+  flutter_lints: ^5.0.0
+
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+#  assets:
+#    - assets/svg/
+#    - assets/images/
+#    - assets/translations/
+#    - assets/auth_icons/
+#  generate: true

@@ -1,0 +1,20 @@
+# melos_managed_dependency_overrides: auth,core,dues,homework,notification,profile,resource,subject,teacher_feat
+dependency_overrides:
+  auth:
+    path: ..\\..\\packages\\auth
+  core:
+    path: ..\\..\\packages\\core
+  dues:
+    path: ..\\..\\packages\\dues
+  homework:
+    path: ..\\..\\packages\\homework
+  notification:
+    path: ..\\..\\packages\\notification
+  profile:
+    path: ..\\..\\packages\\profile
+  resource:
+    path: ..\\..\\packages\\resource
+  subject:
+    path: ..\\..\\packages\\subject
+  teacher_feat:
+    path: ..\\..\\packages\\teacher_feat
