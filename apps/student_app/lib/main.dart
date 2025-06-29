@@ -88,7 +88,6 @@ class MyApp extends StatelessWidget {
               '/login': (context) => LoginPage(),
               '/home': (context) => HomePage(),
               '/addPost': (context) => AddPostPage(),
-              '/teacherDetailsPage': (context) => TeacherDetailsPage(),
               '/teacherPage': (context) => TeachersPage(),
               '/appDrawerWidget': (context) => AppDrawerWidget(),
               '/homeWorkPage': (context) => HomeworkPage(),
