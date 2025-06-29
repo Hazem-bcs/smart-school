@@ -71,7 +71,6 @@ class AppImageWidget extends StatelessWidget {
         fit: boxFit,
       );
     }
-
     return const Placeholder();
   }
 }

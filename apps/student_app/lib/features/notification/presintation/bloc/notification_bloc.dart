@@ -10,6 +10,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final GetNotificationListUseCase getNotificationListUseCase;
   NotificationBloc({required this.getNotificationListUseCase}) : super(NotificationInitial()) {
     on<GetNotificationListEvent>(_onGetNotificationList);
+    on<UpdateNotificationEvent>(_onUpdateNotification);
   }
 
   Future<void> _onGetNotificationList(GetNotificationListEvent event , Emitter<NotificationState> emit) async {
@@ -20,4 +21,20 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
      (notificationList) => emit(NotificationListLoadedState(notificationList: notificationList)),
    );
   }
+
+
+  void _onUpdateNotification(UpdateNotificationEvent event, Emitter<NotificationState> emit) {
+    if (state is NotificationListLoadedState) {
+      final currentList = List<NotificationEntity>.from((state as NotificationListLoadedState).notificationList);
+      final index = currentList.indexWhere((n) => n.id == event.updatedNotification.id);
+
+      if (index != -1) {
+        currentList[index] = event.updatedNotification;
+        emit(NotificationListLoadedState(notificationList: currentList));
+      }
+    }
+  }
+
+
+
 }

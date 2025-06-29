@@ -8,6 +8,7 @@ abstract class AppStrings {
   static const String dues = "Dues";
   static const String  resources = "Resources";
   static const String   attendance = "Attendance";
+  static const String    notification = "Notification";
   static const String teacherDetails = "Teacher Details";
   static const String editProfile = "edit Profile";
 

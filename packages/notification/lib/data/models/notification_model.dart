@@ -1,6 +1,6 @@
 import '../../domain/entities/notification_entity.dart';
 
-class NotificationModel{
+class NotificationModel {
   final String id;
   final String title;
   final String body;
@@ -30,7 +30,16 @@ class NotificationModel{
       deepLink: json['deepLink'] as String?,
     );
   }
+
   NotificationEntity toEntity() {
-    return NotificationEntity(id: id, title: title, body: body, sentTime: sentTime, isRead: isRead);
+    return NotificationEntity(
+      id: id,
+      title: title,
+      body: body,
+      sentTime: sentTime,
+      isRead: isRead,
+      imageUrl: imageUrl,
+      deepLink: deepLink,
+    );
   }
 }

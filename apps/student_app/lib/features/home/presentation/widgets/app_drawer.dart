@@ -57,6 +57,12 @@ class AppDrawerWidget extends StatelessWidget {
             },
             title: AppStrings.resources,
             imageUrl: "assets/svg/media.svg",
+          ), DrawerItem(
+            onTap: () {
+              Navigator.of(context).pushNamed(    '/notificationPage');
+            },
+            title: AppStrings.notification,
+            imageUrl: "assets/svg/notices.svg",
           ),
         ],
       ),
