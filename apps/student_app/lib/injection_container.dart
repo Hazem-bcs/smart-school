@@ -36,7 +36,8 @@ import 'features/profile/presentation/bolcs/profile_bloc.dart';
 import 'features/resource/presintation/blocs/resource_bloc.dart';
 import 'features/subject/presentation/blocs/subject/subject_bloc.dart';
 import 'features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
-import 'features/teacher/presentation/blocs/teacher_bloc.dart';
+import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
+import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
 import 'features/atendance/presentation/blocs/attendance_bloc.dart';
 
 final   getIt = GetIt.instance;
@@ -61,7 +62,6 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(() => ProfileBloc(getUserProfileUseCase: getIt<GetUserProfileUseCase>()));
   getIt.registerFactory(() => SubjectBloc(getSubjectUseCase: getIt<GetSubjectUseCase>()));
   getIt.registerFactory(() => SubjectListBloc(getSubjectLListUseCase:getIt<GetSubjectLListUseCase>()));
-  getIt.registerFactory(() => TeacherBloc(teacherByIdUseCase: getIt<GetTeacherByIdUseCase>(), teacherListUseCase: getIt<GetTeacherListUseCase>()));
   getIt.registerFactory(() => NotificationBloc(getNotificationListUseCase:getIt<GetNotificationListUseCase>()));
   getIt.registerFactory(() => ResourceBloc(getResourceListUseCase:getIt<GetResourceListUseCase>()));
   getIt.registerFactory(() => ChatBloc(getGeminiResponse:getIt<SendChatMessageUseCase>()));
@@ -69,4 +69,6 @@ Future<void> setupDependencies() async {
     getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
     getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
   ));
+  getIt.registerFactory(() => TeacherListBloc(teacherListUseCase: getIt<GetTeacherListUseCase>()));
+  getIt.registerFactory(() => TeacherDetailsBloc(teacherByIdUseCase: getIt<GetTeacherByIdUseCase>()));
 }

@@ -15,7 +15,6 @@
       <module fileurl="file://$PROJECT_DIR$/packages/subject/melos_subject.iml" filepath="$PROJECT_DIR$/packages/subject/melos_subject.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/teacher_app/melos_teacher_app.iml" filepath="$PROJECT_DIR$/apps/teacher_app/melos_teacher_app.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/teacher_feat/melos_teacher_feat.iml" filepath="$PROJECT_DIR$/packages/teacher_feat/melos_teacher_feat.iml" />
-      <module fileurl="file://$PROJECT_DIR$/melos_smart_school.iml" filepath="$PROJECT_DIR$/melos_smart_school.iml" />
     </modules>
   </component>
 </project>

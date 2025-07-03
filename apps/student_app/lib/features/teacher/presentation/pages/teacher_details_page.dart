@@ -1,8 +1,9 @@
 import 'package:sizer/sizer.dart';
+import 'package:smart_school/features/profile/presentation/bolcs/profile_bloc.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
-import 'package:smart_school/features/teacher/presentation/blocs/teacher_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
+import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
 
 class TeacherDetailsPage extends StatefulWidget {
   final int teacherId;
@@ -21,7 +22,7 @@ class TeacherDetailsPage extends StatefulWidget {
 class _TeacherPageState extends State<TeacherDetailsPage> {
   @override
   void initState() {
-    context.read<TeacherBloc>().add(
+    context.read<TeacherDetailsBloc>().add(
       GetTeacherById(teacherId: widget.teacherId),
     );
     super.initState();
@@ -46,12 +47,12 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
         backgroundColor: primaryColor,
         elevation: 4,
       ),
-      body: BlocBuilder(
+      body: BlocBuilder<TeacherDetailsBloc, TeacherDetailsState>(
         builder: (context, state) {
-          if (state is TeacherInitial || state is GetDataLoadingState) {
+          if (state is TeacherDetailsInitial || state is TeacherDetailsLoading) {
             return const Center(child: AppLoadingWidget());
           }
-          if (state is ErrorState ) {
+          if (state is TeacherDetailsError ) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -59,8 +60,8 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                   Text('Error loading subject: ${state.message}'),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<TeacherBloc>().add(
-                        GetTeacherList( studentId: widget.teacherId),
+                      context.read<TeacherDetailsBloc>().add(
+                        GetTeacherById(teacherId: widget.teacherId),
                       );
                     },
                     child: const Text('Retry'),
@@ -69,7 +70,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
               ),
             );
           }
-          if (state is TeacherListLoadedState) {
+          if (state is TeacherDetailsLoaded) {
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

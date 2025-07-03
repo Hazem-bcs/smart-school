@@ -26,11 +26,11 @@ import 'features/resource/presintation/blocs/resource_bloc.dart';
 import 'features/resource/presintation/pages/resource_page.dart';
 import 'features/subject/presentation/blocs/subject/subject_bloc.dart';
 import 'features/subject/presentation/pages/subjects_page.dart';
-import 'features/teacher/presentation/blocs/teacher_bloc.dart';
-import 'features/teacher/presentation/pages/teacher_details_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:sizer/sizer.dart';
+import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
+import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +69,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ProfileBloc>()),
         BlocProvider(create: (context) => di.getIt<SubjectBloc>()),
         BlocProvider(create: (context) => di.getIt<SubjectListBloc>()),
-        BlocProvider(create: (context) => di.getIt<TeacherBloc>()),
+        BlocProvider(create: (context) => di.getIt<TeacherListBloc>()),
+        BlocProvider(create: (context) => di.getIt<TeacherDetailsBloc>()),
         BlocProvider(create: (context) => di.getIt<NotificationBloc>()),
         BlocProvider(create: (context) => di.getIt<ResourceBloc>()),
         BlocProvider(create: (context) => di.getIt<ChatBloc>()),
