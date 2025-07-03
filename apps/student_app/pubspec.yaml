@@ -30,6 +30,8 @@ dependencies:
     path: ../../packages/subject
   teacher_feat:
     path: ../../packages/teacher_feat
+  attendance:
+    path: ../../packages/attendance
 
   dio: ^5.3.3
   easy_localization: ^3.0.7+1

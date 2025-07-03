@@ -21,6 +21,9 @@ import 'package:subject/injection_container.dart' as subject_di;
 import 'package:teacher_feat/domain/use_cases/get_teacher_by_id_use_case.dart';
 import 'package:teacher_feat/domain/use_cases/get_teacher_list_use_case.dart';
 import 'package:teacher_feat/injection_container.dart' as teacher_di;
+import 'package:attendance/injection_container.dart' as attendance_di;
+import 'package:attendance/domain/usecases/get_monthly_attendance_use_case.dart';
+import 'package:attendance/domain/usecases/get_attendance_details_use_case.dart';
 
 import 'features/ai_tutor/domain/use_cases/send_chat_message_use_case.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
@@ -34,6 +37,7 @@ import 'features/resource/presintation/blocs/resource_bloc.dart';
 import 'features/subject/presentation/blocs/subject/subject_bloc.dart';
 import 'features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_bloc.dart';
+import 'features/atendance/presentation/blocs/attendance_bloc.dart';
 
 final   getIt = GetIt.instance;
 
@@ -48,7 +52,7 @@ Future<void> setupDependencies() async {
   await resource_di.setupResourceDependencies(getIt);
   await subject_di.setupSubjectDependencies(getIt);
   await teacher_di.setupTeacherFeatDependencies(getIt);
-
+  await attendance_di.setupAttendanceDependencies(getIt);
 
   getIt.registerFactory(() => AuthBloc(checkAuthStatusUseCase:getIt<CheckAuthStatusUseCase>(), loginUseCase: getIt<LoginUseCase>()));
   getIt.registerFactory(() => HomeworkBloc(getHomework: getIt<GetHomeworkUseCase>()));
@@ -60,4 +64,9 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(() => TeacherBloc(teacherByIdUseCase: getIt<GetTeacherByIdUseCase>(), teacherListUseCase: getIt<GetTeacherListUseCase>()));
   getIt.registerFactory(() => NotificationBloc(getNotificationListUseCase:getIt<GetNotificationListUseCase>()));
   getIt.registerFactory(() => ResourceBloc(getResourceListUseCase:getIt<GetResourceListUseCase>()));
-  getIt.registerFactory(() => ChatBloc(getGeminiResponse:getIt<SendChatMessageUseCase>()));}
+  getIt.registerFactory(() => ChatBloc(getGeminiResponse:getIt<SendChatMessageUseCase>()));
+  getIt.registerFactory(() => AttendanceBloc(
+    getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
+    getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
+  ));
+}

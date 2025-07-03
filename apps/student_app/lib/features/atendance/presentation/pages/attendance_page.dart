@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school/widgets/app_bar_widget.dart';
-
 import '../widgets/attendance_row_widget.dart';
 import 'attendance_detials_page.dart';
 import 'month_data.dart';
