@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/apps/teacher_app/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/apps/teacher_app/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/apps/teacher_app/build" />
+<<<<<<< HEAD
       <excludeFolder url="file://$MODULE_DIR$/smart-school/apps/parent_app/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/smart-school/apps/parent_app/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/smart-school/apps/parent_app/build" />
@@ -55,6 +56,11 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/attendance/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/packages/attendance/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/packages/attendance/build" />
+=======
+      <excludeFolder url="file://$MODULE_DIR$/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+>>>>>>> ff5eb32e2b7347a3a52c7906d34f241ed8331516
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />

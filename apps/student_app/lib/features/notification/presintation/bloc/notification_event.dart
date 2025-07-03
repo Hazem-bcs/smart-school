@@ -4,3 +4,12 @@ part of 'notification_bloc.dart';
 sealed class NotificationEvent {}
 
 class GetNotificationListEvent extends NotificationEvent {}
+
+
+class UpdateNotificationEvent extends NotificationEvent {
+  final NotificationEntity updatedNotification;
+
+  UpdateNotificationEvent({required this.updatedNotification});
+
+}
+

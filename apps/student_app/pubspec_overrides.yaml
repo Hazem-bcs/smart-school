@@ -1,5 +1,7 @@
-# melos_managed_dependency_overrides: auth,core,dues,homework,notification,profile,resource,subject,teacher_feat
+# melos_managed_dependency_overrides: attendance,auth,core,dues,homework,notification,profile,resource,subject,teacher_feat
 dependency_overrides:
+  attendance:
+    path: ..\\..\\packages\\attendance
   auth:
     path: ..\\..\\packages\\auth
   core:

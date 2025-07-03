@@ -11,6 +11,7 @@ import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
 import 'features/atendance/presentation/pages/attendance_page.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
+import 'features/notification/presintation/pages/notification_page.dart';
 import 'injection_container.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
@@ -29,6 +30,7 @@ import 'features/teacher/presentation/blocs/teacher_bloc.dart';
 import 'features/teacher/presentation/pages/teacher_details_page.dart';
 import 'features/teacher/presentation/pages/teachers_page.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,28 +74,32 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ResourceBloc>()),
         BlocProvider(create: (context) => di.getIt<ChatBloc>()),
       ],
-      child: MaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        home: const HomePage(),
-        routes: {
-          '/onBoarding': (context) => OnBoardingPage(),
-          '/login': (context) => LoginPage(),
-          '/home': (context) => HomePage(),
-          '/addPost': (context) => AddPostPage(),
-          '/teacherDetailsPage': (context) => TeacherDetailsPage(),
-          '/teacherPage': (context) => TeachersPage(),
-          '/appDrawerWidget': (context) => AppDrawerWidget(),
-          '/homeWorkPage': (context) => HomeworkPage(),
-          '/duesPage': (context) => DuesPage(),
-          '/profilePage': (context) => ProfilePage(),
-          '/subjectsPage': (context) => SubjectsPage(),
-          '/tutorChatView': (context) => TutorChatView(),
-          '/attendancePage': (context) => AttendancePage(),
-          '/resourcesPage': (context) => ResourcesPage(),
+      child: Sizer(
+        builder: (context, orientation, screenType) {
+          return MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            home: const HomePage(),
+            routes: {
+              '/onBoarding': (context) => OnBoardingPage(),
+              '/login': (context) => LoginPage(),
+              '/home': (context) => HomePage(),
+              '/addPost': (context) => AddPostPage(),
+              '/teacherPage': (context) => TeachersPage(),
+              '/appDrawerWidget': (context) => AppDrawerWidget(),
+              '/homeWorkPage': (context) => HomeworkPage(),
+              '/duesPage': (context) => DuesPage(),
+              '/profilePage': (context) => ProfilePage(),
+              '/subjectsPage': (context) => SubjectsPage(),
+              '/tutorChatView': (context) => TutorChatView(),
+              '/attendancePage': (context) => AttendancePage(),
+              '/resourcesPage': (context) => ResourcesPage(),
+              '/notificationPage': (context) => NotificationPage(),
+            },
+          );
         },
       ),
     );

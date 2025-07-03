@@ -2,12 +2,12 @@ import 'package:core/network/dio_client.dart';
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
 
-
 import '../models/notification_model.dart';
 
-
 abstract class NotificationRemoteDataSource {
-  Future<Either<Failure, List<NotificationModel>>> getNotificationList(int studentId);
+  Future<Either<Failure, List<NotificationModel>>> getNotificationList(
+    int studentId,
+  );
 }
 
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
@@ -17,7 +17,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<Either<Failure, List<NotificationModel>>> getNotificationList(
-      int studentId,) async {
+    int studentId,
+  ) async {
     // try {
     //   final response = await dioClient.post(
     //     Constants.getHomeWorkListEndpoint,
@@ -37,45 +38,62 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     // }
     return Right([
       NotificationModel(
-          id: "notif_001",
-          title: "New Math Assignment",
-          body: "Chapter 5 exercises due tomorrow by 11:59 PM",
-          sentTime: DateTime(2023, 5, 15, 14, 30),
-          isRead: false,
-          imageUrl: "https://eduapp.com/math_icon.png",
-          deepLink: "app://assignments/math_005"
+        id: "notif_001",
+        title: "New Math Assignment",
+        body: "Chapter 5 exercises due tomorrow by 11:59 PM",
+        sentTime: DateTime(2023, 5, 15, 14, 30),
+        isRead: false,
+        imageUrl: "https://eduapp.com/math_icon.png",
+        deepLink: "app://assignments/math_005",
       ),
       NotificationModel(
-          id: "notif_002",
-          title: "Grade Updated",
-          body: "Your Science project grade is now available - 94% A",
-          sentTime: DateTime(2023, 5, 16, 9, 15),
-          isRead: true,
-          deepLink: "app://grades/science_proj"
+        id: '1',
+        title: 'خصم خاص لك!',
+        body: 'استمتع بخصم 20% على جميع المنتجات الجديدة لهذا الأسبوع فقط!',
+        sentTime: DateTime.now().subtract(const Duration(minutes: 5)),
+        isRead: false,
+        imageUrl: 'https://via.placeholder.com/600/92c952',
+        deepLink: 'app://product/123',
       ),
       NotificationModel(
-          id: "notif_003",
-          title: "System Maintenance",
-          body: "The app will be down for maintenance tonight from 1-3 AM",
-          sentTime: DateTime(2023, 5, 14, 18, 0),
-          isRead: false
+        id: '2',
+        title: 'تحديث هام للتطبيق',
+        body: 'لقد قمنا بتحسين الأداء وإضافة ميزات جديدة. قم بالتحديث الآن!',
+        sentTime: DateTime.now().subtract(const Duration(hours: 2)),
+        isRead: false,
+      ),
+
+      NotificationModel(
+        id: "notif_002",
+        title: "Grade Updated",
+        body: "Your Science project grade is now available - 94% A",
+        sentTime: DateTime(2023, 5, 16, 9, 15),
+        isRead: true,
+        deepLink: "app://grades/science_proj",
       ),
       NotificationModel(
-          id: "notif_004",
-          title: "Class Cancelled",
-          body: "History class on Friday is cancelled - Prof. Smith is ill",
-          sentTime: DateTime(2023, 5, 17, 10, 5),
-          isRead: false,
-          imageUrl: "https://eduapp.com/history_icon.png"
+        id: "notif_003",
+        title: "System Maintenance",
+        body: "The app will be down for maintenance tonight from 1-3 AM",
+        sentTime: DateTime(2023, 5, 14, 18, 0),
+        isRead: false,
       ),
       NotificationModel(
-          id: "notif_005",
-          title: "Deadline Approaching",
-          body: "Reminder: English essay due in 2 days",
-          sentTime: DateTime(2023, 5, 18, 8, 0),
-          isRead: false,
-          deepLink: "app://assignments/eng_essay"
-      )
+        id: "notif_004",
+        title: "Class Cancelled",
+        body: "History class on Friday is cancelled - Prof. Smith is ill",
+        sentTime: DateTime(2023, 5, 17, 10, 5),
+        isRead: false,
+        imageUrl: "https://eduapp.com/history_icon.png",
+      ),
+      NotificationModel(
+        id: "notif_005",
+        title: "Deadline Approaching",
+        body: "Reminder: English essay due in 2 days",
+        sentTime: DateTime(2023, 5, 18, 8, 0),
+        isRead: false,
+        deepLink: "app://assignments/eng_essay",
+      ),
     ]);
   }
 }
