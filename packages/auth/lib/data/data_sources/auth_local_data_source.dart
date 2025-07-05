@@ -16,13 +16,13 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   AuthLocalDataSourceImpl({required this.prefs});
 
   @override
-  Future<void> cacheId(int studentId) async {
-    await prefs.setInt('student_id', studentId);
+  Future<void> cacheId(int userId) async {
+    await prefs.setInt('user_id', userId);
   }
 
   @override
   Future<int?> getId() async {
-    return prefs.getInt('student_id');
+    return prefs.getInt('user_id');
   }
 
   @override

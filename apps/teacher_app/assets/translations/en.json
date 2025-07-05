@@ -1,0 +1,32 @@
+{
+  "app_title": "Smart School - Teacher",
+  
+  "connectivity": {
+    "offline": "You are offline",
+    "online": "You are online",
+    "retrying": "Retrying connection...",
+    "max_retries_exceeded": "Maximum retry attempts exceeded",
+    "retry": "Retry"
+  },
+  
+  "auth": {
+    "sign_in": "Sign In",
+    "email": "Email",
+    "password": "Password"
+  },
+  
+  "teacher": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "classes": "Classes"
+  },
+  
+  "validation": {
+    "required_field": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "password_too_short": "Password must be at least 8 characters long"
+  },
+  
+  "lbl_has_internet": "You are connected to the internet",
+  "lbl_lost_internet": "You lost the internet connection"
+} 

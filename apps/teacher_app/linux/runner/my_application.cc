@@ -5,7 +5,7 @@
 #include <gdk/gdkx.h>
 #endif
 
-#include "flutter/generated_plugin_registrant.h"
+#include "../../../student_app/windows/flutter/ephemeral/.plugin_symlinks/smart_auth/example/windows/flutter/generated_plugin_registrant.h"
 
 struct _MyApplication {
   GtkApplication parent_instance;

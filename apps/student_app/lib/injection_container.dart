@@ -25,6 +25,9 @@ import 'package:attendance/injection_container.dart' as attendance_di;
 import 'package:attendance/domain/usecases/get_monthly_attendance_use_case.dart';
 import 'package:attendance/domain/usecases/get_attendance_details_use_case.dart';
 
+import 'features/ai_tutor/data/datasources/ai_tutor_remote_datasource.dart';
+import 'features/ai_tutor/data/repositories/ai_tutor_repository_impl.dart';
+import 'features/ai_tutor/domain/repositories/repositories.dart';
 import 'features/ai_tutor/domain/use_cases/send_chat_message_use_case.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
@@ -54,6 +57,14 @@ Future<void> setupDependencies() async {
   await subject_di.setupSubjectDependencies(getIt);
   await teacher_di.setupTeacherFeatDependencies(getIt);
   await attendance_di.setupAttendanceDependencies(getIt);
+
+  // AI Tutor dependencies
+  getIt.registerLazySingleton<AITutorRemoteDataSource>(() => AITutorRemoteDataSourceImpl());
+  getIt.registerLazySingleton<AITutorRepository>(() => AITutorRepositoryImpl(
+    remoteDataSource: getIt<AITutorRemoteDataSource>(),
+    networkInfo: getIt(),
+  ));
+  getIt.registerLazySingleton<SendChatMessageUseCase>(() => SendChatMessageUseCase(getIt<AITutorRepository>()));
 
   getIt.registerFactory(() => AuthBloc(checkAuthStatusUseCase:getIt<CheckAuthStatusUseCase>(), loginUseCase: getIt<LoginUseCase>()));
   getIt.registerFactory(() => HomeworkBloc(getHomework: getIt<GetHomeworkUseCase>()));

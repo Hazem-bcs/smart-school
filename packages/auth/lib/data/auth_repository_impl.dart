@@ -39,8 +39,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> checkAuthStatus() async {
     if (await networkInfo.isConnected) {
-      final studentId = await localDataSource.getId();
-       if (studentId != null )
+      final userId = await localDataSource.getId();
+       if (userId == null )
            {return left(CacheFailure(message: 'the user un authenticated'));}
       else {
            // await localDataSource.cacheId(userModel.id!);
