@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import '../../../../blocs/theme/theme_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -42,68 +44,94 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildBody() {
-    return ListView(
-      padding: AppSpacing.screenPadding,
-      children: [
-        _buildProfileCard(),
-        _buildSectionHeader('settings.other_settings'.tr(), topPadding: 32, bottomPadding: 8),
-        _buildSettingsGroup([
-          _buildToggleItem(
-            Icons.person,
-            'settings.profile_details'.tr(),
-            _isEnglish,
-            (value) {
-              setState(() {
-                _isEnglish = value;
-              });
-              _toggleLanguage();
-              print('Language toggled: ${value ? "English" : "Arabic"}');
-            },
-          ),
-          _buildNavigationItem(
-            Icons.lock,
-            'settings.password'.tr(),
-            () => print('Password tapped'),
-          ),
-          _buildToggleItem(
-            Icons.notifications,
-            'settings.notifications'.tr(),
-            _notificationsEnabled,
-            (value) {
-              setState(() {
-                _notificationsEnabled = value;
-              });
-              print('Notifications toggled: $value');
-            },
-          ),
-          _buildToggleItem(
-            Icons.brightness_4,
-            'settings.dark_mode'.tr(),
-            context.isDarkMode,
-            (value) {
-              _toggleTheme();
-              print('Dark mode toggled: $value');
-            },
-          ),
-        ]),
-        _buildSettingsGroup([
-          _buildNavigationItem(
-            Icons.info_outline,
-            'settings.about_application'.tr(),
-            () => print('About application tapped'),
-          ),
-          _buildNavigationItem(
-            Icons.help_outline,
-            'settings.help_faq'.tr(),
-            () => print('Help/FAQ tapped'),
-          ),
-          _buildDestructiveItem(
-            Icons.logout,
-            'settings.logout'.tr(),
-            () => _showLogoutDialog(),
-          ),
-        ], topMargin: 32),
-      ],
+    return BlocListener<ThemeBloc, ThemeState>(
+      listener: (context, state) {
+        if (state is ThemeError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      },
+      child: ListView(
+        padding: AppSpacing.screenPadding,
+        children: [
+          _buildProfileCard(),
+          _buildSectionHeader('settings.other_settings'.tr(), topPadding: 32, bottomPadding: 8),
+          _buildSettingsGroup([
+            _buildToggleItem(
+              Icons.person,
+              'settings.profile_details'.tr(),
+              _isEnglish,
+              (value) {
+                setState(() {
+                  _isEnglish = value;
+                });
+                _toggleLanguage();
+              },
+            ),
+            _buildNavigationItem(
+              Icons.lock,
+              'settings.password'.tr(),
+              () => print('Password tapped'),
+            ),
+            _buildToggleItem(
+              Icons.notifications,
+              'settings.notifications'.tr(),
+              _notificationsEnabled,
+              (value) {
+                setState(() {
+                  _notificationsEnabled = value;
+                });
+              },
+            ),
+            _buildThemeToggleItem(),
+          ]),
+          _buildSettingsGroup([
+            _buildNavigationItem(
+              Icons.info_outline,
+              'settings.about_application'.tr(),
+              () => print('About application tapped'),
+            ),
+            _buildNavigationItem(
+              Icons.help_outline,
+              'settings.help_faq'.tr(),
+              () => print('Help/FAQ tapped'),
+            ),
+            _buildDestructiveItem(
+              Icons.logout,
+              'settings.logout'.tr(),
+              () => _showLogoutDialog(),
+            ),
+          ], topMargin: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeToggleItem() {
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        bool isDarkMode = false;
+        
+        if (state is ThemeLoaded) {
+          isDarkMode = state.isDarkMode;
+        } else {
+          // Fallback to system theme detection
+          isDarkMode = context.isDarkMode;
+        }
+
+        return _buildToggleItem(
+          Icons.brightness_4,
+          'settings.dark_mode'.tr(),
+          isDarkMode,
+          (value) {
+            context.read<ThemeBloc>().add(ToggleTheme());
+          },
+        );
+      },
     );
   }
 
@@ -278,12 +306,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else {
       context.setLocale(const Locale('ar'));
     }
-  }
-
-  void _toggleTheme() {
-    // TODO: Implement theme toggle using ThemeManager
-    // This will be implemented when we integrate the ThemeManager
-    print('Theme toggle functionality will be implemented with ThemeManager');
   }
 
   void _showLogoutDialog() {
