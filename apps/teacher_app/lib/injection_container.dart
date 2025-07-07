@@ -1,8 +1,10 @@
 // Core and Auth packages
 import 'package:get_it/get_it.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:core/injection_container.dart' as core_di;
 import 'package:auth/injection_container.dart' as auth_di;
+import 'package:password/injection_container.dart' as password_di;
 import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
 
@@ -20,6 +22,9 @@ Future<void> setupDependencies() async {
   // Setup core and auth dependencies
   await core_di.setupCoreDependencies(getIt);
   await auth_di.setupAuthDependencies(getIt);
+  
+  // Setup password dependencies
+  await password_di.setupPasswordDependencies(getIt);
   
   // Connectivity BLoC
   getIt.registerFactory(() => ConnectivityBloc(connectivity: Connectivity()));

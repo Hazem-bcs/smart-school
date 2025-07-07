@@ -50,6 +50,8 @@ dependencies:
     path: ../../packages/core
   auth:
     path: ../../packages/auth
+  password:
+    path: ../../packages/password
 
 dev_dependencies:
   flutter_test:

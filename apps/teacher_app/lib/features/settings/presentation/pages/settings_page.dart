@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildNavigationItem(
               Icons.lock,
               'settings.password'.tr(),
-              () => print('Password tapped'),
+              () => Navigator.pushNamed(context, '/change-password'),
             ),
             _buildToggleItem(
               Icons.notifications,
@@ -93,12 +93,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildNavigationItem(
               Icons.info_outline,
               'settings.about_application'.tr(),
-              () => print('About application tapped'),
+              () => Navigator.pushNamed(context, '/about-app'),
             ),
             _buildNavigationItem(
               Icons.help_outline,
               'settings.help_faq'.tr(),
-              () => print('Help/FAQ tapped'),
+              () => Navigator.pushNamed(context, '/help-faq'),
             ),
             _buildDestructiveItem(
               Icons.logout,
@@ -272,6 +272,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         value: value,
         onChanged: onChanged,
         activeColor: Theme.of(context).colorScheme.primary,
+        thumbColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
+            return Colors.white;
+          }
+          return Colors.grey.shade400;
+        }),
+        trackColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
+            return Theme.of(context).colorScheme.primary;
+          }
+          return Colors.grey.shade300;
+        }),
+        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
       ),
       contentPadding: AppSpacing.padding(horizontal: AppSpacing.base, vertical: AppSpacing.sm),
     );
