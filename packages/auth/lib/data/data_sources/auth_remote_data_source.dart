@@ -18,6 +18,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<Either<Failure, UserModel>> login(String email, String password) async {
+    // مؤقتاً: أرجع بيانات وهمية
+    final user = UserModel(
+      id: 1,
+      name: 'Test User',
+      email: email,
+      password: password,
+      profilePhotoUrl: 'https://example.com/avatar.png',
+      token: 'mock_token_123',
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+    return Right(user);
+    // عند توفر السيرفر أعد الكود الأصلي:
+    /*
     try {
       final response = await dioClient.post(
         Constants.loginEndpoint,
@@ -29,5 +42,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } catch (e) {
       return Left(UnknownFailure(message: 'Unknown error occurred'));
     }
+    */
   }
 }

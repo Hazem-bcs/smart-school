@@ -1,0 +1,116 @@
+{
+    "description": "UI specification for a Settings screen in a Flutter application, designed for AI code generation.",
+    "flutterSpec": {
+      "screenName": "SettingsScreen",
+      "theme": {
+        "light": {
+          "backgroundColor": "#F7F7F7",
+          "scaffoldBackgroundColor": "#FFFFFF",
+          "primaryTextColor": "#000000",
+          "secondaryTextColor": "#8A8A8E",
+          "iconColor": "#3C3C43",
+          "destructiveColor": "#FF3B30",
+          "dividerColor": "#E5E5EA"
+        },
+        "dark": {
+          "backgroundColor": "#000000",
+          "scaffoldBackgroundColor": "#1C1C1E",
+          "primaryTextColor": "#FFFFFF",
+          "secondaryTextColor": "#8A8A8E",
+          "iconColor": "#EBEBF5",
+          "destructiveColor": "#FF453A",
+          "dividerColor": "#38383A"
+        }
+      },
+      "appBar": {
+        "title": "Settings",
+        "leadingIcon": "arrow_back_ios",
+        "backgroundColor": "theme.backgroundColor",
+        "foregroundColor": "theme.primaryTextColor"
+      },
+      "body": {
+        "widget": "ListView",
+        "padding": {
+          "horizontal": 16,
+          "vertical": 24
+        },
+        "children": [
+          {
+            "widget": "ProfileCard",
+            "avatarUrl": "url_to_avatar_image.png",
+            "userName": "Alfred Daniel",
+            "userRole": "Product/UI Designer",
+            "onTap": "navigateToProfile"
+          },
+          {
+            "widget": "SectionHeader",
+            "title": "Other settings",
+            "padding": {
+              "top": 32,
+              "bottom": 8
+            }
+          },
+          {
+            "widget": "SettingsGroup",
+            "items": [
+              {
+                "type": "navigation",
+                "leadingIcon": "person",
+                "title": "Profile details",
+                "onTap": "navigateToProfileDetails"
+              },
+              {
+                "type": "navigation",
+                "leadingIcon": "lock",
+                "title": "Password",
+                "onTap": "navigateToPassword"
+              },
+              {
+                "type": "navigation",
+                "leadingIcon": "notifications",
+                "title": "Notifications",
+                "onTap": "navigateToNotifications"
+              },
+              {
+                "type": "toggle",
+                "leadingIcon": "brightness_4",
+                "title": "Dark mode",
+                "initialValue": false,
+                "onChanged": "toggleTheme"
+              }
+            ]
+          },
+          {
+            "widget": "SettingsGroup",
+            "margin": {
+              "top": 32
+            },
+            "items": [
+              {
+                "type": "navigation",
+                "leadingIcon": "info_outline",
+                "title": "About application",
+                "onTap": "navigateToAbout"
+              },
+              {
+                "type": "navigation",
+                "leadingIcon": "help_outline",
+                "title": "Help/FAQ",
+                "onTap": "navigateToHelp"
+              },
+              {
+                "type": "navigation",
+                "leadingIcon": "delete",
+                "title": "Deactivate my account",
+                "onTap": "showDeactivationDialog",
+                "style": {
+                  "textColor": "theme.destructiveColor",
+                  "iconColor": "theme.destructiveColor"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }

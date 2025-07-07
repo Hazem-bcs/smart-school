@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:core/theme/index.dart';
 import 'injection_container.dart' as di;
 import 'widgets/connectivity_listener.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -32,11 +33,12 @@ class TeacherApp extends StatelessWidget {
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              useMaterial3: true,
-              fontFamily: 'Roboto',
-            ),
+            
+            // Use the new theme system
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: ThemeMode.system, // Will be updated when ThemeManager is integrated
+            
             initialRoute: AppRoutes.splash,
             onGenerateRoute: AppRoutes.generateRoute,
             builder: (context, child) {

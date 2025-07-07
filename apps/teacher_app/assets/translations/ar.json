@@ -27,6 +27,26 @@
     "password_too_short": "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
   },
   
+  "settings": {
+    "title": "الإعدادات",
+    "profile_card": {
+      "name": "ألفريد دانيال",
+      "role": "مصمم المنتج/واجهة المستخدم"
+    },
+    "other_settings": "إعدادات أخرى",
+    "profile_details": "تفاصيل الملف الشخصي",
+    "password": "كلمة المرور",
+    "notifications": "الإشعارات",
+    "dark_mode": "الوضع المظلم",
+    "language": "اللغة",
+    "about_application": "حول التطبيق",
+    "help_faq": "المساعدة/الأسئلة الشائعة",
+    "logout": "تسجيل الخروج",
+    "logout_confirmation": "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد"
+  },
+  
   "lbl_has_internet": "أنت متصل بالإنترنت",
   "lbl_lost_internet": "فقدت الاتصال بالإنترنت"
 } 

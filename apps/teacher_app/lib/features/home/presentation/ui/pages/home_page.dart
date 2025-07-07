@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              context.goToProfile();
+              context.goToSettings();
             },
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),

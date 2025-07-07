@@ -5,7 +5,7 @@ import '../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../features/home/presentation/ui/pages/home_page.dart';
 import '../../features/classes/presentation/ui/pages/classes_page.dart';
 import '../../features/profile/presentation/ui/pages/profile_page.dart';
-import '../../features/settings/presentation/ui/pages/settings_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
 import '../../features/classes/presentation/blocs/classes_bloc.dart';
 import '../../features/home/presentation/blocs/home_bloc.dart';
@@ -79,10 +79,7 @@ class AppRoutes {
         
       case AppRoutes.settings:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => SettingsBloc(),
-            child: const SettingsPage(),
-          ),
+          builder: (_) => const SettingsScreen(),
           settings: settings,
         );
         

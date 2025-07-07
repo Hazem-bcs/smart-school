@@ -5,44 +5,52 @@ part 'settings_event.dart';
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc() : super(SettingsInitial()) {
-    on<LoadSettings>(_onLoadSettings);
-    on<UpdateSettings>(_onUpdateSettings);
+  SettingsBloc() : super(const SettingsState()) {
+    on<ToggleDarkMode>(_onToggleDarkMode);
+    on<ToggleGeneralNotifications>(_onToggleGeneralNotifications);
+    on<ToggleClassNotifications>(_onToggleClassNotifications);
+    on<ToggleVibration>(_onToggleVibration);
+    on<LogoutRequested>(_onLogoutRequested);
   }
 
-  void _onLoadSettings(
-    LoadSettings event,
+  void _onToggleDarkMode(
+    ToggleDarkMode event,
     Emitter<SettingsState> emit,
-  ) async {
-    emit(SettingsLoading());
-    
-    try {
-      // TODO: Load settings from local storage
-      await Future.delayed(const Duration(seconds: 1));
-      
-      final settings = SettingsModel(
-        notifications: true,
-        darkMode: false,
-        language: 'en',
-        autoSync: true,
-      );
-      
-      emit(SettingsLoaded(settings: settings));
-    } catch (e) {
-      emit(SettingsError(e.toString()));
-    }
+  ) {
+    emit(state.copyWith(isDarkMode: !state.isDarkMode));
+    // TODO: حفظ الإعداد في التخزين المحلي
   }
 
-  void _onUpdateSettings(
-    UpdateSettings event,
+  void _onToggleGeneralNotifications(
+    ToggleGeneralNotifications event,
     Emitter<SettingsState> emit,
-  ) async {
-    try {
-      // TODO: Save settings to local storage
-      emit(SettingsUpdated(settings: event.settings));
-    } catch (e) {
-      emit(SettingsError(e.toString()));
-    }
+  ) {
+    emit(state.copyWith(generalNotifications: !state.generalNotifications));
+    // TODO: حفظ الإعداد في التخزين المحلي
+  }
+
+  void _onToggleClassNotifications(
+    ToggleClassNotifications event,
+    Emitter<SettingsState> emit,
+  ) {
+    emit(state.copyWith(classNotifications: !state.classNotifications));
+    // TODO: حفظ الإعداد في التخزين المحلي
+  }
+
+  void _onToggleVibration(
+    ToggleVibration event,
+    Emitter<SettingsState> emit,
+  ) {
+    emit(state.copyWith(vibrationEnabled: !state.vibrationEnabled));
+    // TODO: حفظ الإعداد في التخزين المحلي
+  }
+
+  void _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<SettingsState> emit,
+  ) {
+    // TODO: تنفيذ تسجيل الخروج
+    emit(state.copyWith(isLoggedOut: true));
   }
 }
 

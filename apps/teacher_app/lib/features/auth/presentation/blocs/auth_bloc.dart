@@ -60,20 +60,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     
     try {
-      final result = await checkAuthStatusUseCase();
+      print('🔍 Checking auth status...');
       
-      result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (isAuthenticated) {
-          if (isAuthenticated) {
-            emit(AuthAuthenticated());
-          } else {
+      // محاولة استخدام use case
+      try {
+        final result = await checkAuthStatusUseCase();
+        
+        result.fold(
+          (failure) {
+            print('❌ Auth check failed: ${failure.message}');
+            // في حالة الفشل، نفترض أن المستخدم غير مسجل دخول
             emit(AuthUnauthenticated());
-          }
-        },
-      );
+          },
+          (isAuthenticated) {
+            print('✅ Auth check result: $isAuthenticated');
+            if (isAuthenticated) {
+              print('🔐 User is authenticated, going to classes');
+              emit(AuthAuthenticated());
+            } else {
+              print('🔓 User is not authenticated, going to login');
+              emit(AuthUnauthenticated());
+            }
+          },
+        );
+      } catch (useCaseError) {
+        print('💥 UseCase error: $useCaseError');
+        // في حالة خطأ في use case، نفترض أن المستخدم غير مسجل دخول
+        emit(AuthUnauthenticated());
+      }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      print('💥 General auth check error: $e');
+      // في حالة أي خطأ، نفترض أن المستخدم غير مسجل دخول
+      emit(AuthUnauthenticated());
     }
   }
 } 

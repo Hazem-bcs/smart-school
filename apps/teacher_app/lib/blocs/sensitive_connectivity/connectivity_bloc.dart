@@ -19,8 +19,8 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       : _connectivity = connectivity,
         super(ConnectivityInitial()) {
     
-    // التحقق من حالة الاتصال الأولية
-    _checkInitialConnectivity();
+    // التحقق من حالة الاتصال الأولية (بدون إرسال حدث)
+    _checkInitialConnectivitySilently();
     
     // الاستماع للتغييرات في الاتصال
     _connectivitySubscription =
@@ -33,15 +33,23 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     on<RetryConnection>(_onRetryConnection);
   }
 
-  Future<void> _checkInitialConnectivity() async {
+  Future<void> _checkInitialConnectivitySilently() async {
     try {
       final result = await _connectivity.checkConnectivity();
-      add(ConnectivityStatusChanged(result));
+      // تحديث الحالة مباشرة بدون إرسال حدث
+      if (result == ConnectivityResult.mobile ||
+          result == ConnectivityResult.wifi ||
+          result == ConnectivityResult.vpn) {
+        add(ConnectivityStatusChanged(result));
+      } else if (result == ConnectivityResult.none) {
+        add(ConnectivityStatusChanged(result));
+      }
     } catch (e) {
       // Handle error silently for initial check
       print('Failed to check initial connectivity: $e');
     }
   }
+
 
   void _onConnectivityStatusChanged(
       ConnectivityStatusChanged event,

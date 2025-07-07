@@ -4,18 +4,15 @@ abstract class SettingsEvent extends Equatable {
   const SettingsEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class LoadSettings extends SettingsEvent {
-  const LoadSettings();
-}
+class ToggleDarkMode extends SettingsEvent {}
 
-class UpdateSettings extends SettingsEvent {
-  final SettingsModel settings;
+class ToggleGeneralNotifications extends SettingsEvent {}
 
-  const UpdateSettings(this.settings);
+class ToggleClassNotifications extends SettingsEvent {}
 
-  @override
-  List<Object> get props => [settings];
-} 
+class ToggleVibration extends SettingsEvent {}
+
+class LogoutRequested extends SettingsEvent {} 

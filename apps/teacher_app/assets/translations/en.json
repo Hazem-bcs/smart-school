@@ -27,6 +27,26 @@
     "password_too_short": "Password must be at least 8 characters long"
   },
   
+  "settings": {
+    "title": "Settings",
+    "profile_card": {
+      "name": "Alfred Daniel",
+      "role": "Product/UI Designer"
+    },
+    "other_settings": "Other settings",
+    "profile_details": "Profile details",
+    "password": "Password",
+    "notifications": "Notifications",
+    "dark_mode": "Dark mode",
+    "language": "Language",
+    "about_application": "About application",
+    "help_faq": "Help/FAQ",
+    "logout": "Logout",
+    "logout_confirmation": "Are you sure you want to logout?",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  
   "lbl_has_internet": "You are connected to the internet",
   "lbl_lost_internet": "You lost the internet connection"
 } 
