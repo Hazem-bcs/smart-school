@@ -4,6 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:sizer/sizer.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../../../../routing/navigation_extension.dart';
+import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive_widgets.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -43,47 +45,119 @@ class _SplashPageState extends State<SplashPage> {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // مؤشر التحميل أو اللوجو
-              BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  if (state is AuthLoading) {
-                    return CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    );
-                  }
-                  // في الحالات الأخرى، أظهر اللوجو
-                  return Icon(
-                    Icons.school,
-                    size: 20.w,
-                    color: Colors.white,
-                  );
-                },
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                'app_title'.tr(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 8.w,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                'Teacher App',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 4.w,
-                ),
-              ),
-            ],
+        body: ResponsiveContent(
+          child: Center(
+            child: ResponsiveLayout(
+              mobile: _buildMobileLayout(),
+              tablet: _buildTabletLayout(),
+              desktop: _buildDesktopLayout(),
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildLogo(),
+        ResponsiveSpacing(mobile: 32, tablet: 40, desktop: 48),
+        _buildTitle(),
+        ResponsiveSpacing(mobile: 16, tablet: 20, desktop: 24),
+        _buildSubtitle(),
+      ],
+    );
+  }
+
+  Widget _buildTabletLayout() {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildLogo(),
+              ResponsiveSpacing(mobile: 32, tablet: 40, desktop: 48),
+              _buildTitle(),
+              ResponsiveSpacing(mobile: 16, tablet: 20, desktop: 24),
+              _buildSubtitle(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildLogo(),
+              ResponsiveSpacing(mobile: 32, tablet: 40, desktop: 48),
+              _buildTitle(),
+              ResponsiveSpacing(mobile: 16, tablet: 20, desktop: 24),
+              _buildSubtitle(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogo() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthLoading) {
+          return SizedBox(
+            width: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 80, desktop: 100),
+            height: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 80, desktop: 100),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              strokeWidth: ResponsiveHelper.isMobile(context) ? 3 : 4,
+            ),
+          );
+        }
+        return ResponsiveIcon(
+          Icons.school,
+          mobileSize: 80,
+          tabletSize: 100,
+          desktopSize: 120,
+          color: Colors.white,
+        );
+      },
+    );
+  }
+
+  Widget _buildTitle() {
+    return ResponsiveText(
+      'app_title'.tr(),
+      mobileSize: 24,
+      tabletSize: 28,
+      desktopSize: 32,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildSubtitle() {
+    return ResponsiveText(
+      'Teacher App',
+      mobileSize: 14,
+      tabletSize: 16,
+      desktopSize: 18,
+      style: TextStyle(
+        color: Colors.white70,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 } 

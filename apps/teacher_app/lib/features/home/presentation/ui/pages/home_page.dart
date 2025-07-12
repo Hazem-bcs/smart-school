@@ -3,310 +3,466 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import '../../blocs/home_bloc.dart';
 import '../../../../../routing/navigation_extension.dart';
+import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive_widgets.dart';
+import '../widgets/class_card.dart';
+import '../widgets/assignment_tile.dart';
+import '../widgets/quick_action_button.dart';
+import '../widgets/bottom_nav_bar_item.dart';
 
 class HomePage extends StatefulWidget {
-  final String className;
-  
-  const HomePage({
-    super.key,
-    required this.className,
-  });
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with TickerProviderStateMixin {
+  late AnimationController _pageAnimationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  int _currentIndex = 0;
+
+  // بيانات الفصول
+  final List<Map<String, String>> _classes = [
+    {
+      'title': 'Math 101',
+      'imageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuD9w7tCpSPAzZbbubs-iE5xRO73QdEsyxz7VIrvaDOC2W-5S_ZX_Fang8iFy1YMxgEQYmT9omrIo0qTpXy371S4uAPK8KGB4-8N1TeKR-4AEJdjQQASd9ry1G_I_xy9wV5klMCitHQPmHnglClnCK5RJ4BsNh_fjI7L3lTJSxNk31hD3hCpHT6DfA8vitj9o3wtzF2kEba-_DNsuup5vVxwtOIXUoxtWtdhu4mNST8xLYEhjHevxpBx5tnCVzVtvofVbqEIHBd0Qs-R'
+    },
+    {
+      'title': 'History 202',
+      'imageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGTNtMBdZd29vc_g_lJKl6sErAKhO3PZ_Z7vYrNQnFstP1RHfWS_D2PIXM2vv-cr_hkFX70XwwzPmpkXrvgDb-XO56z9R2C7dw4wfoz5mNynCbdgZE7DbVEeZPpiZckbfDiKnGU4wBblxNLiYe6loCUzk6bGjlxkTFRhAZSgQJVLEh3nxUSJPxXxPg98krRv9z7GULa3DbDLXi-qJ3aDbSmcCSaI5pGxTrKRKzg5BZwqIVZQW8kLSCE_YBiBVMHGSrb1A7SNjufKhB'
+    },
+    {
+      'title': 'Science 303',
+      'imageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhhBn8oRkJqk7jGmNa5C2D1sMLpKgtUvUjl6Ydoh9Om0F7cv_EtphZw85Qo-Fcvs-NhDKRAyNiOrjMCVVHNt18SuTEJc-v99b3jSPa32bdX_V63LGcdoF-EttOmh2ty3eZOc0u29OKmRQYSDkRO2cAYrb3iqbP2vbBIsYtTzL3y0sV_C5E9yBk6I3JGStxCTfqQ_mn-wyi9zH7_juJ5EqJdY4V4qC9vMZdu3hG9k2y8xMF5z00HLRfHhTa1LUnPKMcfMGJQnF6WyUM'
+    }
+  ];
+
+  // بيانات الواجبات
+  final List<Map<String, String>> _assignments = [
+    {
+      'title': 'Essay on World War II',
+      'subtitle': 'Due in 2 days'
+    },
+    {
+      'title': 'Math Quiz',
+      'subtitle': 'Due in 5 days'
+    }
+  ];
+
+  // بيانات الإشعارات
+  final List<Map<String, String>> _notifications = [
+    {
+      'title': 'New student joined Math 101',
+      'subtitle': '10:00 AM'
+    },
+    {
+      'title': 'Assignment submitted for Math 101',
+      'subtitle': 'Yesterday'
+    }
+  ];
+
+  // عناصر شريط التنقل
+  final List<Map<String, dynamic>> _navItems = [
+    {'icon': Icons.home, 'label': 'Dashboard'},
+    {'icon': Icons.school, 'label': 'Classes'},
+    {'icon': Icons.chat_bubble_outline, 'label': 'Messages'},
+    {'icon': Icons.person, 'label': 'Profile'},
+  ];
+
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().add(LoadHomeData(widget.className));
+    _pageAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeIn,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _pageAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _pageAnimationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.className),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 2,
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.goToSettings();
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
-      body: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is HomeLoaded) {
-            return _buildHomeContent(state.data);
-          } else if (state is HomeError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 15.w,
-                    color: Colors.red,
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    'Error loading home data',
-                    style: TextStyle(
-                      fontSize: 5.w,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<HomeBloc>().add(LoadHomeData(widget.className));
-                    },
-                    child: Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    );
-  }
-
-  Widget _buildHomeContent(HomeData data) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(4.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Welcome Section
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(4.w),
+      backgroundColor: const Color(0xFFF9FAFB),
+      appBar: _buildAppBar(),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: ResponsiveContent(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Welcome to ${data.className}',
-                    style: TextStyle(
-                      fontSize: 6.w,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    'Here\'s what\'s happening today',
-                    style: TextStyle(
-                      fontSize: 4.w,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  _buildClassesSection(),
+                  _buildGradingSection(),
+                  _buildNotificationsSection(),
+                  _buildQuickActionsSection(),
+                  SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 80, tablet: 100, desktop: 120)),
                 ],
               ),
             ),
           ),
-          
-          SizedBox(height: 4.h),
-          
-          // Quick Stats
-          Text(
-            'Quick Stats',
-            style: TextStyle(
-              fontSize: 5.w,
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: const Color(0xFFF9FAFB),
+      elevation: 0,
+      title: ResponsiveText(
+        'Dashboard',
+        mobileSize: 18,
+        tabletSize: 20,
+        desktopSize: 22,
+        style: const TextStyle(
+          color: Color(0xFF101418),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      centerTitle: true,
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircleAvatar(
+          backgroundImage: const NetworkImage(
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuCwbuL0ZiDMlk21d_cKtbpty8WoXWwySyGPVjGH2-e69ZAKGbiQjraud70q83qALhpx_rFdwh2p3Y0sRc3D7CbjMYdDIdu8fl6SlYiGagcEu5D-0npFOrOSepq90hGqkpXcNeTLbYFZKTO4FDfR6LNKLoRL8MpA7KNHBpbxwjEFIz-oQrL-b0O9FXdHqvKxVNgfpt_21HRS4jKHncoQBHK_lSE9FulUBsR8n6xRMgauziyWJo9exGOKF1w2Rvz_3CZYGEnBeyke2cEZ',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClassesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context),
+            vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+          ),
+          child: ResponsiveText(
+            'Classes',
+            mobileSize: 18,
+            tabletSize: 20,
+            desktopSize: 22,
+            style: const TextStyle(
+              fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: Color(0xFF101418),
             ),
           ),
-          SizedBox(height: 2.h),
-          
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.people,
-                  title: 'Students',
-                  value: '${data.totalStudents}',
-                  color: Colors.blue,
-                ),
-              ),
-              SizedBox(width: 3.w),
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.check_circle,
-                  title: 'Present',
-                  value: '${data.presentToday}',
-                  color: Colors.green,
-                ),
-              ),
-            ],
+        ),
+        SizedBox(
+          height: ResponsiveHelper.isMobile(context) ? 180 : 220,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context),
+            ),
+            itemCount: _classes.length,
+            itemBuilder: (context, index) {
+              return ClassCard(
+                title: _classes[index]['title']!,
+                imageUrl: _classes[index]['imageUrl']!,
+                index: index,
+                onTap: () => _onClassTap(_classes[index]['title']!),
+              );
+            },
           ),
-          
-          SizedBox(height: 3.h),
-          
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.assignment,
-                  title: 'Assignments',
-                  value: '${data.assignments}',
-                  color: Colors.orange,
-                ),
-              ),
-              SizedBox(width: 3.w),
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.announcement,
-                  title: 'Announcements',
-                  value: '${data.announcements}',
-                  color: Colors.purple,
-                ),
-              ),
-            ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGradingSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
+          child: ResponsiveText(
+            'Grading',
+            mobileSize: 18,
+            tabletSize: 20,
+            desktopSize: 22,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF101418),
+            ),
           ),
-          
-          SizedBox(height: 4.h),
-          
-          // Quick Actions
-          Text(
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _assignments.length,
+          itemBuilder: (context, index) {
+            return AssignmentTile(
+              title: _assignments[index]['title']!,
+              subtitle: _assignments[index]['subtitle']!,
+              icon: Icons.description,
+              index: index,
+              onTap: () => _onAssignmentTap(_assignments[index]['title']!),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
+          child: ResponsiveText(
+            'Notifications',
+            mobileSize: 18,
+            tabletSize: 20,
+            desktopSize: 22,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF101418),
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _notifications.length,
+          itemBuilder: (context, index) {
+            return AssignmentTile(
+              title: _notifications[index]['title']!,
+              subtitle: _notifications[index]['subtitle']!,
+              icon: Icons.notifications,
+              index: index,
+              onTap: () => _onNotificationTap(_notifications[index]['title']!),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
+          child: ResponsiveText(
             'Quick Actions',
-            style: TextStyle(
-              fontSize: 5.w,
+            mobileSize: 18,
+            tabletSize: 20,
+            desktopSize: 22,
+            style: const TextStyle(
+              fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: Color(0xFF101418),
             ),
           ),
-          SizedBox(height: 2.h),
-          
-          _buildQuickActionButton(
-            icon: Icons.people,
-            title: 'Take Attendance',
-            onTap: () {
-              // TODO: Navigate to attendance page
-            },
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context),
+            vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
           ),
-          
-          SizedBox(height: 2.h),
-          
-          _buildQuickActionButton(
-            icon: Icons.assignment,
-            title: 'Create Assignment',
-            onTap: () {
-              // TODO: Navigate to create assignment page
-            },
+          child: ResponsiveLayout(
+            mobile: Column(
+              children: [
+                QuickActionButton(
+                  text: 'Create Assignment',
+                  onPressed: _onCreateAssignment,
+                  isPrimary: true,
+                  icon: Icons.add,
+                ),
+                SizedBox(height: ResponsiveHelper.getSpacing(context)),
+                QuickActionButton(
+                  text: 'Schedule Zoom',
+                  onPressed: _onScheduleZoom,
+                  isPrimary: false,
+                  icon: Icons.video_call,
+                ),
+              ],
+            ),
+            tablet: Row(
+              children: [
+                Expanded(
+                  child: QuickActionButton(
+                    text: 'Create Assignment',
+                    onPressed: _onCreateAssignment,
+                    isPrimary: true,
+                    icon: Icons.add,
+                  ),
+                ),
+                SizedBox(width: ResponsiveHelper.getSpacing(context)),
+                Expanded(
+                  child: QuickActionButton(
+                    text: 'Schedule Zoom',
+                    onPressed: _onScheduleZoom,
+                    isPrimary: false,
+                    icon: Icons.video_call,
+                  ),
+                ),
+              ],
+            ),
+            desktop: Row(
+              children: [
+                Expanded(
+                  child: QuickActionButton(
+                    text: 'Create Assignment',
+                    onPressed: _onCreateAssignment,
+                    isPrimary: true,
+                    icon: Icons.add,
+                  ),
+                ),
+                SizedBox(width: ResponsiveHelper.getSpacing(context)),
+                Expanded(
+                  child: QuickActionButton(
+                    text: 'Schedule Zoom',
+                    onPressed: _onScheduleZoom,
+                    isPrimary: false,
+                    icon: Icons.video_call,
+                  ),
+                ),
+              ],
+            ),
           ),
-          
-          SizedBox(height: 2.h),
-          
-          _buildQuickActionButton(
-            icon: Icons.announcement,
-            title: 'Post Announcement',
-            onTap: () {
-              // TODO: Navigate to post announcement page
-            },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 8.w,
-              color: color,
-            ),
-            SizedBox(height: 2.h),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 6.w,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            SizedBox(height: 1.h),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 3.5.w,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQuickActionButton({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+      child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(4.w),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: 6.w,
-                color: Theme.of(context).primaryColor,
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 4.w,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 4.w,
-                color: Colors.grey[400],
-              ),
-            ],
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context),
+            vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+          ),
+          child: ResponsiveLayout(
+            mobile: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _navItems.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                return Expanded(
+                  child: BottomNavBarItem(
+                    icon: item['icon'],
+                    label: item['label'],
+                    isSelected: index == _currentIndex,
+                    onTap: () => _onNavItemTap(index),
+                  ),
+                );
+              }).toList(),
+            ),
+            tablet: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _navItems.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                return BottomNavBarItem(
+                  icon: item['icon'],
+                  label: item['label'],
+                  isSelected: index == _currentIndex,
+                  onTap: () => _onNavItemTap(index),
+                );
+              }).toList(),
+            ),
+            desktop: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _navItems.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                return BottomNavBarItem(
+                  icon: item['icon'],
+                  label: item['label'],
+                  isSelected: index == _currentIndex,
+                  onTap: () => _onNavItemTap(index),
+                );
+              }).toList(),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  // Event handlers
+  void _onClassTap(String className) {
+    // TODO: Navigate to class details
+    print('Class tapped: $className');
+  }
+
+  void _onAssignmentTap(String assignmentTitle) {
+    // TODO: Navigate to assignment details
+    print('Assignment tapped: $assignmentTitle');
+  }
+
+  void _onNotificationTap(String notificationTitle) {
+    // TODO: Navigate to notification details
+    print('Notification tapped: $notificationTitle');
+  }
+
+  void _onCreateAssignment() {
+    // TODO: Navigate to create assignment
+    print('Create Assignment tapped');
+  }
+
+  void _onScheduleZoom() {
+    // TODO: Navigate to schedule zoom
+    print('Schedule Zoom tapped');
+  }
+
+  void _onNavItemTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    // TODO: Navigate to different sections
+    print('Nav item tapped: ${_navItems[index]['label']}');
   }
 } 

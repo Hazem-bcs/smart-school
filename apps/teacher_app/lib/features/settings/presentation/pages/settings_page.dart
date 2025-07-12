@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
 import '../../../../blocs/theme/theme_bloc.dart';
+import '../../../../core/responsive_helper.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -28,18 +29,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return AppBar(
       title: Text(
         'settings.title'.tr(),
-        style: Theme.of(context).textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge?.responsive(context),
       ),
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back_ios,
           color: Theme.of(context).colorScheme.primary,
+          size: ResponsiveHelper.getIconSize(context),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0,
       centerTitle: true,
+      toolbarHeight: ResponsiveHelper.getAppBarHeight(context),
     );
   }
 
@@ -55,9 +58,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           );
         }
       },
-      child: ListView(
-        padding: AppSpacing.screenPadding,
-        children: [
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: ResponsiveHelper.getMaxContentWidth(context),
+          ),
+          child: ListView(
+            padding: ResponsiveHelper.getScreenPadding(context),
+            children: [
           _buildProfileCard(),
           _buildSectionHeader('settings.other_settings'.tr(), topPadding: 32, bottomPadding: 8),
           _buildSettingsGroup([
@@ -106,7 +114,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               () => _showLogoutDialog(),
             ),
           ], topMargin: 32),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -138,41 +148,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildProfileCard() {
     return Card(
       margin: EdgeInsets.zero,
-      elevation: AppSpacing.smElevation,
+      elevation: ResponsiveHelper.getCardElevation(context),
       shape: RoundedRectangleBorder(
-        borderRadius: AppSpacing.baseBorderRadius,
+        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
       ),
       child: InkWell(
         onTap: () => print('Profile tapped'),
-        borderRadius: AppSpacing.baseBorderRadius,
+        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
         child: Padding(
-          padding: AppSpacing.cardPadding,
+          padding: ResponsiveHelper.getScreenPadding(context),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 30,
+                radius: ResponsiveHelper.isMobile(context) ? 30 : 40,
                 backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 child: Icon(
                   Icons.person,
-                  size: AppSpacing.lgIcon,
+                  size: ResponsiveHelper.getIconSize(context),
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const SizedBox(width: AppSpacing.base),
+              SizedBox(width: ResponsiveHelper.getSpacing(context)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'settings.profile_card.name'.tr(),
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium?.responsive(context),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
                     Text(
                       'settings.profile_card.role'.tr(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.secondary,
-                      ),
+                      ).responsive(context),
                     ),
                   ],
                 ),
@@ -180,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Icon(
                 Icons.arrow_forward_ios,
                 color: Theme.of(context).colorScheme.secondary,
-                size: AppSpacing.smIcon,
+                size: ResponsiveHelper.getIconSize(context, mobile: 16, tablet: 20, desktop: 24),
               ),
             ],
           ),
@@ -196,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: AppTextStyles.semiBold,
-        ),
+        ).responsive(context),
       ),
     );
   }
@@ -206,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: EdgeInsets.only(top: topMargin),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: AppSpacing.baseBorderRadius,
+        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
         border: Border.all(
           color: Theme.of(context).dividerTheme.color!,
           width: 1,
@@ -226,8 +236,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Theme.of(context).dividerTheme.color,
                   height: 1,
                   thickness: 1,
-                  indent: AppSpacing.base,
-                  endIndent: AppSpacing.base,
+                  indent: ResponsiveHelper.getSpacing(context),
+                  endIndent: ResponsiveHelper.getSpacing(context),
                 ),
             ],
           );
@@ -241,19 +251,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       leading: Icon(
         icon,
         color: Theme.of(context).iconTheme.color,
-        size: AppSpacing.baseIcon,
+        size: ResponsiveHelper.getIconSize(context),
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: Theme.of(context).textTheme.bodyLarge?.responsive(context),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
         color: Theme.of(context).colorScheme.secondary,
-        size: AppSpacing.smIcon,
+        size: ResponsiveHelper.getIconSize(context, mobile: 16, tablet: 20, desktop: 24),
       ),
       onTap: onTap,
-      contentPadding: AppSpacing.padding(horizontal: AppSpacing.base, vertical: AppSpacing.sm),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context),
+        vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+      ),
+      minVerticalPadding: ResponsiveHelper.getListTileHeight(context) / 2,
     );
   }
 
@@ -262,11 +276,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       leading: Icon(
         icon,
         color: Theme.of(context).iconTheme.color,
-        size: AppSpacing.baseIcon,
+        size: ResponsiveHelper.getIconSize(context),
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: Theme.of(context).textTheme.bodyLarge?.responsive(context),
       ),
       trailing: Switch(
         value: value,
@@ -286,7 +300,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }),
         trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
       ),
-      contentPadding: AppSpacing.padding(horizontal: AppSpacing.base, vertical: AppSpacing.sm),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context),
+        vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+      ),
+      minVerticalPadding: ResponsiveHelper.getListTileHeight(context) / 2,
     );
   }
 

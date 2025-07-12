@@ -56,13 +56,11 @@ class AppRoutes {
         );
         
       case home:
-        final args = settings.arguments as Map<String, dynamic>?;
-        final className = args?['className'] as String? ?? 'Default Class';
         
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => HomeBloc(),
-            child: HomePage(className: className),
+            child: const HomePage(),
           ),
           settings: settings,
         );
