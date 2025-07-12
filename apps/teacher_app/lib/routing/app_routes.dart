@@ -8,6 +8,7 @@ import '../../features/profile/presentation/ui/pages/profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/about_app_page.dart';
 import '../../features/settings/presentation/pages/help_faq_page.dart';
+import '../../features/assignment/presentation/ui/pages/assignments_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
   static const String changePassword = '/change-password';
   static const String aboutApp = '/about-app';
   static const String helpFaq = '/help-faq';
+  static const String assignments = '/assignments';
   
     // Route generator with BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -104,9 +106,15 @@ class AppRoutes {
           settings: settings,
         );
         
-      case helpFaq:
+              case helpFaq:
         return MaterialPageRoute(
           builder: (_) => const HelpFaqPage(),
+          settings: settings,
+        );
+        
+        case assignments:
+        return MaterialPageRoute(
+          builder: (_) => const AssignmentsPage(),
           settings: settings,
         );
         

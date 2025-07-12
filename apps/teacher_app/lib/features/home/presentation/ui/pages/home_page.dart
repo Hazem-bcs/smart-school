@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
-import '../../blocs/home_bloc.dart';
-import '../../../../../routing/navigation_extension.dart';
 import '../../../../../core/responsive_helper.dart';
 import '../../../../../core/responsive_widgets.dart';
 import '../widgets/class_card.dart';
 import '../widgets/assignment_tile.dart';
 import '../widgets/quick_action_button.dart';
-import '../widgets/bottom_nav_bar_item.dart';
+
+import '../../../../assignment/presentation/ui/pages/new_assignment_page.dart';
+import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
+import '../../../../../widgets/shared_bottom_navigation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -64,13 +63,7 @@ class _HomePageState extends State<HomePage>
     }
   ];
 
-  // عناصر شريط التنقل
-  final List<Map<String, dynamic>> _navItems = [
-    {'icon': Icons.home, 'label': 'Dashboard'},
-    {'icon': Icons.school, 'label': 'Classes'},
-    {'icon': Icons.chat_bubble_outline, 'label': 'Messages'},
-    {'icon': Icons.person, 'label': 'Profile'},
-  ];
+
 
   @override
   void initState() {
@@ -131,7 +124,10 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: SharedBottomNavigation(
+        currentIndex: _currentIndex,
+        onNavItemTap: _onNavItemTap,
+      ),
     );
   }
 
@@ -366,71 +362,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.getSpacing(context),
-            vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-          ),
-          child: ResponsiveLayout(
-            mobile: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _navItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
-                return Expanded(
-                  child: BottomNavBarItem(
-                    icon: item['icon'],
-                    label: item['label'],
-                    isSelected: index == _currentIndex,
-                    onTap: () => _onNavItemTap(index),
-                  ),
-                );
-              }).toList(),
-            ),
-            tablet: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _navItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
-                return BottomNavBarItem(
-                  icon: item['icon'],
-                  label: item['label'],
-                  isSelected: index == _currentIndex,
-                  onTap: () => _onNavItemTap(index),
-                );
-              }).toList(),
-            ),
-            desktop: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _navItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
-                return BottomNavBarItem(
-                  icon: item['icon'],
-                  label: item['label'],
-                  isSelected: index == _currentIndex,
-                  onTap: () => _onNavItemTap(index),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   // Event handlers
   void _onClassTap(String className) {
@@ -449,8 +381,11 @@ class _HomePageState extends State<HomePage>
   }
 
   void _onCreateAssignment() {
-    // TODO: Navigate to create assignment
-    print('Create Assignment tapped');
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const NewAssignmentPage(),
+      ),
+    );
   }
 
   void _onScheduleZoom() {
@@ -462,7 +397,26 @@ class _HomePageState extends State<HomePage>
     setState(() {
       _currentIndex = index;
     });
-    // TODO: Navigate to different sections
-    print('Nav item tapped: ${_navItems[index]['label']}');
+    
+    switch (index) {
+      case 0: // Dashboard
+        // Already on Dashboard
+        break;
+      case 1: // Assignments
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const AssignmentsPage(),
+          ),
+        );
+        break;
+      case 2: // Students
+        // TODO: Navigate to Students page
+        print('Students page not implemented yet');
+        break;
+      case 3: // Settings
+        // TODO: Navigate to Settings page
+        print('Settings page not implemented yet');
+        break;
+    }
   }
 } 

@@ -1,0 +1,107 @@
+{
+  "request": "يا Cursor، قم ببناء واجهة Flutter لصفحة 'Assignments' الرئيسية بناءً على الهيكل الموضح أدناه. انتبه جيدًا للتفاصيل التالية:\n\n1. **الالتزام بالثيم (Theming):** استخدم الثيم العام للتطبيق (`Theme.of(context)`) لتحديد الألوان والخطوط وأنماط الأزرار لضمان الاتساق البصري مع باقي أجزاء التطبيق.\n2. **تحديث شريط التنقل (BottomNavigationBar):** لقد تغير شريط التنقل. تأكد من تحديثه ليعكس الحالة الجديدة، حيث تكون أيقونة 'Assignments' هي النشطة الآن.\n3. **وظائف الصفحة:** يجب أن تحتوي الصفحة على حقل بحث، ورقائق تصفية (filter chips) تفاعلية، وقائمة بالواجبات قابلة للتمرير.",
+  "notes": [
+    {
+      "title": "✨ نصائح التصميم والـ UX/UI",
+      "points": [
+        "**حالة الفلاتر النشطة:** يجب أن يتغير شكل شريحة الفلتر (e.g., 'All', 'Ungraded') عند اختيارها ليعرف المستخدم الفلتر المطبق حاليًا.",
+        "**واجهة الحالة الفارغة (Empty State):** صمم واجهة بسيطة وجذابة لعرضها عندما تكون قائمة الواجبات فارغة أو عندما لا تسفر عملية البحث عن أي نتائج.",
+        "**السحب للتحديث (Pull-to-Refresh):** أضف `RefreshIndicator` حول قائمة الواجبات للسماح للمستخدم بتحديث القائمة بسهولة عن طريق السحب لأسفل.",
+        "**الانتقال لإنشاء واجب:** عند الضغط على أيقونة الإضافة (+) في الـ AppBar، يجب أن ينتقل التطبيق إلى صفحة `NewAssignmentPage` التي تم إنشاؤها مسبقًا."
+      ]
+    },
+    {
+      "title": "🚀 نصائح الأداء والبرمجة",
+      "points": [
+        "**إدارة حالة البحث والتصفية:** استخدم state management (مثل Provider/Riverpod/BLoC) لإدارة منطق البحث والتصفية. يجب أن تقوم الواجهة بتحديث نفسها بكفاءة بناءً على حالة البحث والفلتر المختار.",
+        "**تأخير البحث (Debouncing):** عند الكتابة في حقل البحث، لا تقم بتنفيذ البحث مع كل حرف. استخدم تقنية الـ 'debouncing' لتأخير تنفيذ البحث لبضع مئات من الميلي ثانية بعد توقف المستخدم عن الكتابة، هذا يقلل العبء على الشبكة أو المعالج.",
+        "**نموذج بيانات `Assignment`:** أنشئ كلاس `Assignment` لتمثيل بيانات كل واجب (العنوان، الحالة، تاريخ الاستحقاق، إلخ). هذا يجعل الكود أكثر تنظيمًا.",
+        "**استخدام `ListView.builder`:** استخدم `ListView.builder` دائمًا لعرض قائمة الواجبات لضمان الأداء الأمثل، خاصة مع القوائم الطويلة."
+      ]
+    }
+  ],
+  "structure": {
+    "widget": "Scaffold",
+    "backgroundColor": "#F8FAFC",
+    "appBar": {
+      "widget": "AppBar",
+      "backgroundColor": "#F8FAFC",
+      "elevation": 0,
+      "title": {
+        "widget": "Text",
+        "text": "Assignments",
+        "style": { "color": "#0E141B", "fontWeight": "bold" }
+      },
+      "centerTitle": true,
+      "actions": [
+        {
+          "widget": "IconButton",
+          "icon": "Icons.add",
+          "color": "#0E141B",
+          "onPressed": "() => Navigator.push(context, MaterialPageRoute(builder: (context) => NewAssignmentPage()))"
+        }
+      ]
+    },
+    "body": {
+      "widget": "Column",
+      "children": [
+        {
+          "widget": "Padding",
+          "padding": "all: 16.0",
+          "child": {
+            "widget": "TextField",
+            "decoration": {
+              "hintText": "Search assignments",
+              "prefixIcon": "Icons.search",
+              "filled": true,
+              "fillColor": "#E7EDF3",
+              "border": "OutlineInputBorder.none"
+            }
+          }
+        },
+        {
+          "widget": "SizedBox",
+          "height": 50,
+          "child": {
+            "widget": "ListView",
+            "scrollDirection": "horizontal",
+            "padding": "symmetric(horizontal: 16.0)",
+            "children": [
+              { "filter_chip": { "label": "All", "isSelected": true } },
+              { "filter_chip": { "label": "Ungraded", "isSelected": false } },
+              { "filter_chip": { "label": "Graded", "isSelected": false } }
+            ]
+          }
+        },
+        {
+          "widget": "Expanded",
+          "child": {
+            "widget": "ListView.builder",
+            "itemCount": 5,
+            "itemBuilder": "(context, index) => assignments[index]",
+            "assignments": [
+              { "assignment_tile": { "title": "Math Quiz 1", "subtitle": "Due: Oct 26 · 25/25 submitted", "isCompleted": true } },
+              { "assignment_tile": { "title": "Science Project", "subtitle": "Due: Oct 27 · 20/25 submitted", "isCompleted": false } },
+              { "assignment_tile": { "title": "English Essay", "subtitle": "Due: Oct 28 · 25/25 submitted", "isCompleted": true } },
+              { "assignment_tile": { "title": "History Report", "subtitle": "Due: Oct 29 · 22/25 submitted", "isCompleted": false } },
+              { "assignment_tile": { "title": "Art Portfolio", "subtitle": "Due: Oct 30 · 25/25 submitted", "isCompleted": true } }
+            ]
+          }
+        }
+      ]
+    },
+    "bottomNavigationBar": {
+      "widget": "BottomNavigationBar",
+      "currentIndex": 1, 
+      "selectedItemColor": "#0E141B",
+      "unselectedItemColor": "#4E7397",
+      "showUnselectedLabels": true,
+      "items": [
+        { "icon": "Icons.dashboard_outline", "activeIcon": "Icons.dashboard", "label": "Dashboard" },
+        { "icon": "Icons.assignment_outline", "activeIcon": "Icons.assignment", "label": "Assignments" },
+        { "icon": "Icons.group_outline", "activeIcon": "Icons.group", "label": "Students" },
+        { "icon": "Icons.settings_outline", "activeIcon": "Icons.settings", "label": "Settings" }
+      ]
+    }
+  }
+}

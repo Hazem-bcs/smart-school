@@ -1,0 +1,89 @@
+{
+  "request": "يا Cursor، قم ببناء واجهة Flutter جديدة لصفحة 'AssignmentSubmissionPage' لعرض وتقييم تسليم واجب طالب. استخدم ملف JSON المرفق كهيكل أساسي. \n\n**أهم المتطلبات:**\n1. **الالتزام بالثيم العام:** استخدم `Theme.of(context)` لجميع عناصر الواجهة لضمان الاتساق البصري.\n2. **عرض البيانات:** اعرض اسم الطالب، نص الإجابة، والمرفقات (الصور) بشكل واضح ومنظم.\n3. **نموذج التقييم:** قم ببناء نموذج (`Form`) يحتوي على حقل لإضافة تعليق وحقل لإدخال الدرجة، مع زر لتأكيد التقييم.\n4. **التنقل:** هذه الصفحة هي صفحة تفاصيل، لذا يجب أن تحتوي على زر رجوع في الـ AppBar. أضف أيضًا أزرارًا للتنقل بين تسليمات الطالب السابق والتالي.",
+  "notes": [
+    {
+      "title": "✨ نصائح التصميم والـ UX/UI",
+      "points": [
+        "**عارض الصور (Image Viewer):** عند النقر على أي صورة من المرفقات، يجب أن تُفتح في وضع ملء الشاشة (full-screen) مع إمكانية التكبير والتصغير. يمكنك استخدام حزمة مثل `photo_view` لهذا الغرض.",
+        "**التحقق من حقل الدرجة:** تأكد من أن حقل الدرجة يقبل أرقامًا فقط، ويفضل أن يكون ضمن النطاق المحدد للواجب (e.g., 0-100).",
+        "**حالات التحميل والتنقل:** عند الضغط على زر 'Mark as Graded' أو أزرار التنقل بين الطلاب، أظهر مؤشر تحميل (loading indicator) لإعلام المستخدم بأن هناك عملية قيد التنفيذ.",
+        "**تصميم متجاوب:** استخدم `GridView` لعرض الصور المرفقة لضمان ظهورها بشكل جيد على مختلف أحجام الشاشات."
+      ]
+    },
+    {
+      "title": "🚀 نصائح الأداء والبرمجة",
+      "points": [
+        "**نموذج بيانات (Data Model):** أنشئ كلاسات لتمثيل البيانات مثل `Submission` و `Student` لجعل الكود منظمًا وسهل القراءة.",
+        "**استخدام `Form` و `GlobalKey`:** غلّف حقول التعليق والدرجة بـ `Form` widget واستخدم `GlobalKey<FormState>()` للتحقق من صحة المدخلات.",
+        "**استخدام `TextEditingController`:** استخدم وحدات تحكم منفصلة لحقل التعليق وحقل الدرجة، وتذكر التخلص منها (dispose) بشكل صحيح.",
+        "**فصل المنطق عن الواجهة:** استخدم نمط إدارة الحالة (State Management) للتعامل مع منطق جلب بيانات التسليم، تحديث الدرجة، والانتقال بين الطلاب. هذا يفصل منطق العمل عن واجهة المستخدم."
+      ]
+    }
+  ],
+  "structure": {
+    "widget": "Scaffold",
+    "backgroundColor": "#F8FAFC",
+    "appBar": {
+      "widget": "AppBar",
+      "backgroundColor": "#F8FAFC",
+      "elevation": 0,
+      "leading": {
+        "widget": "IconButton",
+        "icon": "Icons.arrow_back",
+        "onPressed": "() => Navigator.of(context).pop()"
+      },
+      "title": {
+        "widget": "Text",
+        "text": "Assignment Submission"
+      },
+      "centerTitle": true
+    },
+    "body": {
+      "widget": "ListView",
+      "padding": "all: 16.0",
+      "children": [
+        { "widget": "Text", "text": "Student: Olivia Bennett", "style": "headline6" },
+        { "widget": "SizedBox", "height": 8 },
+        { "widget": "Text", "text": "Submitted: 2 days ago", "style": "caption" },
+        { "widget": "SizedBox", "height": 16 },
+        { "widget": "Text", "text": "Response: The central theme of the novel revolves around the quest for identity and belonging...", "style": "bodyText1" },
+        { "widget": "SizedBox", "height": 16 },
+        {
+          "widget": "GridView.count",
+          "crossAxisCount": 2,
+          "shrinkWrap": true,
+          "physics": "NeverScrollableScrollPhysics",
+          "mainAxisSpacing": 8,
+          "crossAxisSpacing": 8,
+          "children": [
+            { "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuAaD4QFtFzumfJTmc8dZpX1E7ZZiiBy3S5RfyW2xHt_-VV6nri7AOQd9XFpgiwJMjjvV8lOzxpPcYHyERfdNYqSP4fkl2DpPj9wBy-QpMG1RR7TUkpqnG5MJ5Usnpg4lR6XKvB4BeLjex76QC8bq9YT6UhrSQCso448YWNJBbmmaJ9lU-1nFgAls9DruO3Z4jN8oyj3doObNi8yU2e-p9RmE92Dtm6CEs1450za3Ywi94F0FM9qI_LAp0lPzxY1p5QRi-mofQDfPY8_" },
+            { "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuCoFqAIUnZ6twyCprcHwJmS_c3n3n1GVnwUzD1m1M10oqOLcUwq5dn9kaLLVobOLZKVafUk6baUC4a1KHKZCftsDjqByn1GKT3vgZjKVO-6lo9ygxv5zkXnfYh_8pt40hsqsnPL8JFtxcI6Ya4rfMhXswLMtVTYzk7VkPPFXOItOEx3hr8ewlHQ1Dbx8W2btlaZW4tyqmOCUxk6tw8k3Mf-LYI8bl64A_ii_tckmnZGR_NYrnumnYF6KtzGYsOIQrSLgQ9-I3NZCH20" }
+          ]
+        },
+        { "widget": "SizedBox", "height": 24 },
+        {
+          "widget": "Form",
+          "child": {
+            "widget": "Column",
+            "children": [
+              { "widget": "TextFormField", "decoration": { "labelText": "Add comment", "border": "OutlineInputBorder" }, "maxLines": 4 },
+              { "widget": "SizedBox", "height": 16 },
+              { "widget": "TextFormField", "decoration": { "labelText": "Enter grade", "border": "OutlineInputBorder" }, "keyboardType": "number" },
+              { "widget": "SizedBox", "height": 16 },
+              { "widget": "ElevatedButton", "child": { "widget": "Text", "text": "Mark as Graded" }, "onPressed": "() {}", "style": { "minimumSize": "infinity" } }
+            ]
+          }
+        },
+        { "widget": "SizedBox", "height": 16 },
+        {
+          "widget": "Row",
+          "mainAxisAlignment": "spaceBetween",
+          "children": [
+            { "widget": "OutlinedButton", "child": { "widget": "Text", "text": "Previous Student" }, "onPressed": "() {}" },
+            { "widget": "OutlinedButton", "child": { "widget": "Text", "text": "Next Student" }, "onPressed": "() {}" }
+          ]
+        }
+      ]
+    }
+  }
+}
