@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../features/home/presentation/ui/pages/home_page.dart';
-import '../../features/classes/presentation/ui/pages/classes_page.dart';
+
 import '../../features/profile/presentation/ui/pages/profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/about_app_page.dart';
@@ -12,7 +12,7 @@ import '../../features/assignment/presentation/ui/pages/assignments_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
-import '../../features/classes/presentation/blocs/classes_bloc.dart';
+
 import '../../features/home/presentation/blocs/home_bloc.dart';
 import '../../features/profile/presentation/blocs/profile_bloc.dart';
 import '../../features/settings/presentation/blocs/settings_bloc.dart';
@@ -26,7 +26,7 @@ class AppRoutes {
   static const String splash = '/splash';
   static const String login = '/login';
   static const String home = '/home';
-  static const String classes = '/classes';
+
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String changePassword = '/change-password';
@@ -67,14 +67,7 @@ class AppRoutes {
           settings: settings,
         );
         
-      case classes:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => ClassesBloc(),
-            child: const ClassesPage(),
-          ),
-          settings: settings,
-        );
+
         
       case profile:
         return MaterialPageRoute(

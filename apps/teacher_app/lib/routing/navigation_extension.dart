@@ -12,10 +12,7 @@ extension NavigationExtension on BuildContext {
     Navigator.pushReplacementNamed(this, AppRoutes.login);
   }
   
-  // Navigate to classes page
-  void goToClasses() {
-    Navigator.pushReplacementNamed(this, AppRoutes.classes);
-  }
+
   
   // Navigate to home page with class name
   void goToHome({required String className}) {
