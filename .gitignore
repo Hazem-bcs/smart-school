@@ -1,0 +1,22 @@
+# Default ignored files
+# ملفات دارت وفلاتر التي تُنشأ تلقائياً
+.dart_tool/
+.flutter-plugins-dependencies
+.flutter-plugins
+
+# ملفات خاصة ببيئة التطوير (IntelliJ/Android Studio)
+.idea/
+
+# ملفات متعلقة بعملية البناء (build)
+# هذا النمط يتجاهل أي ملفات اسمها تبدأ بـ generated_plugin_registrant في أي مجلد
+**/*generated_plugin_registrant*
+# هذا النمط يتجاهل أي ملفات اسمها تبدأ بـ generated_plugins في أي مجلد
+**/*generated_plugins*
+
+# تجاهل ملفات أخرى شائعة (إذا لم تكن موجودة بالفعل)
+*.iml
+.DS_Store
+build/
+.gradle/
+.vscode/
+.vscode-test/
