@@ -11,6 +11,10 @@ import '../../../../../widgets/shared_bottom_navigation.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import '../../../../assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
 import '../../../../../routing/navigation_extension.dart';
+import '../widgets/assignments_app_bar.dart';
+import '../widgets/assignments_search_field.dart';
+import '../widgets/assignments_filter_chips.dart';
+import '../widgets/assignments_empty_state.dart';
 
 class AssignmentsPage extends StatefulWidget {
   const AssignmentsPage({super.key});
@@ -136,33 +140,16 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     final isDark = theme.brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
-        elevation: 0,
-        title: ResponsiveText(
-          'Assignments',
-          mobileSize: 18,
-          tabletSize: 20,
-          desktopSize: 22,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.appBarTheme.foregroundColor ?? (isDark ? Colors.white : const Color(0xFF0E141B)),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add, color: theme.iconTheme.color ?? (isDark ? Colors.white : const Color(0xFF0E141B))),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewAssignmentPage(),
-                ),
-              );
-            },
-          ),
-        ],
+      appBar: AssignmentsAppBar(
+        title: 'Assignments',
+        onAdd: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NewAssignmentPage(),
+            ),
+          );
+        },
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -171,8 +158,12 @@ class _AssignmentsPageState extends State<AssignmentsPage>
           child: ResponsiveContent(
             child: Column(
               children: [
-                _buildSearchField(),
-                _buildFilterChips(),
+                AssignmentsSearchField(controller: _searchController),
+                AssignmentsFilterChips(
+                  filterOptions: _filterOptions,
+                  selectedFilter: _selectedFilter,
+                  onChanged: _onFilterChanged,
+                ),
                 Expanded(
                   child: _buildAssignmentsList(theme, isDark),
                 ),
@@ -183,74 +174,6 @@ class _AssignmentsPageState extends State<AssignmentsPage>
       ),
       bottomNavigationBar: SharedBottomNavigation(
         currentIndex: 1, // Assignments is selected
-        onNavItemTap: _onNavItemTap,
-      ),
-    );
-  }
-
-  Widget _buildSearchField() {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    return Container(
-      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
-      padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
-        vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-      ),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCardBackground : theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.search,
-            color: isDark ? AppColors.info : AppColors.primary,
-            size: ResponsiveHelper.getIconSize(context, mobile: 20, tablet: 24, desktop: 28),
-          ),
-          SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: 'Search assignments',
-                border: InputBorder.none,
-                isDense: true,
-              ),
-              style: theme.textTheme.bodyLarge,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterChips() {
-    return SizedBox(
-      height: ResponsiveHelper.getSpacing(context, mobile: 50, tablet: 60, desktop: 70),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(
-          horizontal: ResponsiveHelper.getSpacing(context),
-        ),
-        itemCount: _filterOptions.length,
-        itemBuilder: (context, index) {
-          final option = _filterOptions[index];
-          final isSelected = _selectedFilter == option['status'];
-          
-          return custom.FilterChip(
-            label: option['label'],
-            isSelected: isSelected,
-            onTap: () => _onFilterChanged(option['status']),
-          );
-        },
       ),
     );
   }
@@ -259,7 +182,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     final filteredAssignments = _getFilteredAssignments();
 
     if (filteredAssignments.isEmpty) {
-      return _buildEmptyState();
+      return AssignmentsEmptyState(searchQuery: _searchQuery);
     }
 
     return RefreshIndicator(
@@ -293,46 +216,6 @@ class _AssignmentsPageState extends State<AssignmentsPage>
       ),
     );
   }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.assignment_outlined,
-            size: ResponsiveHelper.getIconSize(context, mobile: 80, tablet: 100, desktop: 120),
-            color: Colors.grey[400],
-          ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
-          ResponsiveText(
-            _searchQuery.isNotEmpty ? 'No assignments found' : 'No assignments yet',
-            mobileSize: 18,
-            tabletSize: 20,
-            desktopSize: 22,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
-          ResponsiveText(
-            _searchQuery.isNotEmpty 
-                ? 'Try adjusting your search or filters'
-                : 'Create your first assignment to get started',
-            mobileSize: 14,
-            tabletSize: 16,
-            desktopSize: 18,
-            style: TextStyle(
-              color: Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
 
   // Helper methods
   List<Assignment> _getFilteredAssignments() {

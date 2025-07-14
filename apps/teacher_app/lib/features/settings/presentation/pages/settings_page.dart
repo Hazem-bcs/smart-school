@@ -109,7 +109,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
       bottomNavigationBar: SharedBottomNavigation(
         currentIndex: 3, // Settings index
-        onNavItemTap: _onNavItemTap,
       ),
     );
   }

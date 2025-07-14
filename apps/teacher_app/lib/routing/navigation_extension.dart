@@ -53,4 +53,8 @@ extension NavigationExtension on BuildContext {
   void goToAssignmentSubmission(String assignmentId) {
     Navigator.pushNamed(this, AppRoutes.assignmentSubmission, arguments: assignmentId);
   }
+
+  void pushReplacementAllNamed(String routeName, {Object? arguments}) {
+    Navigator.of(this).pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
+  }
 } 

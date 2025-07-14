@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage>
       ),
       bottomNavigationBar: SharedBottomNavigation(
         currentIndex: _currentIndex,
-        onNavItemTap: _onNavItemTap,
       ),
     );
   }

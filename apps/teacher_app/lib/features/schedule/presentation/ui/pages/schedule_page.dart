@@ -59,7 +59,6 @@ class _SchedulePageState extends State<SchedulePage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -89,7 +88,6 @@ class _SchedulePageState extends State<SchedulePage>
       ),
       bottomNavigationBar: SharedBottomNavigation(
         currentIndex: 2, // Schedule index (replacing Students)
-        onNavItemTap: _onNavItemTap,
       ),
     );
   }
@@ -130,30 +128,5 @@ class _SchedulePageState extends State<SchedulePage>
     setState(() {
       _currentMonth = newMonth;
     });
-  }
-
-  void _onNavItemTap(int index) {
-    switch (index) {
-      case 0: // Dashboard
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
-        break;
-      case 1: // Assignments
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const AssignmentsPage(),
-          ),
-        );
-        break;
-      case 2: // Schedule
-        // Already on Schedule page
-        break;
-      case 3: // Settings
-        context.goToSettings();
-        break;
-    }
   }
 } 

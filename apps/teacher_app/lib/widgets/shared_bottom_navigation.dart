@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
 import '../core/responsive_helper.dart';
 import '../core/responsive_widgets.dart';
+import '../routing/navigation_extension.dart';
 
 class SharedBottomNavigation extends StatelessWidget {
   final int currentIndex;
-  final Function(int) onNavItemTap;
 
   const SharedBottomNavigation({
     super.key,
     required this.currentIndex,
-    required this.onNavItemTap,
   });
+
+  void _onNavItemTap(BuildContext context, int index) {
+    if (index == currentIndex) return;
+    switch (index) {
+      case 0:
+        // Dashboard
+        context.pushReplacementAllNamed('/home');
+        break;
+      case 1:
+        // Assignments
+        context.pushReplacementAllNamed('/assignments');
+        break;
+      case 2:
+        // Schedule
+        context.pushReplacementAllNamed('/schedule');
+        break;
+      case 3:
+        // Settings
+        context.pushReplacementAllNamed('/settings');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +85,7 @@ class SharedBottomNavigation extends StatelessWidget {
       final isSelected = index == currentIndex;
 
       return GestureDetector(
-        onTap: () => onNavItemTap(index),
+        onTap: () => _onNavItemTap(context, index),
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
