@@ -1,77 +1,89 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive_widgets.dart';
+import 'package:core/theme/index.dart';
 
 class SettingsSection extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final List<Widget> children;
-  final Color? backgroundColor;
-  final EdgeInsetsGeometry? padding;
+  final ThemeData theme;
+  final bool isDark;
+  final bool notificationsEnabled;
+  final ValueChanged<bool> onNotificationsChanged;
+  final bool isEnglish;
+  final VoidCallback onLanguageToggle;
+  final VoidCallback onThemeToggle;
 
   const SettingsSection({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.children,
-    this.backgroundColor,
-    this.padding,
-  });
+    Key? key,
+    required this.theme,
+    required this.isDark,
+    required this.notificationsEnabled,
+    required this.onNotificationsChanged,
+    required this.isEnglish,
+    required this.onLanguageToggle,
+    required this.onThemeToggle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28),
+            vertical: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // عنوان القسم
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: const Color(0xFF6366F1),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E293B),
-                  ),
-                ),
-              ],
+          child: Text(
+            'Preferences',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
-          
-          // محتوى القسم
-          Padding(
-            padding: padding ?? const EdgeInsets.fromLTRB(0, 0, 0, 16),
-            child: Column(
-              children: children,
-            ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context)),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCardBackground : theme.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.notifications, color: theme.iconTheme.color),
+                title: Text('Notifications', style: theme.textTheme.titleMedium),
+                subtitle: Text('Manage your notification preferences'),
+                trailing: Switch(
+                  value: notificationsEnabled,
+                  onChanged: onNotificationsChanged,
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.language, color: theme.iconTheme.color),
+                title: Text('Language', style: theme.textTheme.titleMedium),
+                subtitle: Text(isEnglish ? 'English' : 'العربية'),
+                trailing: Icon(Icons.arrow_forward_ios, color: theme.iconTheme.color),
+                onTap: onLanguageToggle,
+              ),
+              ListTile(
+                leading: Icon(isDark ? Icons.dark_mode : Icons.light_mode, color: theme.iconTheme.color),
+                title: Text('Dark Mode', style: theme.textTheme.titleMedium),
+                subtitle: Text(isDark ? 'Enabled' : 'Disabled'),
+                trailing: Switch(
+                  value: isDark,
+                  onChanged: (_) => onThemeToggle(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 } 

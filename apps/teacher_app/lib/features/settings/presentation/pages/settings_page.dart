@@ -9,6 +9,8 @@ import '../../../../core/responsive_helper.dart';
 import '../../../../core/responsive_widgets.dart';
 import '../../../../../widgets/shared_bottom_navigation.dart';
 import '../../../../../routing/navigation_extension.dart';
+import '../widgets/profile_card.dart';
+import '../widgets/settings_section.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -97,8 +99,29 @@ class _SettingsScreenState extends State<SettingsScreen>
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  _buildProfileCard(theme, isDark),
-                  _buildSettingsSection(theme, isDark),
+                  ProfileCard(
+                    theme: theme,
+                    isDark: isDark,
+                    scaleAnimation: _scaleAnimation,
+                    onEditProfile: () {
+                      context.goToEditProfile();
+                    },
+                  ),
+                  SettingsSection(
+                    theme: theme,
+                    isDark: isDark,
+                    notificationsEnabled: _notificationsEnabled,
+                    onNotificationsChanged: (value) {
+                      setState(() {
+                        _notificationsEnabled = value;
+                      });
+                    },
+                    isEnglish: _isEnglish,
+                    onLanguageToggle: _toggleLanguage,
+                    onThemeToggle: () {
+                      context.read<ThemeBloc>().add(ToggleTheme());
+                    },
+                  ),
                   _buildSupportSection(theme, isDark),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 80, tablet: 100, desktop: 120)),
                 ],
@@ -121,166 +144,10 @@ class _SettingsScreenState extends State<SettingsScreen>
           fontWeight: FontWeight.w600,
         ),
       ),
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: theme.shadowColor.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: theme.iconTheme.color,
-            size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
+      automaticallyImplyLeading: false,
       backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: 0,
       centerTitle: true,
-    );
-  }
-
-  Widget _buildProfileCard(ThemeData theme, bool isDark) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Container(
-        margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
-        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28)),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: isDark 
-                ? [
-                    AppColors.darkGradientStart,
-                    AppColors.darkGradientEnd,
-                  ]
-                : [
-                    AppColors.primary,
-                    AppColors.secondary,
-                  ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: (isDark ? AppColors.darkGradientStart : AppColors.primary).withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
-              height: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: ResponsiveHelper.getIconSize(context, mobile: 30, tablet: 35, desktop: 40),
-              ),
-            ),
-            SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Teacher Name',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 18, tablet: 20, desktop: 22),
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
-                  Text(
-                    'teacher@school.com',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                context.goToEditProfile();
-              },
-              child: Container(
-                padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingsSection(ThemeData theme, bool isDark) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionTitle('Preferences', theme),
-        _buildSettingsCard([
-          _buildAnimatedSettingTile(
-            icon: Icons.notifications,
-            title: 'Notifications',
-            subtitle: 'Manage your notification preferences',
-            trailing: _buildAnimatedSwitch(_notificationsEnabled, (value) {
-              setState(() {
-                _notificationsEnabled = value;
-              });
-            }, theme, isDark),
-            theme: theme,
-            isDark: isDark,
-          ),
-          _buildAnimatedSettingTile(
-            icon: Icons.language,
-            title: 'Language',
-            subtitle: _isEnglish ? 'English' : 'العربية',
-            trailing: Container(
-              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCardBackground : AppColors.gray100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.arrow_forward_ios,
-                color: theme.iconTheme.color,
-                size: ResponsiveHelper.getIconSize(context, mobile: 14, tablet: 16, desktop: 18),
-              ),
-            ),
-            onTap: _toggleLanguage,
-            theme: theme,
-            isDark: isDark,
-          ),
-          _buildThemeToggleTile(theme, isDark),
-        ], theme, isDark),
-      ],
     );
   }
 

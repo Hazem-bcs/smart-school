@@ -103,13 +103,7 @@ class _SchedulePageState extends State<SchedulePage>
           color: isDark ? Colors.white : const Color(0xFF0E141B),
         ),
       ),
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: isDark ? Colors.white : const Color(0xFF0E141B),
-        ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
+      automaticallyImplyLeading: false,
       backgroundColor: isDark 
           ? const Color(0xFF1A1A2E) 
           : const Color(0xFFF8F9FA),
