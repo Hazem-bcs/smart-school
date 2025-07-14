@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
 import '../../domain/usecases/get_classes_usecase.dart';
-import '../../../assignment/domain/usecases/get_assignments_usecase.dart';
-import '../../../assignment/domain/entities/assignment.dart';
+
 import '../../domain/usecases/get_notifications_usecase.dart';
 import 'home_event.dart';
 import 'home_state.dart';
@@ -28,17 +28,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     
     try {
       final classes = await getClassesUseCase();
-      final assignmentsResult = await getAssignmentsUseCase();
       final notifications = await getNotificationsUseCase();
-      
-      assignmentsResult.fold(
-        (error) => emit(HomeError('Failed to load assignments: $error')),
-        (assignments) => emit(HomeLoaded(
-          classes: classes,
-          assignments: assignments,
-          notifications: notifications,
-        )),
-      );
+      emit(HomeLoaded(
+        classes: classes,
+        assignments: [],
+        notifications: notifications,
+      ));
     } catch (e) {
       emit(HomeError('Failed to load home data: $e'));
     }
@@ -50,17 +45,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     try {
       final classes = await getClassesUseCase();
-      final assignmentsResult = await getAssignmentsUseCase();
       final notifications = await getNotificationsUseCase();
-      
-      assignmentsResult.fold(
-        (error) => emit(HomeError('Failed to load assignments: $error')),
-        (assignments) => emit(HomeLoaded(
-          classes: classes,
-          assignments: assignments,
-          notifications: notifications,
-        )),
-      );
+      emit(HomeLoaded(
+        classes: classes,
+        assignments: [],
+        notifications: notifications,
+      ));
     } catch (e) {
       emit(HomeError('Failed to refresh home data: $e'));
     }

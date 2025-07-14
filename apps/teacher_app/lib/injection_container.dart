@@ -5,6 +5,7 @@ import 'package:core/network/dio_client.dart';
 import 'package:core/injection_container.dart' as core_di;
 import 'package:auth/injection_container.dart' as auth_di;
 import 'package:password/injection_container.dart' as password_di;
+import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
 import 'features/auth/domain/usecases/check_auth_status_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
@@ -28,15 +29,7 @@ import 'features/zoom_meeting/data/repositories/zoom_meeting_repository_impl.dar
 import 'features/zoom_meeting/data/data_sources/zoom_meeting_remote_data_source.dart';
 import 'features/zoom_meeting/domain/repositories/zoom_meeting_repository.dart';
 
-// Assignment feature
-import 'features/assignment/domain/usecases/get_assignments_usecase.dart';
-import 'features/assignment/domain/usecases/create_assignment_usecase.dart';
-import 'features/assignment/domain/usecases/update_assignment_usecase.dart';
-import 'features/assignment/domain/usecases/delete_assignment_usecase.dart';
-import 'features/assignment/data/repositories/assignment_repository_impl.dart';
-import 'features/assignment/data/data_sources/assignment_remote_data_source.dart';
-import 'features/assignment/data/data_sources/assignment_local_data_source.dart';
-import 'features/assignment/domain/repositories/assignment_repository.dart';
+
 
 // BLoCs
 import 'features/auth/presentation/blocs/auth_bloc.dart';
@@ -44,7 +37,6 @@ import 'features/home/presentation/blocs/home_bloc.dart';
 import 'features/settings/presentation/blocs/settings_bloc.dart';
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
-import 'features/assignment/presentation/blocs/assignment_bloc.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 
 // Profile feature
@@ -111,25 +103,6 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()));
   
   // Assignment feature dependencies
-  getIt.registerLazySingleton<AssignmentLocalDataSource>(
-    () => AssignmentLocalDataSourceImpl(),
-  );
-  
-  getIt.registerLazySingleton<AssignmentRemoteDataSource>(
-    () => AssignmentRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
-  );
-  
-  getIt.registerLazySingleton<AssignmentRepository>(
-    () => AssignmentRepositoryImpl(
-      remoteDataSource: getIt<AssignmentRemoteDataSource>(),
-      localDataSource: getIt<AssignmentLocalDataSource>(),
-    ),
-  );
-  
-  getIt.registerLazySingleton(() => GetAssignmentsUseCase(getIt<AssignmentRepository>()));
-  getIt.registerLazySingleton(() => CreateAssignmentUseCase(getIt<AssignmentRepository>()));
-  getIt.registerLazySingleton(() => UpdateAssignmentUseCase(getIt<AssignmentRepository>()));
-  getIt.registerLazySingleton(() => DeleteAssignmentUseCase(getIt<AssignmentRepository>()));
   
   // Connectivity BLoC
   getIt.registerFactory(() => ConnectivityBloc(connectivity: Connectivity()));
@@ -183,10 +156,5 @@ Future<void> setupDependencies() async {
   ));
 
   // Assignment BLoC
-  getIt.registerFactory(() => AssignmentBloc(
-    getAssignmentsUseCase: getIt<GetAssignmentsUseCase>(),
-    createAssignmentUseCase: getIt<CreateAssignmentUseCase>(),
-    updateAssignmentUseCase: getIt<UpdateAssignmentUseCase>(),
-    deleteAssignmentUseCase: getIt<DeleteAssignmentUseCase>(),
-  ));
+  
 }

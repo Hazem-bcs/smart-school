@@ -47,7 +47,7 @@ class TeacherApp extends StatelessWidget {
                 darkTheme: _getDarkTheme(),
                 themeMode: _getThemeMode(themeState),
                 
-                initialRoute: AppRoutes.assignments,
+                initialRoute: AppRoutes.home,
                 onGenerateRoute: AppRoutes.generateRoute,
                 builder: (context, child) {
                   return ConnectivityListener(child: child!);

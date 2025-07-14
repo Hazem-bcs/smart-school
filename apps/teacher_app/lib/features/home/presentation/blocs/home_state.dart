@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:teacher_app/features/assignment_submission/domain/entities/assignment.dart';
 import '../../domain/entities/class_entity.dart';
-import '../../../assignment/domain/entities/assignment.dart';
 import '../../domain/entities/notification_entity.dart';
 
 abstract class HomeState extends Equatable {

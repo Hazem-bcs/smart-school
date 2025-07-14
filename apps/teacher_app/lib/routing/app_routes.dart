@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
 import '../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../features/home/presentation/ui/pages/home_page.dart';
@@ -9,11 +10,7 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/about_app_page.dart';
 import '../../features/settings/presentation/pages/help_faq_page.dart';
 import '../../features/assignment/presentation/ui/pages/assignments_page.dart';
-import '../../features/assignment/presentation/blocs/assignment_bloc.dart';
-import '../../features/assignment/domain/usecases/get_assignments_usecase.dart';
-import '../../features/assignment/domain/usecases/create_assignment_usecase.dart';
-import '../../features/assignment/domain/usecases/update_assignment_usecase.dart';
-import '../../features/assignment/domain/usecases/delete_assignment_usecase.dart';
+
 import '../../features/schedule/presentation/ui/pages/schedule_page.dart';
 import '../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
@@ -144,15 +141,7 @@ class AppRoutes {
         
         case assignments:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => AssignmentBloc(
-              getAssignmentsUseCase: di.getIt<GetAssignmentsUseCase>(),
-              createAssignmentUseCase: di.getIt<CreateAssignmentUseCase>(),
-              updateAssignmentUseCase: di.getIt<UpdateAssignmentUseCase>(),
-              deleteAssignmentUseCase: di.getIt<DeleteAssignmentUseCase>(),
-            ),
-            child: const AssignmentsPage(),
-          ),
+          builder: (_) => const AssignmentsPage(),
           settings: settings,
         );
         
