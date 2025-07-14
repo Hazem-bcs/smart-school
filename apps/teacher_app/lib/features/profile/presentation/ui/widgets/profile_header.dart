@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../domain/entities/profile.dart';
 import '../../theme/profile_theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileHeader extends StatelessWidget {
   final Profile profile;
@@ -27,7 +28,6 @@ class ProfileHeader extends StatelessWidget {
           // Name
           Text(
             profile.name,
-            style: ProfileTheme.headline,
             textAlign: TextAlign.center,
           ),
           
@@ -36,7 +36,6 @@ class ProfileHeader extends StatelessWidget {
           // Title
           Text(
             profile.title,
-            style: ProfileTheme.body.copyWith(color: ProfileTheme.primary),
             textAlign: TextAlign.center,
           ),
           
@@ -45,14 +44,13 @@ class ProfileHeader extends StatelessWidget {
           // Subtitle
           Text(
             profile.subtitle,
-            style: ProfileTheme.caption,
             textAlign: TextAlign.center,
           ),
           
           const SizedBox(height: 24),
           
           // Edit Profile Button
-          _buildEditButton(),
+          _buildEditButton(context),
         ],
       ),
     );
@@ -64,15 +62,20 @@ class ProfileHeader extends StatelessWidget {
       height: 120,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4A90E2), Color(0xFF6C63FF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         border: Border.all(
           color: ProfileTheme.primary.withOpacity(0.2),
           width: 4,
         ),
         boxShadow: [
           BoxShadow(
-            color: ProfileTheme.primary.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: ProfileTheme.primary.withOpacity(0.13),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -81,19 +84,37 @@ class ProfileHeader extends StatelessWidget {
           imageUrl: profile.avatarUrl,
           fit: BoxFit.cover,
           placeholder: (context, url) => Container(
-            color: ProfileTheme.background,
-            child: Icon(
-              Icons.person,
-              size: 60,
-              color: ProfileTheme.textSecondary,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color(0xFF4A90E2), Color(0xFF6C63FF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.userAstronaut,
+                size: 60,
+                color: Colors.white,
+              ),
             ),
           ),
           errorWidget: (context, url, error) => Container(
-            color: ProfileTheme.background,
-            child: Icon(
-              Icons.person,
-              size: 60,
-              color: ProfileTheme.textSecondary,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color(0xFF4A90E2), Color(0xFF6C63FF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.userAstronaut,
+                size: 60,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -101,12 +122,23 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildEditButton() {
+  Widget _buildEditButton(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: onEditProfile,
-      icon: const Icon(Icons.edit, size: 18),
+      icon: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFF00B894).withOpacity(0.15),
+        ),
+        padding: const EdgeInsets.all(6),
+        child: FaIcon(
+          FontAwesomeIcons.userPen,
+          size: 18,
+          color: const Color(0xFF00B894),
+        ),
+      ),
       label: const Text('Edit Profile'),
-      style: ProfileTheme.primaryButtonStyle,
+      style: ProfileTheme.primaryButtonStyle(context),
     );
   }
 } 

@@ -6,6 +6,7 @@ import '../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../features/home/presentation/ui/pages/home_page.dart';
 
 import '../../features/profile/presentation/ui/pages/profile_page.dart';
+import '../../features/profile/presentation/ui/pages/edit_profile_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/about_app_page.dart';
 import '../../features/settings/presentation/pages/help_faq_page.dart';
@@ -41,6 +42,7 @@ class AppRoutes {
   static const String scheduleZoom = '/schedule-zoom';
 
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
   static const String settings = '/settings';
   static const String changePassword = '/change-password';
   static const String aboutApp = '/about-app';
@@ -108,6 +110,18 @@ class AppRoutes {
               updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
             ),
             child: const ProfilePage(),
+          ),
+          settings: settings,
+        );
+        
+      case editProfile:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => ProfileBloc(
+              getProfileUseCase: di.getIt<GetProfileUseCase>(),
+              updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
+            ),
+            child: const EditProfilePage(),
           ),
           settings: settings,
         );

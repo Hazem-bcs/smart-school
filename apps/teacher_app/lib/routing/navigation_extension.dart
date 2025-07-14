@@ -28,6 +28,11 @@ extension NavigationExtension on BuildContext {
     Navigator.pushNamed(this, AppRoutes.profile);
   }
   
+  // Navigate to edit profile page
+  void goToEditProfile() {
+    Navigator.pushNamed(this, AppRoutes.editProfile);
+  }
+  
   // Navigate to settings page
   void goToSettings() {
     Navigator.pushNamed(this, AppRoutes.settings);

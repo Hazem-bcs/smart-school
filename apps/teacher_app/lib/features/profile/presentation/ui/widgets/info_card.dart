@@ -15,9 +15,11 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // استخدم لون متنوع لكل بطاقة حسب الفهرس (للمسة فنية)
+    final colorIndex = title.hashCode % 8;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: ProfileTheme.cardDecoration,
+      decoration: ProfileTheme.cardDecoration(context, colorIndex: colorIndex),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -26,17 +28,16 @@ class InfoCard extends StatelessWidget {
             // Title
             Text(
               title,
-              style: ProfileTheme.title,
+              style: ProfileTheme.title(context),
             ),
             const SizedBox(height: 16),
-            
             // Items
             ...items.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;
               return Padding(
                 padding: EdgeInsets.only(bottom: index < items.length - 1 ? 12 : 0),
-                child: _buildInfoItem(item),
+                child: _buildInfoItem(context, item),
               );
             }).toList(),
           ],
@@ -45,7 +46,7 @@ class InfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(InfoCardItem item) {
+  Widget _buildInfoItem(BuildContext context, InfoCardItem item) {
     return InkWell(
       onTap: item.onTap,
       borderRadius: BorderRadius.circular(12),
@@ -68,7 +69,6 @@ class InfoCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            
             // Content
             Expanded(
               child: Column(
@@ -76,19 +76,18 @@ class InfoCard extends StatelessWidget {
                 children: [
                   Text(
                     item.primaryText,
-                    style: ProfileTheme.body,
+                    style: ProfileTheme.body(context),
                   ),
                   if (item.secondaryText != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       item.secondaryText!,
-                      style: ProfileTheme.caption,
+                      style: ProfileTheme.caption(context),
                     ),
                   ],
                 ],
               ),
             ),
-            
             // Action indicator
             if (item.onTap != null)
               Icon(

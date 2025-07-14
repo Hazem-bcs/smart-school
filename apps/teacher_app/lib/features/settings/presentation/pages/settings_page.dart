@@ -218,16 +218,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
+            GestureDetector(
+              onTap: () {
+                context.goToEditProfile();
+              },
+              child: Container(
+                padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
+                ),
               ),
             ),
           ],

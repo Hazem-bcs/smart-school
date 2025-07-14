@@ -7,6 +7,7 @@ import '../../../domain/entities/profile.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/info_card.dart';
 import '../../theme/profile_theme.dart';
+import '../../../../../routing/navigation_extension.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -61,8 +62,12 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: ProfileTheme.background,
+      backgroundColor: isDark
+          ? const Color(0xFF181C2A)
+          : theme.scaffoldBackgroundColor,
       appBar: _buildAppBar(),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -96,7 +101,6 @@ class _ProfilePageState extends State<ProfilePage>
       ),
       title: Text(
         'Profile',
-        style: ProfileTheme.title.copyWith(color: ProfileTheme.textPrimary),
       ),
       centerTitle: true,
     );
@@ -113,7 +117,6 @@ class _ProfilePageState extends State<ProfilePage>
           SizedBox(height: 16),
           Text(
             'Loading profile...',
-            style: ProfileTheme.body,
           ),
         ],
       ),
@@ -128,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage>
           ProfileHeader(
             profile: profile,
             onEditProfile: () {
-              context.read<ProfileBloc>().add(EditProfile());
+              context.goToEditProfile();
             },
           ),
           
@@ -225,12 +228,10 @@ class _ProfilePageState extends State<ProfilePage>
           const SizedBox(height: 16),
           Text(
             'Error loading profile',
-            style: ProfileTheme.title,
           ),
           const SizedBox(height: 8),
           Text(
             message,
-            style: ProfileTheme.caption,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -238,7 +239,6 @@ class _ProfilePageState extends State<ProfilePage>
             onPressed: () {
               context.read<ProfileBloc>().add(LoadProfile());
             },
-            style: ProfileTheme.primaryButtonStyle,
             child: const Text('Retry'),
           ),
         ],
@@ -250,7 +250,6 @@ class _ProfilePageState extends State<ProfilePage>
     return const Center(
       child: Text(
         'Welcome to your profile',
-        style: ProfileTheme.title,
       ),
     );
   }
