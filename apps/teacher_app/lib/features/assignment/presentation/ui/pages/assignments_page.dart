@@ -9,6 +9,8 @@ import 'new_assignment_page.dart';
 import '../../../../home/presentation/ui/pages/home_page.dart';
 import '../../../../../widgets/shared_bottom_navigation.dart';
 import 'package:core/theme/constants/app_colors.dart';
+import '../../../../assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
+import '../../../../../routing/navigation_extension.dart';
 
 class AssignmentsPage extends StatefulWidget {
   const AssignmentsPage({super.key});
@@ -378,8 +380,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
   }
 
   void _onAssignmentTap(Assignment assignment) {
-    // TODO: Navigate to assignment details
-    // print('Assignment tapped: ${assignment.title}');
+    context.goToAssignmentSubmission(assignment.id);
   }
 
   void _onNavItemTap(int index) {

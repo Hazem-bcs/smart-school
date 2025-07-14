@@ -47,6 +47,13 @@ import 'features/profile/domain/repositories/profile_repository.dart';
 import 'features/profile/domain/usecases/get_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
 
+// Assignment Submission feature
+import 'features/assignment_submission/domain/usecases/submit_grade_usecase.dart';
+import 'features/assignment_submission/presentation/blocs/submission_bloc.dart';
+import 'features/assignment_submission/domain/repositories/submission_repository.dart';
+import 'features/assignment_submission/data/data_sources/submission_remote_data_source.dart';
+import 'features/assignment_submission/data/repositories/submission_repository_impl.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
@@ -103,6 +110,16 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()));
   
   // Assignment feature dependencies
+  
+  // Assignment Submission feature dependencies
+  getIt.registerLazySingleton<SubmissionRemoteDataSource>(
+    () => SubmissionRemoteDataSource(),
+  );
+  getIt.registerLazySingleton<SubmissionRepository>(
+    () => SubmissionRepositoryImpl(remoteDataSource: getIt<SubmissionRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(() => SubmitGradeUseCase(getIt<SubmissionRepository>()));
+  getIt.registerFactory(() => SubmissionBloc(submitGradeUseCase: getIt<SubmitGradeUseCase>()));
   
   // Connectivity BLoC
   getIt.registerFactory(() => ConnectivityBloc(connectivity: Connectivity()));

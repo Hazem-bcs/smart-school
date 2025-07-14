@@ -49,4 +49,8 @@ extension NavigationExtension on BuildContext {
       Navigator.pop(this);
     }
   }
+
+  void goToAssignmentSubmission(String assignmentId) {
+    Navigator.pushNamed(this, AppRoutes.assignmentSubmission, arguments: assignmentId);
+  }
 } 

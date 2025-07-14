@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teacher_app/features/assignment_submission/presentation/blocs/submission_bloc.dart';
+import 'package:teacher_app/features/assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
 import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
 import '../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../features/auth/presentation/ui/pages/login_page.dart';
@@ -49,6 +51,7 @@ class AppRoutes {
   static const String helpFaq = '/help-faq';
   static const String assignments = '/assignments';
   static const String schedule = '/schedule';
+  static const String assignmentSubmission = '/assignment-submission';
   
     // Route generator with BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -162,6 +165,16 @@ class AppRoutes {
         case schedule:
         return MaterialPageRoute(
           builder: (_) => const SchedulePage(),
+          settings: settings,
+        );
+        
+      case assignmentSubmission:
+        final assignmentId = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<SubmissionBloc>(),
+            child: AssignmentSubmissionScreen(assignmentId: assignmentId),
+          ),
           settings: settings,
         );
         
