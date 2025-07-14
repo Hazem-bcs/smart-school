@@ -35,38 +35,38 @@ class AppTextStyles {
   static const FontWeight extraBold = FontWeight.w800;
 
   // ==================== FONT SIZES ====================
-  /// Extra small font size (10px)
-  static const double xs = 10.0;
+  /// Extra small font size (7px)
+  static const double xs = 7.0;
   
-  /// Small font size (12px)
-  static const double sm = 12.0;
+  /// Small font size (9px)
+  static const double sm = 9.0;
   
-  /// Base font size (14px)
-  static const double base = 14.0;
+  /// Base font size (11px)
+  static const double base = 11.0;
   
-  /// Large font size (16px)
-  static const double lg = 16.0;
+  /// Large font size (13px)
+  static const double lg = 13.0;
   
-  /// Extra large font size (18px)
-  static const double xl = 18.0;
+  /// Extra large font size (15px)
+  static const double xl = 15.0;
   
-  /// 2X large font size (20px)
-  static const double xl2 = 20.0;
+  /// 2X large font size (17px)
+  static const double xl2 = 17.0;
   
-  /// 3X large font size (24px)
-  static const double xl3 = 24.0;
+  /// 3X large font size (19px)
+  static const double xl3 = 19.0;
   
-  /// 4X large font size (28px)
-  static const double xl4 = 28.0;
+  /// 4X large font size (23px)
+  static const double xl4 = 23.0;
   
-  /// 5X large font size (32px)
-  static const double xl5 = 32.0;
+  /// 5X large font size (27px)
+  static const double xl5 = 27.0;
 
   // ==================== HEADING STYLES ====================
   
   /// Large heading style (H1)
   static TextStyle get h1 => const TextStyle(
-    fontSize: xl5,
+    fontSize: xl4,
     fontWeight: bold,
     fontFamily: primaryFont,
     height: 1.2,
@@ -74,7 +74,7 @@ class AppTextStyles {
   
   /// Medium heading style (H2)
   static TextStyle get h2 => const TextStyle(
-    fontSize: xl4,
+    fontSize: xl3,
     fontWeight: bold,
     fontFamily: primaryFont,
     height: 1.3,
@@ -82,7 +82,7 @@ class AppTextStyles {
   
   /// Small heading style (H3)
   static TextStyle get h3 => const TextStyle(
-    fontSize: xl3,
+    fontSize: xl2,
     fontWeight: semiBold,
     fontFamily: primaryFont,
     height: 1.4,
@@ -90,7 +90,7 @@ class AppTextStyles {
   
   /// Extra small heading style (H4)
   static TextStyle get h4 => const TextStyle(
-    fontSize: xl2,
+    fontSize: xl,
     fontWeight: semiBold,
     fontFamily: primaryFont,
     height: 1.4,
@@ -98,7 +98,7 @@ class AppTextStyles {
   
   /// Tiny heading style (H5)
   static TextStyle get h5 => const TextStyle(
-    fontSize: xl,
+    fontSize: lg,
     fontWeight: medium,
     fontFamily: primaryFont,
     height: 1.5,
@@ -108,7 +108,7 @@ class AppTextStyles {
   
   /// Large body text style
   static TextStyle get bodyLarge => const TextStyle(
-    fontSize: lg,
+    fontSize: xl,
     fontWeight: regular,
     fontFamily: primaryFont,
     height: 1.5,
@@ -116,7 +116,7 @@ class AppTextStyles {
   
   /// Medium body text style
   static TextStyle get bodyMedium => const TextStyle(
-    fontSize: base,
+    fontSize: lg,
     fontWeight: regular,
     fontFamily: primaryFont,
     height: 1.5,
@@ -124,7 +124,7 @@ class AppTextStyles {
   
   /// Small body text style
   static TextStyle get bodySmall => const TextStyle(
-    fontSize: sm,
+    fontSize: base,
     fontWeight: regular,
     fontFamily: primaryFont,
     height: 1.5,
@@ -160,7 +160,7 @@ class AppTextStyles {
   
   /// Primary button text style
   static TextStyle get buttonPrimary => const TextStyle(
-    fontSize: base,
+    fontSize: lg,
     fontWeight: semiBold,
     fontFamily: primaryFont,
     height: 1.4,
@@ -178,7 +178,7 @@ class AppTextStyles {
   
   /// Caption style for small text
   static TextStyle get caption => const TextStyle(
-    fontSize: xs,
+    fontSize: sm,
     fontWeight: regular,
     fontFamily: primaryFont,
     height: 1.4,

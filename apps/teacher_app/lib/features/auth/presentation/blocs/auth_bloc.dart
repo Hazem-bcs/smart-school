@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
-import 'package:auth/domain/usecases/login_usecase.dart';
+import '../../domain/usecases/check_auth_status_usecase.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/logout_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -9,10 +10,12 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
   final LoginUseCase loginUseCase;
+  final LogoutUseCase logoutUseCase;
 
   AuthBloc({
     required this.checkAuthStatusUseCase,
     required this.loginUseCase,
+    required this.logoutUseCase,
   }) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
@@ -29,8 +32,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await loginUseCase(event.email, event.password);
       
       result.fold(
-        (failure) => emit(AuthError(failure.message)),
-        (user) => emit(AuthAuthenticated()),
+        (error) => emit(AuthError(error)),
+        (authResponse) => emit(AuthAuthenticated()),
       );
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -44,9 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     
     try {
-      // TODO: Implement logout logic
-      // await authRepository.logout();
-      
+      await logoutUseCase();
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -62,35 +63,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       print('🔍 Checking auth status...');
       
-      // محاولة استخدام use case
-      try {
-        final result = await checkAuthStatusUseCase();
-        
-        result.fold(
-          (failure) {
-            print('❌ Auth check failed: ${failure.message}');
-            // في حالة الفشل، نفترض أن المستخدم غير مسجل دخول
-            emit(AuthUnauthenticated());
-          },
-          (isAuthenticated) {
-            print('✅ Auth check result: $isAuthenticated');
-            if (isAuthenticated) {
-              print('🔐 User is authenticated, going to classes');
-              emit(AuthAuthenticated());
-            } else {
-              print('🔓 User is not authenticated, going to login');
-              emit(AuthUnauthenticated());
-            }
-          },
-        );
-      } catch (useCaseError) {
-        print('💥 UseCase error: $useCaseError');
-        // في حالة خطأ في use case، نفترض أن المستخدم غير مسجل دخول
-        emit(AuthUnauthenticated());
-      }
+      final result = await checkAuthStatusUseCase();
+      
+      result.fold(
+        (error) {
+          print('❌ Auth check failed: $error');
+          emit(AuthUnauthenticated());
+        },
+        (user) {
+          print('✅ User is authenticated: ${user.name}');
+          emit(AuthAuthenticated());
+        },
+      );
     } catch (e) {
-      print('💥 General auth check error: $e');
-      // في حالة أي خطأ، نفترض أن المستخدم غير مسجل دخول
+      print('💥 Auth check error: $e');
       emit(AuthUnauthenticated());
     }
   }

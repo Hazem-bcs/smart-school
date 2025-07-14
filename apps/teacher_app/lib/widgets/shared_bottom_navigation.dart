@@ -17,7 +17,7 @@ class SharedBottomNavigation extends StatelessWidget {
     final navItems = [
       {'icon': Icons.dashboard, 'activeIcon': Icons.dashboard, 'label': 'Dashboard'},
       {'icon': Icons.assignment, 'activeIcon': Icons.assignment, 'label': 'Assignments'},
-      {'icon': Icons.group, 'activeIcon': Icons.group, 'label': 'Students'},
+      {'icon': Icons.calendar_today, 'activeIcon': Icons.calendar_today, 'label': 'Schedule'},
       {'icon': Icons.settings, 'activeIcon': Icons.settings, 'label': 'Settings'},
     ];
 

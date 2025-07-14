@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:teacher_app/features/assignment/presentation/ui/pages/assignments_page.dart';
+import 'package:teacher_app/features/schedule/presentation/ui/pages/schedule_page.dart';
 import '../../../../blocs/theme/theme_bloc.dart';
 import '../../../../core/responsive_helper.dart';
+import '../../../../core/responsive_widgets.dart';
+import '../../../../../widgets/shared_bottom_navigation.dart';
+import '../../../../../routing/navigation_extension.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,116 +17,445 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen>
+    with TickerProviderStateMixin {
   bool _notificationsEnabled = true;
-  bool _isEnglish = true; // true for English, false for Arabic
+  bool _isEnglish = true;
+  
+  late AnimationController _pageAnimationController;
+  late AnimationController _cardAnimationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAnimations();
+  }
+
+  void _initializeAnimations() {
+    _pageAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _cardAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeInOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _cardAnimationController,
+      curve: Curves.elasticOut,
+    ));
+
+    _pageAnimationController.forward();
+    _cardAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _pageAnimationController.dispose();
+    _cardAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: _buildAppBar(theme),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: ResponsiveContent(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  _buildProfileCard(theme, isDark),
+                  _buildSettingsSection(theme, isDark),
+                  _buildSupportSection(theme, isDark),
+                  SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 80, tablet: 100, desktop: 120)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: SharedBottomNavigation(
+        currentIndex: 3, // Settings index
+        onNavItemTap: _onNavItemTap,
+      ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
-        'settings.title'.tr(),
-        style: Theme.of(context).textTheme.titleLarge?.responsive(context),
+        'Settings',
+        style: theme.textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
       ),
       leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios,
-          color: Theme.of(context).colorScheme.primary,
-          size: ResponsiveHelper.getIconSize(context),
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: theme.iconTheme.color,
+            size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
+          ),
         ),
         onPressed: () => Navigator.pop(context),
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: 0,
       centerTitle: true,
-      toolbarHeight: ResponsiveHelper.getAppBarHeight(context),
     );
   }
 
-  Widget _buildBody() {
-    return BlocListener<ThemeBloc, ThemeState>(
-      listener: (context, state) {
-        if (state is ThemeError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        }
-      },
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: ResponsiveHelper.getMaxContentWidth(context),
+  Widget _buildProfileCard(ThemeData theme, bool isDark) {
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: Container(
+        margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28)),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark 
+                ? [
+                    AppColors.darkGradientStart,
+                    AppColors.darkGradientEnd,
+                  ]
+                : [
+                    AppColors.primary,
+                    AppColors.secondary,
+                  ],
           ),
-          child: ListView(
-            padding: ResponsiveHelper.getScreenPadding(context),
-            children: [
-          _buildProfileCard(),
-          _buildSectionHeader('settings.other_settings'.tr(), topPadding: 32, bottomPadding: 8),
-          _buildSettingsGroup([
-            _buildToggleItem(
-              Icons.person,
-              'settings.profile_details'.tr(),
-              _isEnglish,
-              (value) {
-                setState(() {
-                  _isEnglish = value;
-                });
-                _toggleLanguage();
-              },
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: (isDark ? AppColors.darkGradientStart : AppColors.primary).withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
-            _buildNavigationItem(
-              Icons.lock,
-              'settings.password'.tr(),
-              () => Navigator.pushNamed(context, '/change-password'),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
+              height: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: ResponsiveHelper.getIconSize(context, mobile: 30, tablet: 35, desktop: 40),
+              ),
             ),
-            _buildToggleItem(
-              Icons.notifications,
-              'settings.notifications'.tr(),
-              _notificationsEnabled,
-              (value) {
-                setState(() {
-                  _notificationsEnabled = value;
-                });
-              },
+            SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Teacher Name',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 18, tablet: 20, desktop: 22),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
+                  Text(
+                    'teacher@school.com',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            _buildThemeToggleItem(),
-          ]),
-          _buildSettingsGroup([
-            _buildNavigationItem(
-              Icons.info_outline,
-              'settings.about_application'.tr(),
-              () => Navigator.pushNamed(context, '/about-app'),
+            Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
+              ),
             ),
-            _buildNavigationItem(
-              Icons.help_outline,
-              'settings.help_faq'.tr(),
-              () => Navigator.pushNamed(context, '/help-faq'),
-            ),
-            _buildDestructiveItem(
-              Icons.logout,
-              'settings.logout'.tr(),
-              () => _showLogoutDialog(),
-            ),
-          ], topMargin: 32),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildThemeToggleItem() {
+  Widget _buildSettingsSection(ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Preferences', theme),
+        _buildSettingsCard([
+          _buildAnimatedSettingTile(
+            icon: Icons.notifications,
+            title: 'Notifications',
+            subtitle: 'Manage your notification preferences',
+            trailing: _buildAnimatedSwitch(_notificationsEnabled, (value) {
+              setState(() {
+                _notificationsEnabled = value;
+              });
+            }, theme, isDark),
+            theme: theme,
+            isDark: isDark,
+          ),
+          _buildAnimatedSettingTile(
+            icon: Icons.language,
+            title: 'Language',
+            subtitle: _isEnglish ? 'English' : 'العربية',
+            trailing: Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardBackground : AppColors.gray100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: theme.iconTheme.color,
+                size: ResponsiveHelper.getIconSize(context, mobile: 14, tablet: 16, desktop: 18),
+              ),
+            ),
+            onTap: _toggleLanguage,
+            theme: theme,
+            isDark: isDark,
+          ),
+          _buildThemeToggleTile(theme, isDark),
+        ], theme, isDark),
+      ],
+    );
+  }
+
+  Widget _buildSupportSection(ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Support & About', theme),
+        _buildSettingsCard([
+          _buildAnimatedSettingTile(
+            icon: Icons.help_outline,
+            title: 'Help & FAQ',
+            subtitle: 'Get help and find answers',
+            trailing: Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardBackground : AppColors.gray100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: theme.iconTheme.color,
+                size: ResponsiveHelper.getIconSize(context, mobile: 14, tablet: 16, desktop: 18),
+              ),
+            ),
+            onTap: () => Navigator.pushNamed(context, '/help-faq'),
+            theme: theme,
+            isDark: isDark,
+          ),
+          _buildAnimatedSettingTile(
+            icon: Icons.info_outline,
+            title: 'About App',
+            subtitle: 'Version 1.0.0',
+            trailing: Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCardBackground : AppColors.gray100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: theme.iconTheme.color,
+                size: ResponsiveHelper.getIconSize(context, mobile: 14, tablet: 16, desktop: 18),
+              ),
+            ),
+            onTap: () => Navigator.pushNamed(context, '/about-app'),
+            theme: theme,
+            isDark: isDark,
+          ),
+          _buildAnimatedSettingTile(
+            icon: Icons.logout,
+            title: 'Logout',
+            subtitle: 'Sign out of your account',
+            trailing: Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkDestructive.withOpacity(0.2) : AppColors.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: isDark ? AppColors.darkDestructive : AppColors.error,
+                size: ResponsiveHelper.getIconSize(context, mobile: 14, tablet: 16, desktop: 18),
+              ),
+            ),
+            onTap: _showLogoutDialog,
+            isDestructive: true,
+            theme: theme,
+            isDark: isDark,
+          ),
+        ], theme, isDark),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title, ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28),
+        vertical: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
+      ),
+      child: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsCard(List<Widget> children, ThemeData theme, bool isDark) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCardBackground : theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _buildAnimatedSettingTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+    bool isDestructive = false,
+    required ThemeData theme,
+    required bool isDark,
+  }) {
+    return AnimatedBuilder(
+      animation: _cardAnimationController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: 0.9 + (0.1 * _cardAnimationController.value),
+          child: Container(
+            margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCardBackground : theme.cardColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: theme.dividerColor.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            child: ListTile(
+              leading: Container(
+                padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
+                decoration: BoxDecoration(
+                  color: isDestructive 
+                      ? (isDark ? AppColors.darkDestructive.withOpacity(0.2) : AppColors.error.withOpacity(0.1))
+                      : (isDark ? AppColors.darkAccentBlue.withOpacity(0.2) : AppColors.info.withOpacity(0.1)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: isDestructive 
+                      ? (isDark ? AppColors.darkDestructive : AppColors.error)
+                      : (isDark ? AppColors.darkAccentBlue : AppColors.info),
+                  size: ResponsiveHelper.getIconSize(context, mobile: 20, tablet: 22, desktop: 24),
+                ),
+              ),
+              title: Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: isDestructive 
+                      ? (isDark ? AppColors.darkDestructive : AppColors.error)
+                      : theme.textTheme.titleMedium?.color,
+                ),
+              ),
+              subtitle: Text(
+                subtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodySmall?.color,
+                ),
+              ),
+              trailing: trailing,
+              onTap: onTap,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
+                vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeToggleTile(ThemeData theme, bool isDark) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         bool isDarkMode = false;
@@ -129,209 +463,142 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (state is ThemeLoaded) {
           isDarkMode = state.isDarkMode;
         } else {
-          // Fallback to system theme detection
           isDarkMode = context.isDarkMode;
         }
 
-        return _buildToggleItem(
-          Icons.brightness_4,
-          'settings.dark_mode'.tr(),
-          isDarkMode,
-          (value) {
+        return _buildAnimatedSettingTile(
+          icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
+          title: 'Dark Mode',
+          subtitle: isDarkMode ? 'Enabled' : 'Disabled',
+          trailing: _buildAnimatedSwitch(isDarkMode, (value) {
             context.read<ThemeBloc>().add(ToggleTheme());
-          },
+          }, theme, isDark),
+          theme: theme,
+          isDark: isDark,
         );
       },
     );
   }
 
-  Widget _buildProfileCard() {
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: ResponsiveHelper.getCardElevation(context),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
-      ),
-      child: InkWell(
-        onTap: () => print('Profile tapped'),
-        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
-        child: Padding(
-          padding: ResponsiveHelper.getScreenPadding(context),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: ResponsiveHelper.isMobile(context) ? 30 : 40,
-                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                child: Icon(
-                  Icons.person,
-                  size: ResponsiveHelper.getIconSize(context),
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              SizedBox(width: ResponsiveHelper.getSpacing(context)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'settings.profile_card.name'.tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.responsive(context),
-                    ),
-                    SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
-                    Text(
-                      'settings.profile_card.role'.tr(),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ).responsive(context),
+  Widget _buildAnimatedSwitch(bool value, ValueChanged<bool> onChanged, ThemeData theme, bool isDark) {
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: ResponsiveHelper.getIconSize(context, mobile: 50, tablet: 55, desktop: 60),
+        height: ResponsiveHelper.getIconSize(context, mobile: 28, tablet: 30, desktop: 32),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: value 
+              ? (isDark ? AppColors.darkSuccess : AppColors.success)
+              : (isDark ? AppColors.darkDivider : AppColors.gray300),
+        ),
+        child: Stack(
+          children: [
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              left: value ? ResponsiveHelper.getIconSize(context, mobile: 22, tablet: 25, desktop: 28) : 2,
+              top: 2,
+              child: Container(
+                width: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 26, desktop: 28),
+                height: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 26, desktop: 28),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Theme.of(context).colorScheme.secondary,
-                size: ResponsiveHelper.getIconSize(context, mobile: 16, tablet: 20, desktop: 24),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: isDark ? AppColors.darkCardBackground : theme.dialogTheme.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkDestructive.withOpacity(0.2) : AppColors.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
+              child: Icon(
+                Icons.logout,
+                color: isDark ? AppColors.darkDestructive : AppColors.error,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Logout',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: theme.textTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
-        ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // TODO: Implement logout logic
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark ? AppColors.darkDestructive : AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'Logout',
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title, {double topPadding = 0, double bottomPadding = 0}) {
-    return Padding(
-      padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: AppTextStyles.semiBold,
-        ).responsive(context),
-      ),
-    );
-  }
-
-  Widget _buildSettingsGroup(List<Widget> items, {double topMargin = 0}) {
-    return Container(
-      margin: EdgeInsets.only(top: topMargin),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(ResponsiveHelper.getBorderRadius(context)),
-        border: Border.all(
-          color: Theme.of(context).dividerTheme.color!,
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
-          final isLast = index == items.length - 1;
-          
-          return Column(
-            children: [
-              item,
-              if (!isLast)
-                Divider(
-                  color: Theme.of(context).dividerTheme.color,
-                  height: 1,
-                  thickness: 1,
-                  indent: ResponsiveHelper.getSpacing(context),
-                  endIndent: ResponsiveHelper.getSpacing(context),
-                ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildNavigationItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Theme.of(context).iconTheme.color,
-        size: ResponsiveHelper.getIconSize(context),
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.responsive(context),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        color: Theme.of(context).colorScheme.secondary,
-        size: ResponsiveHelper.getIconSize(context, mobile: 16, tablet: 20, desktop: 24),
-      ),
-      onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context),
-        vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-      ),
-      minVerticalPadding: ResponsiveHelper.getListTileHeight(context) / 2,
-    );
-  }
-
-  Widget _buildToggleItem(IconData icon, String title, bool value, ValueChanged<bool> onChanged) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Theme.of(context).iconTheme.color,
-        size: ResponsiveHelper.getIconSize(context),
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.responsive(context),
-      ),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: Theme.of(context).colorScheme.primary,
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
-            return Colors.white;
-          }
-          return Colors.grey.shade400;
-        }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
-            return Theme.of(context).colorScheme.primary;
-          }
-          return Colors.grey.shade300;
-        }),
-        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
-      ),
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context),
-        vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-      ),
-      minVerticalPadding: ResponsiveHelper.getListTileHeight(context) / 2,
-    );
-  }
-
-  Widget _buildDestructiveItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Theme.of(context).colorScheme.error,
-        size: AppSpacing.baseIcon,
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).colorScheme.error,
-        ),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        color: Theme.of(context).colorScheme.error,
-        size: AppSpacing.smIcon,
-      ),
-      onTap: onTap,
-      contentPadding: AppSpacing.padding(horizontal: AppSpacing.base, vertical: AppSpacing.sm),
     );
   }
 
   void _toggleLanguage() {
+    setState(() {
+      _isEnglish = !_isEnglish;
+    });
+    
     if (_isEnglish) {
       context.setLocale(const Locale('en'));
     } else {
@@ -339,52 +606,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: AppSpacing.baseBorderRadius,
-        ),
-        title: Text(
-          'settings.logout'.tr(),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: AppTextStyles.bold,
+  void _onNavItemTap(int index) {
+    switch (index) {
+      case 0: // Dashboard
+        context.goToHome(className: 'Default Class');
+        break;
+      case 1: // Assignments
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const AssignmentsPage(),
           ),
-        ),
-        content: Text(
-          'settings.logout_confirmation'.tr(),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.secondary,
+        );
+        break;
+      case 2: // Schedule
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const SchedulePage(),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'settings.cancel'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: AppTextStyles.semiBold,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              print('Logout confirmed');
-              // TODO: Implement logout logic
-            },
-            child: Text(
-              'settings.confirm'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-                fontWeight: AppTextStyles.semiBold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        );
+        break;
+      case 3: // Settings
+        // Already on Settings page
+        break;
+    }
   }
 } 

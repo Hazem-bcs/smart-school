@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
 import '../../../../../core/responsive_helper.dart';
 import '../../../../../core/responsive_widgets.dart';
 import '../widgets/class_card.dart';
@@ -7,7 +8,9 @@ import '../widgets/quick_action_button.dart';
 
 import '../../../../assignment/presentation/ui/pages/new_assignment_page.dart';
 import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
+import '../../../../schedule/presentation/ui/pages/schedule_page.dart';
 import '../../../../../widgets/shared_bottom_navigation.dart';
+import '../../../../../routing/navigation_extension.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -100,9 +103,12 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
-      appBar: _buildAppBar(),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: _buildAppBar(theme),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SlideTransition(
@@ -113,10 +119,10 @@ class _HomePageState extends State<HomePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildClassesSection(),
-                  _buildGradingSection(),
-                  _buildNotificationsSection(),
-                  _buildQuickActionsSection(),
+                  _buildClassesSection(theme, isDark),
+                  _buildGradingSection(theme, isDark),
+                  _buildNotificationsSection(theme, isDark),
+                  _buildQuickActionsSection(theme, isDark),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 80, tablet: 100, desktop: 120)),
                 ],
               ),
@@ -131,17 +137,13 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBar(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: 0,
-      title: ResponsiveText(
+      title: Text(
         'Dashboard',
-        mobileSize: 18,
-        tabletSize: 20,
-        desktopSize: 22,
-        style: const TextStyle(
-          color: Color(0xFF101418),
+        style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -157,7 +159,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildClassesSection() {
+  Widget _buildClassesSection(ThemeData theme, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -166,15 +168,10 @@ class _HomePageState extends State<HomePage>
             horizontal: ResponsiveHelper.getSpacing(context),
             vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
           ),
-          child: ResponsiveText(
+          child: Text(
             'Classes',
-            mobileSize: 18,
-            tabletSize: 20,
-            desktopSize: 22,
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF101418),
             ),
           ),
         ),
@@ -201,21 +198,16 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildGradingSection() {
+  Widget _buildGradingSection(ThemeData theme, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
-          child: ResponsiveText(
+          child: Text(
             'Grading',
-            mobileSize: 18,
-            tabletSize: 20,
-            desktopSize: 22,
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF101418),
             ),
           ),
         ),
@@ -237,21 +229,16 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildNotificationsSection() {
+  Widget _buildNotificationsSection(ThemeData theme, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
-          child: ResponsiveText(
+          child: Text(
             'Notifications',
-            mobileSize: 18,
-            tabletSize: 20,
-            desktopSize: 22,
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF101418),
             ),
           ),
         ),
@@ -273,22 +260,18 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget _buildQuickActionsSection() {
+  Widget _buildQuickActionsSection(ThemeData theme, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context)),
-          child: ResponsiveText(
+          child: Text(
             'Quick Actions',
-            mobileSize: 18,
-            tabletSize: 20,
-            desktopSize: 22,
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF101418),
             ),
+
           ),
         ),
         Padding(
@@ -389,8 +372,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void _onScheduleZoom() {
-    // TODO: Navigate to schedule zoom
-    print('Schedule Zoom tapped');
+    Navigator.of(context).pushNamed('/schedule-zoom');
   }
 
   void _onNavItemTap(int index) {
@@ -409,13 +391,15 @@ class _HomePageState extends State<HomePage>
           ),
         );
         break;
-      case 2: // Students
-        // TODO: Navigate to Students page
-        print('Students page not implemented yet');
+      case 2: // Schedule
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const SchedulePage(),
+          ),
+        );
         break;
       case 3: // Settings
-        // TODO: Navigate to Settings page
-        print('Settings page not implemented yet');
+        context.goToSettings();
         break;
     }
   }

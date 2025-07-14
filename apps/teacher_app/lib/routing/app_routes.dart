@@ -9,23 +9,39 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/settings/presentation/pages/about_app_page.dart';
 import '../../features/settings/presentation/pages/help_faq_page.dart';
 import '../../features/assignment/presentation/ui/pages/assignments_page.dart';
+import '../../features/assignment/presentation/blocs/assignment_bloc.dart';
+import '../../features/assignment/domain/usecases/get_assignments_usecase.dart';
+import '../../features/assignment/domain/usecases/create_assignment_usecase.dart';
+import '../../features/assignment/domain/usecases/update_assignment_usecase.dart';
+import '../../features/assignment/domain/usecases/delete_assignment_usecase.dart';
+import '../../features/schedule/presentation/ui/pages/schedule_page.dart';
+import '../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
 import '../../features/auth/presentation/blocs/auth_bloc.dart';
 
 import '../../features/home/presentation/blocs/home_bloc.dart';
+import '../../features/home/domain/usecases/get_classes_usecase.dart';
+
+import '../../features/home/domain/usecases/get_notifications_usecase.dart';
+import '../../features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
+import '../../features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
+import '../../features/zoom_meeting/domain/usecases/get_available_classes_usecase.dart';
+import '../../features/zoom_meeting/domain/usecases/get_meeting_options_usecase.dart';
 import '../../features/profile/presentation/blocs/profile_bloc.dart';
-import '../../features/settings/presentation/blocs/settings_bloc.dart';
+import '../../features/profile/domain/usecases/get_profile_usecase.dart';
+import '../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../injection_container.dart' as di;
-import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
-import 'package:auth/domain/usecases/login_usecase.dart';
-import 'package:password/injection_container.dart' as password_di;
+import '../features/auth/domain/usecases/check_auth_status_usecase.dart';
+import '../features/auth/domain/usecases/login_usecase.dart';
+import '../features/auth/domain/usecases/logout_usecase.dart';
 
 class AppRoutes {
   // Route names
   static const String splash = '/splash';
   static const String login = '/login';
   static const String home = '/home';
+  static const String scheduleZoom = '/schedule-zoom';
 
   static const String profile = '/profile';
   static const String settings = '/settings';
@@ -33,6 +49,7 @@ class AppRoutes {
   static const String aboutApp = '/about-app';
   static const String helpFaq = '/help-faq';
   static const String assignments = '/assignments';
+  static const String schedule = '/schedule';
   
     // Route generator with BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -51,6 +68,7 @@ class AppRoutes {
             create: (_) => AuthBloc(
               checkAuthStatusUseCase: di.getIt<CheckAuthStatusUseCase>(),
               loginUseCase: di.getIt<LoginUseCase>(),
+              logoutUseCase: di.getIt<LogoutUseCase>(),
             ),
             child: const LoginPage(),
           ),
@@ -58,11 +76,27 @@ class AppRoutes {
         );
         
       case home:
-        
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => HomeBloc(),
+            create: (_) => HomeBloc(
+              getClassesUseCase: di.getIt<GetClassesUseCase>(),
+              getAssignmentsUseCase: di.getIt<GetAssignmentsUseCase>(),
+              getNotificationsUseCase: di.getIt<GetNotificationsUseCase>(),
+            ),
             child: const HomePage(),
+          ),
+          settings: settings,
+        );
+        
+      case scheduleZoom:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => ZoomMeetingBloc(
+              scheduleMeetingUseCase: di.getIt<ScheduleMeetingUseCase>(),
+              getAvailableClassesUseCase: di.getIt<GetAvailableClassesUseCase>(),
+              getMeetingOptionsUseCase: di.getIt<GetMeetingOptionsUseCase>(),
+            ),
+            child: const ScheduleMeetingPage(),
           ),
           settings: settings,
         );
@@ -72,7 +106,10 @@ class AppRoutes {
       case profile:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => ProfileBloc(),
+            create: (_) => ProfileBloc(
+              getProfileUseCase: di.getIt<GetProfileUseCase>(),
+              updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
+            ),
             child: const ProfilePage(),
           ),
           settings: settings,
@@ -107,7 +144,21 @@ class AppRoutes {
         
         case assignments:
         return MaterialPageRoute(
-          builder: (_) => const AssignmentsPage(),
+          builder: (_) => BlocProvider(
+            create: (_) => AssignmentBloc(
+              getAssignmentsUseCase: di.getIt<GetAssignmentsUseCase>(),
+              createAssignmentUseCase: di.getIt<CreateAssignmentUseCase>(),
+              updateAssignmentUseCase: di.getIt<UpdateAssignmentUseCase>(),
+              deleteAssignmentUseCase: di.getIt<DeleteAssignmentUseCase>(),
+            ),
+            child: const AssignmentsPage(),
+          ),
+          settings: settings,
+        );
+        
+        case schedule:
+        return MaterialPageRoute(
+          builder: (_) => const SchedulePage(),
           settings: settings,
         );
         

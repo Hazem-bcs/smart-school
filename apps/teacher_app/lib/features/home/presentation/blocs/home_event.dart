@@ -1,4 +1,4 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class HomeEvent extends Equatable {
   const HomeEvent();
@@ -8,10 +8,15 @@ abstract class HomeEvent extends Equatable {
 }
 
 class LoadHomeData extends HomeEvent {
-  final String className;
-
-  const LoadHomeData(this.className);
+  const LoadHomeData();
 
   @override
-  List<Object> get props => [className];
+  List<Object> get props => [];
+}
+
+class RefreshHomeData extends HomeEvent {
+  const RefreshHomeData();
+
+  @override
+  List<Object> get props => [];
 } 

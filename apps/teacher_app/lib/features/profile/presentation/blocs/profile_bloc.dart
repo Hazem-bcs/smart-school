@@ -1,13 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-
-part 'profile_event.dart';
-part 'profile_state.dart';
+import '../../domain/usecases/get_profile_usecase.dart';
+import '../../domain/usecases/update_profile_usecase.dart';
+import '../../domain/entities/profile.dart';
+import 'profile_event.dart';
+import 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc() : super(ProfileInitial()) {
+  final GetProfileUseCase getProfileUseCase;
+  final UpdateProfileUseCase updateProfileUseCase;
+
+  ProfileBloc({
+    required this.getProfileUseCase,
+    required this.updateProfileUseCase,
+  }) : super(ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<UpdateProfile>(_onUpdateProfile);
+    on<EditProfile>(_onEditProfile);
+    on<NavigateToSocialMedia>(_onNavigateToSocialMedia);
+    on<ContactAction>(_onContactAction);
   }
 
   void _onLoadProfile(
@@ -17,20 +27,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfileLoading());
     
     try {
-      // TODO: Load profile from API
-      await Future.delayed(const Duration(seconds: 1));
+      final result = await getProfileUseCase();
       
-      final profile = ProfileModel(
-        id: '1',
-        name: 'أحمد محمد',
-        email: 'ahmed@school.com',
-        phone: '+966501234567',
-        subject: 'الرياضيات',
-        experience: '5 سنوات',
-        avatar: null,
+      result.fold(
+        (error) => emit(ProfileError(error)),
+        (profile) => emit(ProfileLoaded(profile)),
       );
-      
-      emit(ProfileLoaded(profile: profile));
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
@@ -40,51 +42,41 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     UpdateProfile event,
     Emitter<ProfileState> emit,
   ) async {
+    emit(ProfileLoading());
+    
     try {
-      // TODO: Update profile via API
-      emit(ProfileUpdated(profile: event.profile));
+      final result = await updateProfileUseCase(event.profile);
+      
+      result.fold(
+        (error) => emit(ProfileError(error)),
+        (profile) => emit(ProfileUpdated(profile)),
+      );
     } catch (e) {
       emit(ProfileError(e.toString()));
     }
   }
-}
 
-class ProfileModel {
-  final String id;
-  final String name;
-  final String email;
-  final String phone;
-  final String subject;
-  final String experience;
-  final String? avatar;
+  void _onEditProfile(
+    EditProfile event,
+    Emitter<ProfileState> emit,
+  ) {
+    // TODO: Navigate to edit profile page
+    print('Navigate to edit profile page');
+  }
 
-  ProfileModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.subject,
-    required this.experience,
-    this.avatar,
-  });
+  void _onNavigateToSocialMedia(
+    NavigateToSocialMedia event,
+    Emitter<ProfileState> emit,
+  ) {
+    print('Navigating to ${event.url}');
+    // TODO: Implement URL launcher
+  }
 
-  ProfileModel copyWith({
-    String? id,
-    String? name,
-    String? email,
-    String? phone,
-    String? subject,
-    String? experience,
-    String? avatar,
-  }) {
-    return ProfileModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      subject: subject ?? this.subject,
-      experience: experience ?? this.experience,
-      avatar: avatar ?? this.avatar,
-    );
+  void _onContactAction(
+    ContactAction event,
+    Emitter<ProfileState> emit,
+  ) {
+    print('${event.action}: ${event.value}');
+    // TODO: Implement contact actions (email, phone)
   }
 } 

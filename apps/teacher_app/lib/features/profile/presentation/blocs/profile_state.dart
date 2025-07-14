@@ -1,10 +1,11 @@
-part of 'profile_bloc.dart';
+import 'package:equatable/equatable.dart';
+import '../../domain/entities/profile.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ProfileInitial extends ProfileState {}
@@ -12,21 +13,21 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final ProfileModel profile;
+  final Profile profile;
 
-  const ProfileLoaded({required this.profile});
+  const ProfileLoaded(this.profile);
 
   @override
-  List<Object> get props => [profile];
+  List<Object?> get props => [profile];
 }
 
 class ProfileUpdated extends ProfileState {
-  final ProfileModel profile;
+  final Profile profile;
 
-  const ProfileUpdated({required this.profile});
+  const ProfileUpdated(this.profile);
 
   @override
-  List<Object> get props => [profile];
+  List<Object?> get props => [profile];
 }
 
 class ProfileError extends ProfileState {
@@ -35,5 +36,5 @@ class ProfileError extends ProfileState {
   const ProfileError(this.message);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 } 

@@ -40,7 +40,7 @@ class AppTheme {
       foregroundColor: AppColors.lightPrimaryText,
       elevation: AppSpacing.noElevation,
       centerTitle: true,
-      titleTextStyle: AppTextStyles.h4.copyWith(
+      titleTextStyle: AppTextStyles.h3.copyWith(
         color: AppColors.lightPrimaryText,
         fontWeight: AppTextStyles.semiBold,
       ),
@@ -242,7 +242,7 @@ class AppTheme {
       foregroundColor: AppColors.darkPrimaryText,
       elevation: AppSpacing.noElevation,
       centerTitle: true,
-      titleTextStyle: AppTextStyles.h4.copyWith(
+      titleTextStyle: AppTextStyles.h3.copyWith(
         color: AppColors.darkPrimaryText,
         fontWeight: AppTextStyles.semiBold,
       ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:sizer/sizer.dart';
 import '../../blocs/profile_bloc.dart';
-import '../../../../../routing/navigation_extension.dart';
+import '../../blocs/profile_event.dart';
+import '../../blocs/profile_state.dart';
+import '../../../domain/entities/profile.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/info_card.dart';
+import '../../theme/profile_theme.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,313 +15,243 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin {
+  late AnimationController _pageAnimationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
     super.initState();
-    context.read<ProfileBloc>().add(const LoadProfile());
+    _pageAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeIn,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _pageAnimationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _pageAnimationController.forward();
+
+    // Load profile when page is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileBloc>().add(LoadProfile());
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageAnimationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('teacher.profile'.tr()),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 2,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // TODO: Navigate to edit profile
+      backgroundColor: ProfileTheme.background,
+      appBar: _buildAppBar(),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoading) {
+                return _buildLoadingState();
+              } else if (state is ProfileLoaded) {
+                return _buildLoadedState(state.profile);
+              } else if (state is ProfileError) {
+                return _buildErrorState(state.message);
+              } else {
+                return _buildInitialState();
+              }
             },
-            icon: const Icon(Icons.edit),
           ),
-        ],
-      ),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is ProfileLoaded) {
-            return _buildProfileContent(state.profile);
-          } else if (state is ProfileError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 15.w,
-                    color: Colors.red,
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    'Error loading profile',
-                    style: TextStyle(
-                      fontSize: 5.w,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ProfileBloc>().add(const LoadProfile());
-                    },
-                    child: Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
+        ),
       ),
     );
   }
 
-  Widget _buildProfileContent(ProfileModel profile) {
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: ProfileTheme.icon),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: Text(
+        'Profile',
+        style: ProfileTheme.title.copyWith(color: ProfileTheme.textPrimary),
+      ),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(ProfileTheme.primary),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Loading profile...',
+            style: ProfileTheme.body,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadedState(Profile profile) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(4.w),
       child: Column(
         children: [
           // Profile Header
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(4.w),
-              child: Column(
-                children: [
-                  // Avatar
-                  CircleAvatar(
-                    radius: 15.w,
-                    backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                    child: profile.avatar != null
-                        ? ClipOval(
-                            child: Image.network(
-                              profile.avatar!,
-                              width: 30.w,
-                              height: 30.w,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Icon(
-                            Icons.person,
-                            size: 15.w,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                  ),
-                  SizedBox(height: 3.h),
-                  
-                  // Name
-                  Text(
-                    profile.name,
-                    style: TextStyle(
-                      fontSize: 6.w,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  SizedBox(height: 1.h),
-                  
-                  // Subject
-                  Text(
-                    profile.subject,
-                    style: TextStyle(
-                      fontSize: 4.w,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          ProfileHeader(
+            profile: profile,
+            onEditProfile: () {
+              context.read<ProfileBloc>().add(EditProfile());
+            },
           ),
           
-          SizedBox(height: 4.h),
-          
-          // Profile Details
-          _buildSectionCard(
-            title: 'Personal Information',
-            icon: Icons.person,
-            children: [
-              _buildInfoRow(
-                icon: Icons.email,
-                label: 'Email',
-                value: profile.email,
+          // Contact Information Card
+          InfoCard(
+            title: 'Contact Information',
+            items: [
+              InfoCardItem(
+                icon: 'email',
+                primaryText: 'Email',
+                secondaryText: profile.contactInfo.email,
+                onTap: () {
+                  context.read<ProfileBloc>().add(
+                    ContactAction(action: 'email', value: profile.contactInfo.email),
+                  );
+                },
               ),
-              _buildInfoRow(
-                icon: Icons.phone,
-                label: 'Phone',
-                value: profile.phone,
-              ),
-              _buildInfoRow(
-                icon: Icons.school,
-                label: 'Subject',
-                value: profile.subject,
-              ),
-              _buildInfoRow(
-                icon: Icons.work,
-                label: 'Experience',
-                value: profile.experience,
+              InfoCardItem(
+                icon: 'phone',
+                primaryText: 'Phone',
+                secondaryText: profile.contactInfo.phone,
+                onTap: () {
+                  context.read<ProfileBloc>().add(
+                    ContactAction(action: 'phone', value: profile.contactInfo.phone),
+                  );
+                },
               ),
             ],
           ),
           
-          SizedBox(height: 3.h),
+          // Social Media Card
+          if (profile.socialMedia.isNotEmpty)
+            InfoCard(
+              title: 'Social Media',
+              items: profile.socialMedia.map((social) => InfoCardItem(
+                icon: social.icon,
+                primaryText: social.platform,
+                onTap: () {
+                  context.read<ProfileBloc>().add(
+                    NavigateToSocialMedia(social.url),
+                  );
+                },
+              )).toList(),
+            ),
           
-          // Quick Actions
-          _buildSectionCard(
-            title: 'Quick Actions',
-            icon: Icons.settings,
-            children: [
-              _buildActionTile(
-                icon: Icons.edit,
-                title: 'Edit Profile',
-                onTap: () {
-                  // TODO: Navigate to edit profile
-                },
+          // Professional Information Card
+          InfoCard(
+            title: 'Professional Information',
+            items: [
+              InfoCardItem(
+                icon: 'book_open',
+                primaryText: 'Subjects Taught',
+                secondaryText: profile.professionalInfo.subjectsTaught.join(', '),
               ),
-              _buildActionTile(
-                icon: Icons.lock,
-                title: 'Change Password',
-                onTap: () {
-                  // TODO: Navigate to change password
-                },
+              InfoCardItem(
+                icon: 'users',
+                primaryText: 'Grade Levels',
+                secondaryText: profile.professionalInfo.gradeLevels.join(', '),
               ),
-              _buildActionTile(
-                icon: Icons.notifications,
-                title: 'Notification Settings',
-                onTap: () {
-                  // TODO: Navigate to notification settings
-                },
+              InfoCardItem(
+                icon: 'building',
+                primaryText: 'Department',
+                secondaryText: profile.professionalInfo.department,
               ),
-              _buildActionTile(
-                icon: Icons.logout,
-                title: 'Logout',
-                onTap: () {
-                  // TODO: Show logout confirmation
-                },
-                isDestructive: true,
+              InfoCardItem(
+                icon: 'graduation_cap',
+                primaryText: 'Qualifications',
+                secondaryText: profile.professionalInfo.qualifications,
+              ),
+              InfoCardItem(
+                icon: 'certificate',
+                primaryText: 'Certifications',
+                secondaryText: profile.professionalInfo.certifications,
               ),
             ],
           ),
+          
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  Widget _buildSectionCard({
-    required String title,
-    required IconData icon,
-    required List<Widget> children,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  icon,
-                  color: Theme.of(context).primaryColor,
-                  size: 6.w,
-                ),
-                SizedBox(width: 2.w),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 5.w,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 2.h),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 1.h),
-      child: Row(
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            icon,
-            size: 5.w,
-            color: Colors.grey[600],
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red[400],
           ),
-          SizedBox(width: 3.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 3.5.w,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 4.w,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 16),
+          Text(
+            'Error loading profile',
+            style: ProfileTheme.title,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            style: ProfileTheme.caption,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              context.read<ProfileBloc>().add(LoadProfile());
+            },
+            style: ProfileTheme.primaryButtonStyle,
+            child: const Text('Retry'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionTile({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    bool isDestructive = false,
-  }) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: isDestructive ? Colors.red : Theme.of(context).primaryColor,
-        size: 5.w,
+  Widget _buildInitialState() {
+    return const Center(
+      child: Text(
+        'Welcome to your profile',
+        style: ProfileTheme.title,
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 4.w,
-          color: isDestructive ? Colors.red : null,
-        ),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 4.w,
-        color: Colors.grey[400],
-      ),
-      onTap: onTap,
     );
   }
 } 

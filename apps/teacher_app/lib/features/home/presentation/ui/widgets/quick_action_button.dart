@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/responsive_helper.dart';
 import '../../../../../core/responsive_widgets.dart';
+import 'package:core/theme/index.dart';
 
 class QuickActionButton extends StatefulWidget {
   final String text;
@@ -62,6 +63,9 @@ class _QuickActionButtonState extends State<QuickActionButton>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -78,23 +82,31 @@ class _QuickActionButtonState extends State<QuickActionButton>
                 duration: const Duration(milliseconds: 150),
                 height: ResponsiveHelper.getButtonHeight(context),
                 decoration: BoxDecoration(
+                  gradient: widget.isPrimary && isDark ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.darkAccentBlue,
+                      AppColors.darkAccentPurple,
+                    ],
+                  ) : null,
                   color: widget.isPrimary
-                      ? Theme.of(context).primaryColor
-                      : Colors.transparent,
+                      ? (isDark ? null : theme.primaryColor)
+                      : (isDark ? AppColors.darkCardBackground : Colors.transparent),
                   borderRadius: BorderRadius.circular(
                     ResponsiveHelper.getBorderRadius(context),
                   ),
                   border: widget.isPrimary
                       ? null
                       : Border.all(
-                          color: Theme.of(context).primaryColor,
+                          color: isDark ? AppColors.darkAccentBlue : theme.primaryColor,
                           width: 2,
                         ),
                   boxShadow: [
                     BoxShadow(
                       color: widget.isPrimary
-                          ? Theme.of(context).primaryColor.withOpacity(0.3)
-                          : Colors.transparent,
+                          ? (isDark ? AppColors.darkAccentBlue.withOpacity(0.4) : theme.primaryColor.withOpacity(0.3))
+                          : (isDark ? AppColors.darkAccentBlue.withOpacity(0.2) : Colors.transparent),
                       blurRadius: _isPressed ? 4 : 8,
                       offset: Offset(0, _isPressed ? 2 : 4),
                     ),
@@ -112,7 +124,7 @@ class _QuickActionButtonState extends State<QuickActionButton>
                           desktopSize: 22,
                           color: widget.isPrimary
                               ? Colors.white
-                              : Theme.of(context).primaryColor,
+                              : (isDark ? AppColors.darkAccentBlue : theme.primaryColor),
                         ),
                         SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
                       ],
@@ -125,7 +137,7 @@ class _QuickActionButtonState extends State<QuickActionButton>
                           fontWeight: FontWeight.w600,
                           color: widget.isPrimary
                               ? Colors.white
-                              : Theme.of(context).primaryColor,
+                              : (isDark ? AppColors.darkAccentBlue : theme.primaryColor),
                         ),
                       ),
                     ],

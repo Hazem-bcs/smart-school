@@ -33,6 +33,11 @@ extension NavigationExtension on BuildContext {
     Navigator.pushNamed(this, AppRoutes.settings);
   }
   
+  // Navigate to schedule page
+  void goToSchedule() {
+    Navigator.pushNamed(this, AppRoutes.schedule);
+  }
+  
   // Go back
   void goBack() {
     if (Navigator.canPop(this)) {

@@ -1,52 +1,68 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-
-part 'home_event.dart';
-part 'home_state.dart';
+import '../../domain/usecases/get_classes_usecase.dart';
+import '../../../assignment/domain/usecases/get_assignments_usecase.dart';
+import '../../../assignment/domain/entities/assignment.dart';
+import '../../domain/usecases/get_notifications_usecase.dart';
+import 'home_event.dart';
+import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
+  final GetClassesUseCase getClassesUseCase;
+  final GetAssignmentsUseCase getAssignmentsUseCase;
+  final GetNotificationsUseCase getNotificationsUseCase;
+
+  HomeBloc({
+    required this.getClassesUseCase,
+    required this.getAssignmentsUseCase,
+    required this.getNotificationsUseCase,
+  }) : super(HomeInitial()) {
     on<LoadHomeData>(_onLoadHomeData);
+    on<RefreshHomeData>(_onRefreshHomeData);
   }
 
-  void _onLoadHomeData(
+  Future<void> _onLoadHomeData(
     LoadHomeData event,
     Emitter<HomeState> emit,
   ) async {
     emit(HomeLoading());
     
     try {
-      // TODO: Implement load home data logic
-      await Future.delayed(const Duration(seconds: 1));
+      final classes = await getClassesUseCase();
+      final assignmentsResult = await getAssignmentsUseCase();
+      final notifications = await getNotificationsUseCase();
       
-      // Mock data
-      final mockData = HomeData(
-        className: event.className,
-        totalStudents: 25,
-        presentToday: 23,
-        assignments: 5,
-        announcements: 3,
+      assignmentsResult.fold(
+        (error) => emit(HomeError('Failed to load assignments: $error')),
+        (assignments) => emit(HomeLoaded(
+          classes: classes,
+          assignments: assignments,
+          notifications: notifications,
+        )),
       );
-      
-      emit(HomeLoaded(data: mockData));
     } catch (e) {
-      emit(HomeError(e.toString()));
+      emit(HomeError('Failed to load home data: $e'));
     }
   }
-}
 
-class HomeData {
-  final String className;
-  final int totalStudents;
-  final int presentToday;
-  final int assignments;
-  final int announcements;
-
-  HomeData({
-    required this.className,
-    required this.totalStudents,
-    required this.presentToday,
-    required this.assignments,
-    required this.announcements,
-  });
+  Future<void> _onRefreshHomeData(
+    RefreshHomeData event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      final classes = await getClassesUseCase();
+      final assignmentsResult = await getAssignmentsUseCase();
+      final notifications = await getNotificationsUseCase();
+      
+      assignmentsResult.fold(
+        (error) => emit(HomeError('Failed to load assignments: $error')),
+        (assignments) => emit(HomeLoaded(
+          classes: classes,
+          assignments: assignments,
+          notifications: notifications,
+        )),
+      );
+    } catch (e) {
+      emit(HomeError('Failed to refresh home data: $e'));
+    }
+  }
 } 

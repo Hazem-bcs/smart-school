@@ -1,4 +1,7 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
+import '../../domain/entities/class_entity.dart';
+import '../../../assignment/domain/entities/assignment.dart';
+import '../../domain/entities/notification_entity.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -12,12 +15,18 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final HomeData data;
+  final List<ClassEntity> classes;
+  final List<Assignment> assignments;
+  final List<NotificationEntity> notifications;
 
-  const HomeLoaded({required this.data});
+  const HomeLoaded({
+    required this.classes,
+    required this.assignments,
+    required this.notifications,
+  });
 
   @override
-  List<Object> get props => [data];
+  List<Object> get props => [classes, assignments, notifications];
 }
 
 class HomeError extends HomeState {

@@ -104,26 +104,51 @@ class AppColors {
   static const Color lightDestructive = Color(0xFFFF3B30);
 
   // ==================== DARK THEME COLORS ====================
-  /// Dark theme background color
-  static const Color darkBackground = Color(0xFF000000);
+  /// Dark theme background color - Modern dark blue gradient base
+  static const Color darkBackground = Color(0xFF0A0E21);
   
-  /// Dark theme surface color
-  static const Color darkSurface = Color(0xFF1C1C1E);
+  /// Dark theme surface color - Rich dark blue surface
+  static const Color darkSurface = Color(0xFF1A1F35);
   
-  /// Dark theme primary text color
+  /// Dark theme primary text color - Pure white for contrast
   static const Color darkPrimaryText = Color(0xFFFFFFFF);
   
-  /// Dark theme secondary text color
-  static const Color darkSecondaryText = Color(0xFF8A8A8E);
+  /// Dark theme secondary text color - Soft blue-gray
+  static const Color darkSecondaryText = Color(0xFF94A3B8);
   
-  /// Dark theme icon color
-  static const Color darkIcon = Color(0xFFEBEBF5);
+  /// Dark theme icon color - Bright blue-white
+  static const Color darkIcon = Color(0xFFE2E8F0);
   
-  /// Dark theme divider color
-  static const Color darkDivider = Color(0xFF38383A);
+  /// Dark theme divider color - Subtle blue-gray divider
+  static const Color darkDivider = Color(0xFF334155);
   
-  /// Dark theme destructive color
-  static const Color darkDestructive = Color(0xFFFF453A);
+  /// Dark theme destructive color - Modern red
+  static const Color darkDestructive = Color(0xFFEF4444);
+
+  // ==================== DARK THEME ACCENT COLORS ====================
+  /// Dark theme card background - Slightly lighter than surface
+  static const Color darkCardBackground = Color(0xFF242B42);
+  
+  /// Dark theme elevated surface - For floating elements
+  static const Color darkElevatedSurface = Color(0xFF2D3748);
+  
+  /// Dark theme gradient start - Deep purple-blue
+  static const Color darkGradientStart = Color(0xFF4C1D95);
+  
+  /// Dark theme gradient end - Deep blue
+  static const Color darkGradientEnd = Color(0xFF1E40AF);
+  
+  /// Dark theme accent blue - For highlights
+  static const Color darkAccentBlue = Color(0xFF3B82F6);
+  
+  /// Dark theme accent purple - For special elements
+  static const Color darkAccentPurple = Color(0xFF8B5CF6);
+  
+  /// Dark theme success green - For positive states
+  static const Color darkSuccess = Color(0xFF10B981);
+  
+  /// Dark theme warning orange - For caution states
+  static const Color darkWarning = Color(0xFFF59E0B);
 
   // ==================== UTILITY METHODS ====================
   
