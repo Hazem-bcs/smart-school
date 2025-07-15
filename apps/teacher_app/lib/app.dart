@@ -1,16 +1,14 @@
+import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:core/theme/index.dart';
+import 'package:teacher_app/blocs/theme/theme_bloc.dart';
 import 'injection_container.dart' as di;
-import 'widgets/connectivity_listener.dart';
-import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
-import 'blocs/theme/theme_bloc.dart';
 import 'features/auth/presentation/blocs/auth_bloc.dart';
-import 'routing/app_routes.dart';
-import 'theme/teacher_theme.dart';
-
+import 'core/routing/app_routes.dart';
+import 'core/theme/teacher_theme.dart';
+import 'package:core/widgets/connectivity_listener.dart';
 class TeacherApp extends StatelessWidget {
   const TeacherApp({super.key});
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_widgets.dart';
-import '../../../../../widgets/shared_bottom_navigation.dart';
-import '../../../../../routing/navigation_extension.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
+import '../../../../../core/widgets/shared_bottom_navigation.dart';
+import '../../../../../core/routing/navigation_extension.dart';
 import '../../../../home/presentation/ui/pages/home_page.dart';
 import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
 import '../widgets/custom_calendar.dart';

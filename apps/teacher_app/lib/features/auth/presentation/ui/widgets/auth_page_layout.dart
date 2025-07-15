@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_widgets.dart';
-
+import 'package:teacher_app/core/responsive/responsive_widgets.dart';
 /// Widget متجاوب لتخطيط صفحة المصادقة
 class AuthPageLayout extends StatelessWidget {
   final Widget logo;

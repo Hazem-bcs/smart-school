@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:core/theme/constants/app_colors.dart';
-import '../../../../../core/responsive_helper.dart';
-import '../../../../../core/responsive_widgets.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});

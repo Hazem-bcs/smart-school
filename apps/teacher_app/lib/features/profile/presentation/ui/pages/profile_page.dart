@@ -7,7 +7,7 @@ import '../../../domain/entities/profile.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/info_card.dart';
 import '../../theme/profile_theme.dart';
-import '../../../../../routing/navigation_extension.dart';
+import '../../../../../core/routing/navigation_extension.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

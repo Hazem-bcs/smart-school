@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 
-
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
@@ -18,16 +17,11 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   ConnectivityBloc({required Connectivity connectivity})
       : _connectivity = connectivity,
         super(ConnectivityInitial()) {
-    
-    // التحقق من حالة الاتصال الأولية (بدون إرسال حدث)
     _checkInitialConnectivitySilently();
-    
-    // الاستماع للتغييرات في الاتصال
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((result) {
       add(ConnectivityStatusChanged(result));
     });
-
     on<ConnectivityStatusChanged>(_onConnectivityStatusChanged);
     on<CheckConnectivity>(_onCheckConnectivity);
     on<RetryConnection>(_onRetryConnection);
@@ -36,7 +30,6 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   Future<void> _checkInitialConnectivitySilently() async {
     try {
       final result = await _connectivity.checkConnectivity();
-      // تحديث الحالة مباشرة بدون إرسال حدث
       if (result == ConnectivityResult.mobile ||
           result == ConnectivityResult.wifi ||
           result == ConnectivityResult.vpn) {
@@ -45,18 +38,15 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
         add(ConnectivityStatusChanged(result));
       }
     } catch (e) {
-      // Handle error silently for initial check
       print('Failed to check initial connectivity: $e');
     }
   }
-
 
   void _onConnectivityStatusChanged(
       ConnectivityStatusChanged event,
       Emitter<ConnectivityState> emit,
       ) {
-    _retryCount = 0; // إعادة تعيين عداد المحاولات عند تغيير الحالة
-    
+    _retryCount = 0;
     if (event.result == ConnectivityResult.mobile ||
         event.result == ConnectivityResult.wifi ||
         event.result == ConnectivityResult.vpn) {
@@ -98,14 +88,12 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
       ));
       return;
     }
-
     _retryCount++;
     emit(ConnectivityRetrying(
       retryCount: _retryCount,
       maxRetries: maxRetries,
       timestamp: DateTime.now(),
     ));
-
     try {
       final result = await _connectivity.checkConnectivity();
       if (result != ConnectivityResult.none) {

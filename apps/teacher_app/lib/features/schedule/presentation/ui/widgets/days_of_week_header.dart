@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
 
 class DaysOfWeekHeader extends StatelessWidget {
   const DaysOfWeekHeader({super.key});

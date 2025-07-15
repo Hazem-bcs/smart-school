@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
 
 /// Widget متجاوب لبطاقات المصادقة
 class AuthCard extends StatelessWidget {

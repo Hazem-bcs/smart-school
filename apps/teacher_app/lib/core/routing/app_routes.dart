@@ -3,38 +3,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teacher_app/features/assignment_submission/presentation/blocs/submission_bloc.dart';
 import 'package:teacher_app/features/assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
 import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
-import '../../features/auth/presentation/ui/pages/splash_page.dart';
-import '../../features/auth/presentation/ui/pages/login_page.dart';
-import '../../features/home/presentation/ui/pages/home_page.dart';
+import '../../../features/auth/presentation/ui/pages/splash_page.dart';
+import '../../../features/auth/presentation/ui/pages/login_page.dart';
+import '../../../features/home/presentation/ui/pages/home_page.dart';
 
-import '../../features/profile/presentation/ui/pages/profile_page.dart';
-import '../../features/profile/presentation/ui/pages/edit_profile_page.dart';
-import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../features/settings/presentation/pages/about_app_page.dart';
-import '../../features/settings/presentation/pages/help_faq_page.dart';
-import '../../features/assignment/presentation/ui/pages/assignments_page.dart';
+import '../../../features/profile/presentation/ui/pages/profile_page.dart';
+import '../../../features/profile/presentation/ui/pages/edit_profile_page.dart';
+import '../../../features/settings/presentation/pages/settings_page.dart';
+import '../../../features/settings/presentation/pages/about_app_page.dart';
+import '../../../features/settings/presentation/pages/help_faq_page.dart';
+import '../../../features/assignment/presentation/ui/pages/assignments_page.dart';
 
-import '../../features/schedule/presentation/ui/pages/schedule_page.dart';
-import '../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
+import '../../../features/schedule/presentation/ui/pages/schedule_page.dart';
+import '../../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
-import '../../features/auth/presentation/blocs/auth_bloc.dart';
+import '../../../features/auth/presentation/blocs/auth_bloc.dart';
 
-import '../../features/home/presentation/blocs/home_bloc.dart';
-import '../../features/home/domain/usecases/get_classes_usecase.dart';
+import '../../../features/home/presentation/blocs/home_bloc.dart';
+import '../../../features/home/domain/usecases/get_classes_usecase.dart';
 
-import '../../features/home/domain/usecases/get_notifications_usecase.dart';
-import '../../features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
-import '../../features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
-import '../../features/zoom_meeting/domain/usecases/get_available_classes_usecase.dart';
-import '../../features/zoom_meeting/domain/usecases/get_meeting_options_usecase.dart';
-import '../../features/profile/presentation/blocs/profile_bloc.dart';
-import '../../features/profile/domain/usecases/get_profile_usecase.dart';
-import '../../features/profile/domain/usecases/update_profile_usecase.dart';
-import '../../injection_container.dart' as di;
-import '../features/auth/domain/usecases/check_auth_status_usecase.dart';
-import '../features/auth/domain/usecases/login_usecase.dart';
-import '../features/auth/domain/usecases/logout_usecase.dart';
+import '../../../features/home/domain/usecases/get_notifications_usecase.dart';
+import '../../../features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
+import '../../../features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
+import '../../../features/zoom_meeting/domain/usecases/get_available_classes_usecase.dart';
+import '../../../features/zoom_meeting/domain/usecases/get_meeting_options_usecase.dart';
+import '../../../features/profile/presentation/blocs/profile_bloc.dart';
+import '../../../features/profile/domain/usecases/get_profile_usecase.dart';
+import '../../../features/profile/domain/usecases/update_profile_usecase.dart';
+import '../../../injection_container.dart' as di;
+import '../../features/auth/domain/usecases/check_auth_status_usecase.dart';
+import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/auth/domain/usecases/logout_usecase.dart';
 
 class AppRoutes {
   // Route names

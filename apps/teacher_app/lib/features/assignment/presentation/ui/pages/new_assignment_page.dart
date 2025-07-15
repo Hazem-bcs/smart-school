@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../../core/responsive_helper.dart';
-import '../../../../../core/responsive_widgets.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/custom_text_form_field.dart';
 import '../widgets/section_title.dart';
 import '../widgets/action_tile.dart';

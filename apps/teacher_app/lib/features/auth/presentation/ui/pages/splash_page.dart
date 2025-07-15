@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sizer/sizer.dart';
 import '../../blocs/auth_bloc.dart';
-import '../../../../../routing/navigation_extension.dart';
-import '../../../../../core/responsive_helper.dart';
-import '../../../../../core/responsive_widgets.dart';
+import '../../../../../core/routing/navigation_extension.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_widgets.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 
 /// Widget متجاوب لعناوين المصادقة
 class AuthTitle extends StatelessWidget {

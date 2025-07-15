@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/filter_chip.dart' as custom;
 import '../../../domain/models/assignment.dart';
-import '../../../../../core/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
 
 class AssignmentsFilterChips extends StatelessWidget {
   final List<Map<String, dynamic>> filterOptions;

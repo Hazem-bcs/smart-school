@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:teacher_app/core/responsive/responsive_helper.dart';
+import 'package:teacher_app/core/responsive/responsive_widgets.dart';
+import 'package:teacher_app/core/routing/navigation_extension.dart';
+import 'package:teacher_app/core/widgets/shared_bottom_navigation.dart';
 import 'package:teacher_app/features/assignment/presentation/ui/pages/assignments_page.dart';
 import 'package:teacher_app/features/schedule/presentation/ui/pages/schedule_page.dart';
 import '../../../../blocs/theme/theme_bloc.dart';
-import '../../../../core/responsive_helper.dart';
-import '../../../../core/responsive_widgets.dart';
-import '../../../../../widgets/shared_bottom_navigation.dart';
-import '../../../../../routing/navigation_extension.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/settings_section.dart';
 

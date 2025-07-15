@@ -37,7 +37,7 @@ import 'features/home/presentation/blocs/home_bloc.dart';
 import 'features/settings/presentation/blocs/settings_bloc.dart';
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 import 'features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
-import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
+import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
 
 // Profile feature
 import 'features/profile/data/data_sources/profile_local_data_source.dart';

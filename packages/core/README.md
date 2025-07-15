@@ -1,39 +1,76 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Core Package - Network Layer Usage
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
+هذه الوثيقة تشرح كيفية استخدام نظام الشبكة الاحترافي الموجود في حزمة core ضمن مشروعك.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
+---
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## 1. DioClient (إرسال واستقبال البيانات عبر الشبكة)
 
-## Features
+- **الاستيراد:**
+  ```dart
+  import 'package:core/network/dio_client.dart';
+  ```
+- **الاستخدام:**
+  ```dart
+  final dioClient = DioClient(baseUrl: 'https://api.example.com');
+  final result = await dioClient.get('/endpoint');
+  result.fold(
+    (failure) => handleError(failure),
+    (response) => handleSuccess(response.data),
+  );
+  ```
+- **ملاحظة:**
+  - جميع الدوال ترجع `Either<Failure, Response>` لسهولة التعامل مع الأخطاء.
+  - يمكنك تمرير دالة getToken لإضافة Authorization header تلقائياً.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+---
 
-## Getting started
+## 2. NetworkInfo (التحقق من الاتصال بالإنترنت)
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- **الاستيراد:**
+  ```dart
+  import 'package:core/network/network_info.dart';
+  ```
+- **الاستخدام:**
+  ```dart
+  final networkInfo = NetworkInfoImpl(Connectivity());
+  final isConnected = await networkInfo.isConnected;
+  ```
 
-## Usage
+---
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+## 3. ConnectivityBloc (مراقبة الاتصال بالإنترنت)
 
-```dart
-const like = 'sample';
-```
+- **الاستيراد:**
+  ```dart
+  import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
+  ```
+- **التسجيل في getIt:**
+  ```dart
+  getIt.registerFactory(() => ConnectivityBloc(connectivity: Connectivity()));
+  ```
+- **الاستخدام في MultiBlocProvider:**
+  ```dart
+  BlocProvider(
+    create: (context) => getIt<ConnectivityBloc>(),
+    child: ...
+  )
+  ```
 
-## Additional information
+---
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+## 4. ConnectivityListener (Widget لمراقبة الاتصال)
+
+- **الاستيراد:**
+  ```dart
+  import 'package:core/widgets/connectivity_listener.dart';
+  ```
+- **الاستخدام:**
+  ```dart
+  builder: (context, child) => ConnectivityListener(child: child!),
+  ```
+
+---
+
+> **ملاحظة:**
+> هذه الوثيقة توضح فقط نظام الشبكة في core. عند تطوير أو نقل ميزات أخرى (auth, theme, ...)، سيتم تحديث هذا الملف.

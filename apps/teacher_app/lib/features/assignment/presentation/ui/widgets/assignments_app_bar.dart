@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive_widgets.dart';
-import 'package:core/theme/constants/app_colors.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 
 class AssignmentsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

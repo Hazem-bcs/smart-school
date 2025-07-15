@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../core/responsive_helper.dart';
-import '../core/responsive_widgets.dart';
+import '../responsive/responsive_helper.dart';
+import '../responsive/responsive_widgets.dart';
 import '../routing/navigation_extension.dart';
 
 class SharedBottomNavigation extends StatelessWidget {

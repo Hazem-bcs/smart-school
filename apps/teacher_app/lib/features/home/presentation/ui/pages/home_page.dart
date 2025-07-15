@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:core/theme/index.dart';
-import '../../../../../core/responsive_helper.dart';
-import '../../../../../core/responsive_widgets.dart';
+import '../../../../../core/responsive/responsive_helper.dart';
+import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/class_card.dart';
 import '../widgets/assignment_tile.dart';
 import '../widgets/quick_action_button.dart';
@@ -9,8 +9,8 @@ import '../widgets/quick_action_button.dart';
 import '../../../../assignment/presentation/ui/pages/new_assignment_page.dart';
 import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
 import '../../../../schedule/presentation/ui/pages/schedule_page.dart';
-import '../../../../../widgets/shared_bottom_navigation.dart';
-import '../../../../../routing/navigation_extension.dart';
+import '../../../../../core/widgets/shared_bottom_navigation.dart';
+import '../../../../../core/routing/navigation_extension.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
