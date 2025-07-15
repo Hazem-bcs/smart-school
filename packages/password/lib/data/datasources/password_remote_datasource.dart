@@ -12,23 +12,7 @@ class PasswordRemoteDataSourceImpl implements PasswordRemoteDataSource {
 
   @override
   Future<void> changePassword(PasswordChangeRequestModel request) async {
-    try {
-      final response = await dioClient.post(
-        '/api/auth/change-password',
-        data: request.toJson(),
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception('Failed to change password');
-      }
-    } catch (e) {
-      if (e.toString().contains('400')) {
-        throw Exception('Invalid current password');
-      } else if (e.toString().contains('401')) {
-        throw Exception('Unauthorized');
-      } else {
-        throw Exception('Network error: $e');
-      }
-    }
+    // TODO: إعادة كتابة المنطق لاحقًا ليتعامل مع Either<Failure, Response>
+    throw UnimplementedError('سيتم إعادة كتابة هذه الدالة لاحقًا');
   }
 } 

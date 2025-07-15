@@ -14,38 +14,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<ProfileModel> getProfile() async {
-    try {
-      final response = await dioClient.get('/profile');
-      
-      if (response.statusCode == 200) {
-        return ProfileModel.fromJson(response.data as Map<String, dynamic>);
-      } else {
-        throw Exception('Failed to load profile: ${response.statusMessage}');
-      }
-    } on DioException catch (e) {
-      throw Exception('Failed to load profile: ${e.message}');
-    } catch (e) {
-      throw Exception('An unexpected error occurred: $e');
-    }
+    // TODO: إعادة كتابة المنطق لاحقًا ليتعامل مع Either<Failure, Response>
+    throw UnimplementedError('سيتم إعادة كتابة هذه الدالة لاحقًا');
   }
 
   @override
   Future<ProfileModel> updateProfile(ProfileModel profile) async {
-    try {
-      final response = await dioClient.put(
-        '/profile',
-        data: profile.toJson(),
-      );
-      
-      if (response.statusCode == 200) {
-        return ProfileModel.fromJson(response.data as Map<String, dynamic>);
-      } else {
-        throw Exception('Failed to update profile: ${response.statusMessage}');
-      }
-    } on DioException catch (e) {
-      throw Exception('Failed to update profile: ${e.message}');
-    } catch (e) {
-      throw Exception('An unexpected error occurred: $e');
-    }
+    // TODO: إعادة كتابة المنطق لاحقًا ليتعامل مع Either<Failure, Response>
+    throw UnimplementedError('سيتم إعادة كتابة هذه الدالة لاحقًا');
   }
 } 

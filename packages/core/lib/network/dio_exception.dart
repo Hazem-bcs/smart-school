@@ -1,10 +1,7 @@
-
 import 'package:dio/dio.dart';
-
 import 'failures.dart';
 
 Failure handleDioException(DioException error) {
-  // أضف هذا التحقق أولاً
   if (error.response != null && error.response!.statusCode != null) {
     return _handleBadResponse(error);
   }
@@ -13,8 +10,7 @@ Failure handleDioException(DioException error) {
     case DioExceptionType.connectionTimeout:
     case DioExceptionType.sendTimeout:
     case DioExceptionType.receiveTimeout:
-      return const ConnectionFailure(
-          message: 'Connection timeout, please try again');
+      return const ConnectionFailure(message: 'Connection timeout, please try again');
     case DioExceptionType.badResponse:
       return _handleBadResponse(error);
     case DioExceptionType.cancel:
@@ -25,15 +21,12 @@ Failure handleDioException(DioException error) {
       }
       return const UnknownFailure(message: 'Unexpected error occurred');
     case DioExceptionType.badCertificate:
-      return const ServerFailure(
-          message: 'Bad certificate', statusCode: 400);
+      return const ServerFailure(message: 'Bad certificate', statusCode: 400);
     case DioExceptionType.connectionError:
-    // تحقق إضافي إذا كان هناك response مخفي
       if (error.response != null) {
         return _handleBadResponse(error);
       }
-      return const ConnectionFailure(
-          message: 'Connection error, please try again');
+      return const ConnectionFailure(message: 'Connection error, please try again');
   }
 }
 
@@ -57,4 +50,4 @@ Failure _handleBadResponse(DioException error) {
     default:
       return ServerFailure(message: message, statusCode: statusCode);
   }
-}
+} 

@@ -6,10 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/network_info.dart';
+import 'package:core/constant.dart';
 
 Future<void> setupCoreDependencies(GetIt getIt) async {
   // SERVICES
-  getIt.registerSingleton<DioClient>(DioClient(dio: Dio()));
+  getIt.registerSingleton<DioClient>(DioClient(baseUrl: Constants.baseUrl));
   getIt.registerSingleton<NetworkInfo>(NetworkInfoImpl(Connectivity()));
 
   // EXTERNAL

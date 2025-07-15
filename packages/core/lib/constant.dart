@@ -1,5 +1,5 @@
 class Constants {
-  static String baseUrl = 'http://127.0.0.1:8000';
+  static const String baseUrl = 'https://api.example.com'; // عدل الرابط حسب بيئة مشروعك
   static String loginEndpoint = '/api/auth/login';
   static String getHomeWorkListEndpoint = '/auth/login';
   static String getSubjectEndpoint = '/auth/login';
