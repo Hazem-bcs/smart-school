@@ -14,4 +14,4 @@ class NetworkInfoImpl implements NetworkInfo {
     final result = await connectivity.checkConnectivity();
     return result == ConnectivityResult.mobile || result == ConnectivityResult.wifi;
   }
-} 
+}

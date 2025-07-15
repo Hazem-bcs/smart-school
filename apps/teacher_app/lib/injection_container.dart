@@ -54,6 +54,14 @@ import 'features/assignment_submission/domain/repositories/submission_repository
 import 'features/assignment_submission/data/data_sources/submission_remote_data_source.dart';
 import 'features/assignment_submission/data/repositories/submission_repository_impl.dart';
 
+// Assignment feature
+import 'features/assignment/data/data_sources/remote/assignment_remote_data_source.dart';
+import 'features/assignment/data/repositories_impl/assignment_repository_impl.dart';
+import 'features/assignment/domain/repositories/assignment_repository.dart';
+import 'features/assignment/domain/usecases/get_assignments_usecase.dart' as assignment_prefix;
+import 'features/assignment/domain/usecases/add_assignment_usecase.dart';
+import 'features/assignment/presentation/blocs/assignment_bloc.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
@@ -110,6 +118,15 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()));
   
   // Assignment feature dependencies
+  getIt.registerLazySingleton<AssignmentRemoteDataSource>(
+    () => AssignmentRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<AssignmentRepository>(
+    () => AssignmentRepositoryImpl(remoteDataSource: getIt<AssignmentRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton(() => assignment_prefix.GetAssignmentsUseCase(getIt<AssignmentRepository>()));
+  getIt.registerLazySingleton(() => AddAssignmentUseCase(getIt<AssignmentRepository>()));
+
   
   // Assignment Submission feature dependencies
   getIt.registerLazySingleton<SubmissionRemoteDataSource>(
@@ -173,5 +190,8 @@ Future<void> setupDependencies() async {
   ));
 
   // Assignment BLoC
-  
+    getIt.registerFactory(() => AssignmentBloc(
+    getAssignmentsUseCase: getIt<assignment_prefix.GetAssignmentsUseCase>(),
+    addAssignmentUseCase: getIt<AddAssignmentUseCase>(),
+  ));
 }

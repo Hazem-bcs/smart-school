@@ -107,9 +107,9 @@
   )
   ```
 - **تبديل الثيم (مثال):**
-  ```dart
+```dart
   context.read<ThemeBloc>().add(ToggleTheme());
-  ```
+```
 
 ---
 

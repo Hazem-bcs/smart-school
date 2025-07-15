@@ -24,7 +24,7 @@ class DioClient {
     }
     if (enableLogging) {
       dio.interceptors.add(AppLogInterceptor());
-    }
+  }
   }
 
   Future<Either<Failure, Response>> get(
@@ -36,14 +36,14 @@ class DioClient {
   }) async {
     return _request(
       () => dio.get(
-        url,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
+          url,
+          queryParameters: queryParameters,
+          options: options,
+          cancelToken: cancelToken,
+          onReceiveProgress: onReceiveProgress,
       ),
     );
-  }
+      }
 
   Future<Either<Failure, Response>> post(
     String url, {
@@ -55,15 +55,15 @@ class DioClient {
   }) async {
     return _request(
       () => dio.post(
-        url,
-        data: data,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
+          url,
+          data: data,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress,
       ),
     );
-  }
+      }
 
   Future<Either<Failure, Response>> put(
     String url, {
@@ -75,15 +75,15 @@ class DioClient {
   }) async {
     return _request(
       () => dio.put(
-        url,
-        data: data,
-        options: options,
-        cancelToken: cancelToken,
-        onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
+          url,
+          data: data,
+          options: options,
+          cancelToken: cancelToken,
+          onSendProgress: onSendProgress,
+          onReceiveProgress: onReceiveProgress,
       ),
     );
-  }
+      }
 
   Future<Either<Failure, Response>> delete(
     String url, {
@@ -117,4 +117,4 @@ class DioClient {
       }
     }
   }
-} 
+}

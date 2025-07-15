@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:teacher_app/features/assignment/domain/entities/assignment.dart';
 import '../widgets/filter_chip.dart' as custom;
-import '../../../domain/models/assignment.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
 
 class AssignmentsFilterChips extends StatelessWidget {
@@ -9,11 +9,11 @@ class AssignmentsFilterChips extends StatelessWidget {
   final ValueChanged<AssignmentStatus> onChanged;
 
   const AssignmentsFilterChips({
-    Key? key,
+    super.key,
     required this.filterOptions,
     required this.selectedFilter,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -75,6 +75,22 @@ lib/
 
 ## Features
 
+### Assignments
+
+- إدارة وإنشاء وعرض الواجبات للمعلم.
+- تعتمد الميزة على معمارية Clean Architecture:
+  - **Presentation Layer**: تتضمن BLoC (AssignmentBloc) وصفحات/ودجتس تعرض قائمة الواجبات وتفاصيلها وتدعم البحث والتصفية.
+  - **Domain Layer**: تحتوي على الكيانات (Assignment, AssignmentStatus) وحالات الاستخدام (GetAssignmentsUseCase, AddAssignmentUseCase) التي تمثل منطق العمل.
+  - **Data Layer**: تشمل AssignmentRepository و AssignmentRemoteDataSource، حيث يتم جلب البيانات من الـ backend (أو mock مؤقتاً).
+- التدفق:
+  1. الواجهة ترسل حدث (LoadAssignments أو AddAssignment) إلى الـBloc.
+  2. الـBloc يستدعي الـUseCase المناسب من الدومين.
+  3. الـUseCase يستدعي الريبو، والذي يتواصل مع الـDataSource.
+  4. الـDataSource يجلب البيانات من الـbackend (أو mock مؤقتاً).
+  5. النتيجة تعود للـBloc ليتم تحديث الحالة في الواجهة.
+- الاعتمادات تتم عبر getIt في injection_container.dart، ويمكن بسهولة اختبار أو تبديل أي طبقة.
+- الكود منظم بالكامل وقابل للتوسعة والاختبار.
+
 ### 1. Authentication (Auth)
 - Login functionality for teachers
 - Form validation

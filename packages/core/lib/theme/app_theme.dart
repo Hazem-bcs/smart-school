@@ -186,12 +186,12 @@ class AppTheme {
   static ThemeData getTheme(Brightness brightness) {
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
-
+  
   static ThemeData getSystemTheme() {
     final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
     return getTheme(brightness);
   }
-
+  
   static ThemeData createAppTheme({required Brightness brightness, required Color accentColor}) {
     final baseTheme = getTheme(brightness);
     return baseTheme.copyWith(

@@ -7,6 +7,30 @@ import '../widgets/section_title.dart';
 import '../widgets/action_tile.dart';
 import 'package:core/theme/constants/app_colors.dart';
 
+class DecoratedSectionContainer extends StatelessWidget {
+  final Widget child;
+  final bool isDark;
+  final BoxDecoration? lightDecoration;
+  final BoxDecoration? darkDecoration;
+  final EdgeInsetsGeometry? margin;
+  const DecoratedSectionContainer({
+    super.key,
+    required this.child,
+    required this.isDark,
+    this.lightDecoration,
+    this.darkDecoration,
+    this.margin,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margin,
+      decoration: isDark ? darkDecoration : lightDecoration,
+      child: child,
+    );
+  }
+}
+
 class NewAssignmentPage extends StatefulWidget {
   const NewAssignmentPage({super.key});
 
@@ -207,26 +231,8 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(title: 'Attachments', icon: Icons.attach_file, iconColor: isDark ? AppColors.info : AppColors.info),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          decoration: isDark ? BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.darkCardBackground,
-                AppColors.darkElevatedSurface,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkGradientStart.withOpacity(0.15),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ) : null,
+        DecoratedSectionContainer(
+          isDark: isDark,
           child: Column(
             children: [
               ActionTile(
@@ -253,26 +259,8 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(title: 'Due Date & Time', icon: Icons.schedule, iconColor: isDark ? AppColors.warning : AppColors.warning),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          decoration: isDark ? BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.darkCardBackground,
-                AppColors.darkElevatedSurface,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkGradientStart.withOpacity(0.15),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ) : null,
+        DecoratedSectionContainer(
+          isDark: isDark,
           child: ActionTile(
             icon: Icons.event_available,
             text: _getDueDateText(),
@@ -289,28 +277,11 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(title: 'Target Classes/Students', icon: Icons.groups, iconColor: isDark ? AppColors.secondary : AppColors.secondary),
-        Container(
+        DecoratedSectionContainer(
+          isDark: isDark,
           margin: EdgeInsets.only(
             bottom: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
           ),
-          decoration: isDark ? BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.darkCardBackground,
-                AppColors.darkElevatedSurface,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkGradientStart.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ) : null,
           child: DropdownButtonFormField<String>(
             value: _selectedClass,
             decoration: InputDecoration(
@@ -428,148 +399,134 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       child: ResponsiveLayout(
         mobile: Column(
           children: [
-            _buildSaveAsDraftButton(isDark),
+            _buildActionButton(text: 'Save as Draft', onPressed: _isLoading ? null : _onSaveAsDraft, isDark: isDark, isPrimary: false),
             SizedBox(height: ResponsiveHelper.getSpacing(context)),
-            _buildPublishButton(isDark),
+            _buildActionButton(text: 'Publish', onPressed: _isLoading ? null : _onPublish, isDark: isDark, isPrimary: true),
           ],
         ),
         tablet: Row(
           children: [
-            Expanded(child: _buildSaveAsDraftButton(isDark)),
+            Expanded(child: _buildActionButton(text: 'Save as Draft', onPressed: _isLoading ? null : _onSaveAsDraft, isDark: isDark, isPrimary: false)),
             SizedBox(width: ResponsiveHelper.getSpacing(context)),
-            Expanded(child: _buildPublishButton(isDark)),
+            Expanded(child: _buildActionButton(text: 'Publish', onPressed: _isLoading ? null : _onPublish, isDark: isDark, isPrimary: true)),
           ],
         ),
         desktop: Row(
           children: [
-            Expanded(child: _buildSaveAsDraftButton(isDark)),
+            Expanded(child: _buildActionButton(text: 'Save as Draft', onPressed: _isLoading ? null : _onSaveAsDraft, isDark: isDark, isPrimary: false)),
             SizedBox(width: ResponsiveHelper.getSpacing(context)),
-            Expanded(child: _buildPublishButton(isDark)),
+            Expanded(child: _buildActionButton(text: 'Publish', onPressed: _isLoading ? null : _onPublish, isDark: isDark, isPrimary: true)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSaveAsDraftButton(bool isDark) {
-    return Container(
-      height: ResponsiveHelper.getButtonHeight(context) + 8,
-      decoration: isDark ? BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.darkCardBackground,
-            AppColors.darkElevatedSurface,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.darkAccentBlue.withOpacity(0.5),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkGradientStart.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ) : null,
-      child: OutlinedButton(
-        onPressed: _isLoading ? null : _onSaveAsDraft,
-        style: OutlinedButton.styleFrom(
-          backgroundColor: isDark ? Colors.transparent : null,
-          side: BorderSide(
-            color: isDark ? Colors.transparent : AppColors.primary,
-            width: isDark ? 0 : 2,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.getSpacing(context, mobile: 28, tablet: 32, desktop: 36),
-            vertical: ResponsiveHelper.getSpacing(context, mobile: 18, tablet: 20, desktop: 22),
-          ),
-        ),
-        child: _isLoading
-            ? SizedBox(
-                width: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                height: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? AppColors.darkAccentBlue : AppColors.primary,
+  Widget _buildActionButton({
+    required String text,
+    required VoidCallback? onPressed,
+    required bool isDark,
+    required bool isPrimary,
+  }) {
+    final color = isPrimary ? (isDark ? Colors.white : AppColors.primary) : (isDark ? Colors.white : AppColors.primary);
+    final background = isPrimary ? (isDark ? Colors.transparent : AppColors.primary) : (isDark ? Colors.transparent : null);
+    final child = _isLoading
+        ? SizedBox(
+            width: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
+            height: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          )
+        : Text(
+            text,
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
+          );
+    if (isPrimary) {
+      return Container(
+        height: ResponsiveHelper.getButtonHeight(context) + 8,
+        decoration: isDark
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.darkGradientStart, AppColors.darkGradientEnd],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.darkGradientStart.withOpacity(0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
                   ),
-                ),
+                ],
               )
-            : Text(
-                'Save as Draft',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                  color: isDark ? Colors.white : AppColors.primary,
-                  fontWeight: FontWeight.w700,
+            : null,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: background,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context, mobile: 28, tablet: 32, desktop: 36),
+              vertical: ResponsiveHelper.getSpacing(context, mobile: 18, tablet: 20, desktop: 22),
+            ),
+          ),
+          child: child,
+        ),
+      );
+    } else {
+      return Container(
+        height: ResponsiveHelper.getButtonHeight(context) + 8,
+        decoration: isDark
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.darkCardBackground, AppColors.darkElevatedSurface],
                 ),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildPublishButton(bool isDark) {
-    return Container(
-      height: ResponsiveHelper.getButtonHeight(context) + 8,
-      decoration: isDark ? BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.darkGradientStart,
-            AppColors.darkGradientEnd,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkGradientStart.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ) : null,
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _onPublish,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isDark ? Colors.transparent : AppColors.primary,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.getSpacing(context, mobile: 28, tablet: 32, desktop: 36),
-            vertical: ResponsiveHelper.getSpacing(context, mobile: 18, tablet: 20, desktop: 22),
-          ),
-        ),
-        child: _isLoading
-            ? SizedBox(
-                width: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                height: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? AppColors.darkAccentBlue : AppColors.primary,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.darkAccentBlue.withOpacity(0.5),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.darkGradientStart.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
-                ),
+                ],
               )
-            : Text(
-                'Publish',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                  color: isDark ? Colors.white : AppColors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-      ),
-    );
+            : null,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            backgroundColor: background,
+            side: BorderSide(
+              color: isDark ? Colors.transparent : AppColors.primary,
+              width: isDark ? 0 : 2,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context, mobile: 28, tablet: 32, desktop: 36),
+              vertical: ResponsiveHelper.getSpacing(context, mobile: 18, tablet: 20, desktop: 22),
+            ),
+          ),
+          child: child,
+        ),
+      );
+    }
   }
 
   // Helper methods
@@ -588,12 +545,10 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
 
   // Event handlers
   void _onAddFromDrive() {
-    // TODO: Implement Google Drive integration
     _showSnackBar('Google Drive integration coming soon!');
   }
 
   void _onUploadFile() {
-    // TODO: Implement file upload
     _showSnackBar('File upload feature coming soon!');
   }
 

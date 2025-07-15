@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:teacher_app/features/assignment/domain/entities/assignment.dart';
 import 'dart:async';
 import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/assignment_list_tile.dart';
-import '../widgets/filter_chip.dart' as custom;
-import '../../../domain/models/assignment.dart';
 import 'new_assignment_page.dart';
-import '../../../../home/presentation/ui/pages/home_page.dart';
 import '../../../../../core/widgets/shared_bottom_navigation.dart';
 import 'package:core/theme/constants/app_colors.dart';
-import '../../../../assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
 import '../../../../../core/routing/navigation_extension.dart';
 import '../widgets/assignments_app_bar.dart';
 import '../widgets/assignments_search_field.dart';
@@ -255,37 +252,12 @@ class _AssignmentsPageState extends State<AssignmentsPage>
   }
 
   Future<void> _onRefresh() async {
-    // TODO: Implement refresh logic
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {
-      // Refresh data
-    });
+    // تم تبسيط منطق التحديث ليكون Placeholder واضح فقط
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {});
   }
 
   void _onAssignmentTap(Assignment assignment) {
     context.goToAssignmentSubmission(assignment.id);
-  }
-
-  void _onNavItemTap(int index) {
-    switch (index) {
-      case 0: // Dashboard
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
-        break;
-      case 1: // Assignments
-        // Already on Assignments page
-        break;
-      case 2: // Students
-        // TODO: Navigate to Students page
-        print('Students page not implemented yet');
-        break;
-      case 3: // Settings
-        // TODO: Navigate to Settings page
-        print('Settings page not implemented yet');
-        break;
-    }
   }
 } 

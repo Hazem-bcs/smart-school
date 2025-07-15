@@ -50,4 +50,4 @@ Failure _handleBadResponse(DioException error) {
     default:
       return ServerFailure(message: message, statusCode: statusCode);
   }
-} 
+}
