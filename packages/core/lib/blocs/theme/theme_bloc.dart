@@ -1,75 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:core/theme/index.dart';
+import 'package:core/theme/theme_manager.dart';
+import 'theme_event.dart';
+import 'theme_state.dart';
 
-// Events
-abstract class ThemeEvent extends Equatable {
-  const ThemeEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class InitializeTheme extends ThemeEvent {}
-
-class ToggleTheme extends ThemeEvent {}
-
-class SetLightTheme extends ThemeEvent {}
-
-class SetDarkTheme extends ThemeEvent {}
-
-class SetSystemTheme extends ThemeEvent {}
-
-// States
-abstract class ThemeState extends Equatable {
-  const ThemeState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class ThemeInitial extends ThemeState {}
-
-class ThemeLoading extends ThemeState {}
-
-class ThemeLoaded extends ThemeState {
-  final ThemeMode themeMode;
-  final bool isDarkMode;
-  final ThemeData currentTheme;
-
-  const ThemeLoaded({
-    required this.themeMode,
-    required this.isDarkMode,
-    required this.currentTheme,
-  });
-
-  @override
-  List<Object?> get props => [themeMode, isDarkMode, currentTheme];
-
-  ThemeLoaded copyWith({
-    ThemeMode? themeMode,
-    bool? isDarkMode,
-    ThemeData? currentTheme,
-  }) {
-    return ThemeLoaded(
-      themeMode: themeMode ?? this.themeMode,
-      isDarkMode: isDarkMode ?? this.isDarkMode,
-      currentTheme: currentTheme ?? this.currentTheme,
-    );
-  }
-}
-
-class ThemeError extends ThemeState {
-  final String message;
-
-  const ThemeError(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
-// Bloc
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final ThemeManager _themeManager = ThemeManager();
 
@@ -79,8 +12,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     on<SetLightTheme>(_onSetLightTheme);
     on<SetDarkTheme>(_onSetDarkTheme);
     on<SetSystemTheme>(_onSetSystemTheme);
-
-    // Listen to theme manager changes
+    on<ThemeStateChanged>(_onThemeStateChanged);
     _themeManager.addListener(_onThemeManagerChanged);
   }
 
@@ -89,10 +21,8 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     Emitter<ThemeState> emit,
   ) async {
     emit(ThemeLoading());
-
     try {
       await _themeManager.initialize();
-      
       emit(ThemeLoaded(
         themeMode: _themeManager.themeMode,
         isDarkMode: _themeManager.isDarkMode,
@@ -148,6 +78,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   }
 
   void _onThemeManagerChanged() {
+    add(ThemeStateChanged());
+  }
+
+  Future<void> _onThemeStateChanged(
+    ThemeStateChanged event,
+    Emitter<ThemeState> emit,
+  ) async {
     if (state is ThemeLoaded) {
       final currentState = state as ThemeLoaded;
       emit(currentState.copyWith(
@@ -156,11 +93,5 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         currentTheme: _themeManager.getCurrentTheme(),
       ));
     }
-  }
-
-  @override
-  Future<void> close() {
-    _themeManager.removeListener(_onThemeManagerChanged);
-    return super.close();
   }
 } 

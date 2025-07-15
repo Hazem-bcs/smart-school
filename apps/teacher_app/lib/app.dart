@@ -1,14 +1,16 @@
 import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
+import 'package:core/widgets/connectivity_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
-import 'package:teacher_app/blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_state.dart';
+import 'package:core/blocs/theme/theme_event.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'core/routing/app_routes.dart';
-import 'core/theme/teacher_theme.dart';
-import 'package:core/widgets/connectivity_listener.dart';
+
 class TeacherApp extends StatelessWidget {
   const TeacherApp({super.key});
 
@@ -33,18 +35,17 @@ class TeacherApp extends StatelessWidget {
         builder: (context, orientation, screenType) {
           return BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
+              final theme = themeState is ThemeLoaded ? themeState.currentTheme : ThemeData.light();
+              final themeMode = themeState is ThemeLoaded ? themeState.themeMode : ThemeMode.system;
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'app_title'.tr(),
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
-                
-                // Use dynamic theme based on ThemeBloc state
-                theme: _getLightTheme(),
-                darkTheme: _getDarkTheme(),
-                themeMode: _getThemeMode(themeState),
-                
+                theme: theme,
+                darkTheme: theme,
+                themeMode: themeMode,
                 initialRoute: AppRoutes.home,
                 onGenerateRoute: AppRoutes.generateRoute,
                 builder: (context, child) {
@@ -56,23 +57,5 @@ class TeacherApp extends StatelessWidget {
         },
       ),
     );
-  }
-
-  // Get light theme with teacher accent
-  ThemeData _getLightTheme() {
-    return TeacherTheme.lightTheme;
-  }
-
-  // Get dark theme with teacher accent
-  ThemeData _getDarkTheme() {
-    return TeacherTheme.darkTheme;
-  }
-
-  // Get theme mode based on ThemeBloc state
-  ThemeMode _getThemeMode(ThemeState themeState) {
-    if (themeState is ThemeLoaded) {
-      return themeState.themeMode;
-    }
-    return ThemeMode.system; // Default to system theme
   }
 } 

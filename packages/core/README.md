@@ -1,6 +1,6 @@
-# Core Package - Network Layer Usage
+# Core Package - Network & Theme Layer Usage
 
-هذه الوثيقة تشرح كيفية استخدام نظام الشبكة الاحترافي الموجود في حزمة core ضمن مشروعك.
+هذه الوثيقة تشرح كيفية استخدام نظام الشبكة (network) ونظام الثيم الموحد (theme) الاحترافي الموجودين في حزمة core ضمن مشروعك.
 
 ---
 
@@ -72,5 +72,46 @@
 
 ---
 
+## 5. ThemeBloc & Theme الموحد (إدارة وتبديل الثيم)
+
+- **الاستيراد:**
+  ```dart
+  import 'package:core/blocs/theme/theme_bloc.dart';
+  import 'package:core/blocs/theme/theme_event.dart';
+  import 'package:core/blocs/theme/theme_state.dart';
+  ```
+- **التسجيل في getIt (اختياري):**
+  ```dart
+  getIt.registerFactory(() => ThemeBloc());
+  ```
+- **الاستخدام في MultiBlocProvider:**
+  ```dart
+  BlocProvider(
+    create: (context) => ThemeBloc()..add(InitializeTheme()),
+    child: ...
+  )
+  ```
+- **استخدام الثيم في MaterialApp:**
+  ```dart
+  BlocBuilder<ThemeBloc, ThemeState>(
+    builder: (context, state) {
+      final theme = state is ThemeLoaded ? state.currentTheme : ThemeData.light();
+      final themeMode = state is ThemeLoaded ? state.themeMode : ThemeMode.system;
+      return MaterialApp(
+        theme: theme,
+        darkTheme: theme,
+        themeMode: themeMode,
+        // ...
+      );
+    },
+  )
+  ```
+- **تبديل الثيم (مثال):**
+  ```dart
+  context.read<ThemeBloc>().add(ToggleTheme());
+  ```
+
+---
+
 > **ملاحظة:**
-> هذه الوثيقة توضح فقط نظام الشبكة في core. عند تطوير أو نقل ميزات أخرى (auth, theme, ...)، سيتم تحديث هذا الملف.
+> جميع التطبيقات ستستخدم نفس الثيم الموحد (ألوان وتخصيصات teacher) بشكل افتراضي. إذا رغبت في تخصيص الثيم لاحقًا، يمكنك تعديل AppTheme أو ThemeManager في core.

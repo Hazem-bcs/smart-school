@@ -8,7 +8,9 @@ import 'package:teacher_app/core/routing/navigation_extension.dart';
 import 'package:teacher_app/core/widgets/shared_bottom_navigation.dart';
 import 'package:teacher_app/features/assignment/presentation/ui/pages/assignments_page.dart';
 import 'package:teacher_app/features/schedule/presentation/ui/pages/schedule_page.dart';
-import '../../../../blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_state.dart';
+import 'package:core/blocs/theme/theme_event.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/settings_section.dart';
 
