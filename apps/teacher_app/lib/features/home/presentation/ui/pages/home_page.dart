@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:core/theme/index.dart';
+import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_assignment_page.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/class_card.dart';
 import '../widgets/assignment_tile.dart';
 import '../widgets/quick_action_button.dart';
 
-import '../../../../assignment/presentation/ui/pages/new_assignment_page.dart';
+
 import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
 import '../../../../schedule/presentation/ui/pages/schedule_page.dart';
 import '../../../../../core/widgets/shared_bottom_navigation.dart';

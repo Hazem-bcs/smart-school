@@ -4,7 +4,6 @@ import 'dart:async';
 import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/assignment_list_tile.dart';
-import 'new_assignment_page.dart';
 import '../../../../../core/widgets/shared_bottom_navigation.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import '../../../../../core/routing/navigation_extension.dart';
@@ -12,6 +11,10 @@ import '../widgets/assignments_app_bar.dart';
 import '../widgets/assignments_search_field.dart';
 import '../widgets/assignments_filter_chips.dart';
 import '../widgets/assignments_empty_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/assignment_bloc.dart';
+import '../../blocs/assignment_event.dart';
+import '../../blocs/assignment_state.dart';
 
 class AssignmentsPage extends StatefulWidget {
   const AssignmentsPage({super.key});
@@ -29,62 +32,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
   // Search and filter state
   final TextEditingController _searchController = TextEditingController();
   AssignmentStatus _selectedFilter = AssignmentStatus.all;
-  String _searchQuery = '';
   Timer? _debounceTimer;
-
-  // Sample data
-  final List<Assignment> _allAssignments = [
-    Assignment(
-      id: '1',
-      title: 'Math Quiz 1',
-      subtitle: 'Due: Oct 26 · 25/25 submitted',
-      isCompleted: true,
-      dueDate: DateTime(2024, 10, 26),
-      submittedCount: 25,
-      totalCount: 25,
-      status: AssignmentStatus.graded,
-    ),
-    Assignment(
-      id: '2',
-      title: 'Science Project',
-      subtitle: 'Due: Oct 27 · 20/25 submitted',
-      isCompleted: false,
-      dueDate: DateTime(2024, 10, 27),
-      submittedCount: 20,
-      totalCount: 25,
-      status: AssignmentStatus.ungraded,
-    ),
-    Assignment(
-      id: '3',
-      title: 'English Essay',
-      subtitle: 'Due: Oct 28 · 25/25 submitted',
-      isCompleted: true,
-      dueDate: DateTime(2024, 10, 28),
-      submittedCount: 25,
-      totalCount: 25,
-      status: AssignmentStatus.graded,
-    ),
-    Assignment(
-      id: '4',
-      title: 'History Report',
-      subtitle: 'Due: Oct 29 · 22/25 submitted',
-      isCompleted: false,
-      dueDate: DateTime(2024, 10, 29),
-      submittedCount: 22,
-      totalCount: 25,
-      status: AssignmentStatus.ungraded,
-    ),
-    Assignment(
-      id: '5',
-      title: 'Art Portfolio',
-      subtitle: 'Due: Oct 30 · 25/25 submitted',
-      isCompleted: true,
-      dueDate: DateTime(2024, 10, 30),
-      submittedCount: 25,
-      totalCount: 25,
-      status: AssignmentStatus.graded,
-    ),
-  ];
 
   // Filter options
   final List<Map<String, dynamic>> _filterOptions = [
@@ -119,6 +67,9 @@ class _AssignmentsPageState extends State<AssignmentsPage>
 
     _pageAnimationController.forward();
 
+    // عند بدء الصفحة، أرسل حدث تحميل الواجبات
+    context.read<AssignmentBloc>().add(const LoadAssignments());
+
     // Add search listener with debouncing
     _searchController.addListener(_onSearchChanged);
   }
@@ -140,12 +91,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
       appBar: AssignmentsAppBar(
         title: 'Assignments',
         onAdd: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const NewAssignmentPage(),
-            ),
-          );
+          context.goToNewAssignment();
         },
       ),
       body: FadeTransition(
@@ -162,7 +108,51 @@ class _AssignmentsPageState extends State<AssignmentsPage>
                   onChanged: _onFilterChanged,
                 ),
                 Expanded(
-                  child: _buildAssignmentsList(theme, isDark),
+                  child: BlocBuilder<AssignmentBloc, AssignmentState>(
+                    builder: (context, state) {
+                      if (state is AssignmentLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is AssignmentLoaded) {
+                        final assignments = state.assignments;
+                        if (assignments.isEmpty) {
+                          return AssignmentsEmptyState(searchQuery: _searchController.text);
+                        }
+                        return RefreshIndicator(
+                          onRefresh: _onRefresh,
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+                              vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+                            ),
+                            itemCount: assignments.length,
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20),
+                            ),
+                            itemBuilder: (context, index) {
+                              final assignment = assignments[index];
+                              return Card(
+                                color: isDark ? AppColors.darkCardBackground : theme.cardColor,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                elevation: 4,
+                                shadowColor: isDark ? Colors.black.withOpacity(0.15) : Colors.grey.withOpacity(0.08),
+                                margin: EdgeInsets.zero,
+                                child: AssignmentListTile(
+                                  title: assignment.title,
+                                  subtitle: assignment.subtitle,
+                                  isCompleted: assignment.isCompleted,
+                                  index: index,
+                                  onTap: () => _onAssignmentTap(assignment),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (state is AssignmentError) {
+                        return Center(child: Text('Error: ${state.message}'));
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ),
               ],
             ),
@@ -175,73 +165,15 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     );
   }
 
-  Widget _buildAssignmentsList(ThemeData theme, bool isDark) {
-    final filteredAssignments = _getFilteredAssignments();
-
-    if (filteredAssignments.isEmpty) {
-      return AssignmentsEmptyState(searchQuery: _searchQuery);
-    }
-
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(
-          horizontal: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-          vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-        ),
-        itemCount: filteredAssignments.length,
-        separatorBuilder: (context, index) => SizedBox(
-          height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20),
-        ),
-        itemBuilder: (context, index) {
-          final assignment = filteredAssignments[index];
-          return Card(
-            color: isDark ? AppColors.darkCardBackground : theme.cardColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 4,
-            shadowColor: isDark ? Colors.black.withOpacity(0.15) : Colors.grey.withOpacity(0.08),
-            margin: EdgeInsets.zero,
-            child: AssignmentListTile(
-              title: assignment.title,
-              subtitle: assignment.subtitle,
-              isCompleted: assignment.isCompleted,
-              index: index,
-              onTap: () => _onAssignmentTap(assignment),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // Helper methods
-  List<Assignment> _getFilteredAssignments() {
-    List<Assignment> filtered = _allAssignments;
-
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((assignment) {
-        return assignment.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               assignment.subtitle.toLowerCase().contains(_searchQuery.toLowerCase());
-      }).toList();
-    }
-
-    // Apply status filter
-    if (_selectedFilter != AssignmentStatus.all) {
-      filtered = filtered.where((assignment) {
-        return assignment.status == _selectedFilter;
-      }).toList();
-    }
-
-    return filtered;
-  }
-
   void _onSearchChanged() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      setState(() {
-        _searchQuery = _searchController.text;
-      });
+      context.read<AssignmentBloc>().add(
+        LoadAssignments(
+          searchQuery: _searchController.text,
+          filter: _selectedFilter,
+        ),
+      );
     });
   }
 
@@ -249,12 +181,22 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     setState(() {
       _selectedFilter = status;
     });
+    context.read<AssignmentBloc>().add(
+      LoadAssignments(
+        searchQuery: _searchController.text,
+        filter: status,
+      ),
+    );
   }
 
   Future<void> _onRefresh() async {
-    // تم تبسيط منطق التحديث ليكون Placeholder واضح فقط
+    context.read<AssignmentBloc>().add(
+      LoadAssignments(
+        searchQuery: _searchController.text,
+        filter: _selectedFilter,
+      ),
+    );
     await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {});
   }
 
   void _onAssignmentTap(Assignment assignment) {

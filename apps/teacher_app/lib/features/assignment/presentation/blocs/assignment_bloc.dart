@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'assignment_event.dart';
 import 'assignment_state.dart';
-import '../../domain/entities/assignment.dart';
 import '../../domain/usecases/get_assignments_usecase.dart';
 import '../../domain/usecases/add_assignment_usecase.dart';
 

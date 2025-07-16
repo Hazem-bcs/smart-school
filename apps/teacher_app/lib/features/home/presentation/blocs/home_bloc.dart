@@ -7,7 +7,7 @@ import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final GetClassesUseCase getClassesUseCase;
+  final GetHomeClassesUseCase getClassesUseCase;
   final GetAssignmentsUseCase getAssignmentsUseCase;
   final GetNotificationsUseCase getNotificationsUseCase;
 

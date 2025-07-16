@@ -4,6 +4,7 @@ import '../../../domain/entities/assignment.dart';
 abstract class AssignmentRemoteDataSource {
   Future<List<AssignmentModel>> getAssignments({String? searchQuery, AssignmentStatus? filter});
   Future<void> addAssignment(AssignmentModel assignment);
+
 }
 
 class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {

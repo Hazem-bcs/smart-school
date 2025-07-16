@@ -18,4 +18,5 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
     final model = AssignmentModel.fromEntity(assignment);
     await remoteDataSource.addAssignment(model);
   }
+
 } 

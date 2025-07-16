@@ -1,10 +1,10 @@
 import '../entities/class_entity.dart';
 import '../repositories/home_repository.dart';
 
-class GetClassesUseCase {
+class GetHomeClassesUseCase {
   final HomeRepository repository;
 
-  GetClassesUseCase(this.repository);
+  GetHomeClassesUseCase(this.repository);
 
   Future<List<ClassEntity>> call() async {
     return await repository.getClasses();

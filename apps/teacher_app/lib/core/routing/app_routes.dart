@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teacher_app/features/assignment_submission/presentation/blocs/submission_bloc.dart';
 import 'package:teacher_app/features/assignment_submission/presentation/ui/pages/assignment_submission_screen.dart';
 import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
+import 'package:teacher_app/features/new_assignment/presentation/blocs/new_assignment_bloc.dart';
+import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_assignment_page.dart';
 import '../../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../../features/home/presentation/ui/pages/home_page.dart';
@@ -35,6 +37,7 @@ import '../../../injection_container.dart' as di;
 import '../../features/auth/domain/usecases/check_auth_status_usecase.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
+import 'package:teacher_app/features/assignment/presentation/blocs/assignment_bloc.dart';
 
 class AppRoutes {
   // Route names
@@ -42,6 +45,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
   static const String scheduleZoom = '/schedule-zoom';
+  static const String newAssignment = '/new-assignment';
 
   static const String profile = '/profile';
   static const String editProfile = '/edit-profile';
@@ -81,7 +85,7 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => HomeBloc(
-              getClassesUseCase: di.getIt<GetClassesUseCase>(),
+              getClassesUseCase: di.getIt<GetHomeClassesUseCase>(),
               getAssignmentsUseCase: di.getIt<GetAssignmentsUseCase>(),
               getNotificationsUseCase: di.getIt<GetNotificationsUseCase>(),
             ),
@@ -150,7 +154,7 @@ class AppRoutes {
           settings: settings,
         );
         
-              case helpFaq:
+      case helpFaq:
         return MaterialPageRoute(
           builder: (_) => const HelpFaqPage(),
           settings: settings,
@@ -158,7 +162,19 @@ class AppRoutes {
         
         case assignments:
         return MaterialPageRoute(
-          builder: (_) => const AssignmentsPage(),
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<AssignmentBloc>(),
+            child: const AssignmentsPage(),
+          ),
+          settings: settings,
+        );
+        
+        case newAssignment:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_){return di.getIt<NewAssignmentBloc>();},
+            child: const NewAssignmentPage(),
+          ),
           settings: settings,
         );
         
