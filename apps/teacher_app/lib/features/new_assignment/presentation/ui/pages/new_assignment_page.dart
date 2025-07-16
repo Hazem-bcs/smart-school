@@ -204,6 +204,18 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
                           final availableClasses = state is NewAssignmentClassesLoaded
                               ? ['Choose Target', ...state.classes]
                               : <String>['Choose Target'];
+
+                          // إذا لم تكن selectedClass موجودة في القائمة، أعد تعيينها
+                          if (_selectedClass != null && !availableClasses.contains(_selectedClass)) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) {
+                                setState(() {
+                                  _selectedClass = null;
+                                });
+                              }
+                            });
+                          }
+
                           return NewAssignmentClassDropdown(
                             selectedClass: _selectedClass,
                             availableClasses: availableClasses,
