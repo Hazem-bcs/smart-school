@@ -213,7 +213,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///D:/download/flutter%20andriod/flutter/packages/flutter",
+      "rootUri": "file:///C:/dev/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -243,7 +243,7 @@
     },
     {
       "name": "flutter_localizations",
-      "rootUri": "file:///D:/download/flutter%20andriod/flutter/packages/flutter_localizations",
+      "rootUri": "file:///C:/dev/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -267,7 +267,7 @@
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///D:/download/flutter%20andriod/flutter/packages/flutter_web_plugins",
+      "rootUri": "file:///C:/dev/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -645,7 +645,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///D:/download/flutter%20andriod/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///C:/dev/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -860,10 +860,10 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-07-05T04:28:21.565396Z",
+  "generated": "2025-07-17T05:08:19.453661Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
-  "flutterRoot": "file:///D:/download/flutter%20andriod/flutter",
+  "flutterRoot": "file:///C:/dev/flutter",
   "flutterVersion": "3.29.3",
   "pubCache": "file:///C:/Users/ASUS/AppData/Local/Pub/Cache"
 }
