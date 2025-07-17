@@ -1,4 +1,5 @@
 // Core and Auth packages
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/network/dio_client.dart';
@@ -40,13 +41,19 @@ import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/presentation/blocs/profile_bloc.dart';
 
 // Settings feature imports
+import 'features/settings/data/datasources/settings_local_data_source.dart';
+import 'features/settings/data/datasources/settings_remote_data_source.dart';
+import 'features/settings/data/repositories/settings_repository_impl.dart';
+import 'features/settings/domain/repositories/settings_repository.dart';
+import 'features/settings/domain/usecases/logout_user.dart';
 import 'features/settings/presentation/blocs/settings_bloc.dart';
 
 // Assignment feature imports
 import 'features/assignment/data/data_sources/remote/assignment_remote_data_source.dart';
 import 'features/assignment/data/repositories_impl/assignment_repository_impl.dart';
 import 'features/assignment/domain/repositories/assignment_repository.dart';
-import 'features/assignment/domain/usecases/get_assignments_usecase.dart' as assignment_prefix;
+import 'features/assignment/domain/usecases/get_assignments_usecase.dart'
+    as assignment_prefix;
 import 'features/assignment/domain/usecases/add_assignment_usecase.dart';
 import 'features/assignment/presentation/blocs/assignment_bloc.dart';
 
@@ -81,7 +88,7 @@ Future<void> setupDependencies() async {
   await core_di.setupCoreDependencies(getIt);
   await auth_di.setupAuthDependencies(getIt);
   await password_di.setupPasswordDependencies(getIt);
-  
+
   // ========================================
   // AUTH FEATURE DEPENDENCIES
   // ========================================
@@ -89,11 +96,11 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(),
   );
-  
+
   getIt.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
-  
+
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
@@ -101,19 +108,23 @@ Future<void> setupDependencies() async {
       localDataSource: getIt<AuthLocalDataSource>(),
     ),
   );
-  
+
   // Use Cases
   getIt.registerLazySingleton(() => LoginUseCase(getIt<AuthRepository>()));
-  getIt.registerLazySingleton(() => CheckAuthStatusUseCase(getIt<AuthRepository>()));
+  getIt.registerLazySingleton(
+    () => CheckAuthStatusUseCase(getIt<AuthRepository>()),
+  );
   getIt.registerLazySingleton(() => LogoutUseCase(getIt<AuthRepository>()));
-  
+
   // BLoC
-  getIt.registerFactory(() => AuthBloc(
-    checkAuthStatusUseCase: getIt<CheckAuthStatusUseCase>(),
-    loginUseCase: getIt<LoginUseCase>(),
-    logoutUseCase: getIt<LogoutUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => AuthBloc(
+      checkAuthStatusUseCase: getIt<CheckAuthStatusUseCase>(),
+      loginUseCase: getIt<LoginUseCase>(),
+      logoutUseCase: getIt<LogoutUseCase>(),
+    ),
+  );
+
   // ========================================
   // HOME FEATURE DEPENDENCIES
   // ========================================
@@ -121,23 +132,29 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(),
   );
-  
+
   // Repository
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
   );
-  
+
   // Use Cases
-  getIt.registerLazySingleton(() => GetHomeClassesUseCase(getIt<HomeRepository>()));
-  getIt.registerLazySingleton(() => GetNotificationsUseCase(getIt<HomeRepository>()));
-  
+  getIt.registerLazySingleton(
+    () => GetHomeClassesUseCase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetNotificationsUseCase(getIt<HomeRepository>()),
+  );
+
   // BLoC
-  getIt.registerFactory(() => HomeBloc(
-    getClassesUseCase: getIt<GetHomeClassesUseCase>(),
-    getAssignmentsUseCase: getIt<GetAssignmentsUseCase>(),
-    getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => HomeBloc(
+      getClassesUseCase: getIt<GetHomeClassesUseCase>(),
+      getAssignmentsUseCase: getIt<GetAssignmentsUseCase>(),
+      getNotificationsUseCase: getIt<GetNotificationsUseCase>(),
+    ),
+  );
+
   // ========================================
   // PROFILE FEATURE DEPENDENCIES
   // ========================================
@@ -159,20 +176,60 @@ Future<void> setupDependencies() async {
   );
 
   // Use Cases
-  getIt.registerLazySingleton(() => GetProfileUseCase(getIt<ProfileRepository>()));
-  getIt.registerLazySingleton(() => UpdateProfileUseCase(getIt<ProfileRepository>()));
+  getIt.registerLazySingleton(
+    () => GetProfileUseCase(getIt<ProfileRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => UpdateProfileUseCase(getIt<ProfileRepository>()),
+  );
 
   // BLoC
-  getIt.registerFactory(() => ProfileBloc(
-    getProfileUseCase: getIt<GetProfileUseCase>(),
-    updateProfileUseCase: getIt<UpdateProfileUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => ProfileBloc(
+      getProfileUseCase: getIt<GetProfileUseCase>(),
+      updateProfileUseCase: getIt<UpdateProfileUseCase>(),
+    ),
+  );
+
   // ========================================
   // SETTINGS FEATURE DEPENDENCIES
   // ========================================
-  getIt.registerFactory(() => SettingsBloc());
-  
+
+  // 1. Data Sources (تعتمد على Dio و SharedPreferences مثلاً، لكن ليس على بعضها البعض بشكل مباشر)
+  // سجل مصدر البيانات المحلي أولاً لأنه لا يعتمد عادةً على Dio
+  getIt.registerLazySingleton<Dio>(() => Dio());
+  getIt.registerLazySingleton<SettingsLocalDataSource>(
+    () => SettingsLocalDataSourceImpl(
+      sharedPreferences: getIt<SharedPreferences>(),
+    ), // تأكد من استيراد SettingsLocalDataSourceImpl
+  );
+
+  // ثم سجل مصدر البيانات عن بُعد (يعتمد على Dio)
+  getIt.registerLazySingleton<SettingsRemoteDataSource>(
+    () => SettingsRemoteDataSourceImpl(
+      dio: getIt<Dio>(), // Dio يجب أن يكون مسجلًا الآن
+      baseUrl:
+          'YOUR_API_BASE_URL', // <== هام: استبدل هذا بعنوان الـ API الأساسي الفعلي الخاص بك
+    ),
+  );
+
+
+  // 2. Repository (يعتمد على Data Sources)
+  getIt.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(
+      remoteDataSource: getIt<SettingsRemoteDataSource>(),
+      localDataSource:
+          getIt<SettingsLocalDataSource>(), // الآن سيتم توفيره من GetIt
+      // إذا كان Repository يعتمد على NetworkInfo، فقم بتمريره هنا:
+      // networkInfo: getIt<NetworkInfo>(), // تأكد من تسجيل NetworkInfo إذا كنت تستخدمه
+    ),
+  );
+
+  // 3. Use Case (يعتمد على Repository)
+  getIt.registerLazySingleton(() => LogoutUser(getIt<SettingsRepository>()));
+
+  // 4. Bloc (يعتمد على Use Case)
+  getIt.registerFactory(() => SettingsBloc(logoutUser: getIt<LogoutUser>()));
   // ========================================
   // ASSIGNMENT FEATURE DEPENDENCIES
   // ========================================
@@ -180,21 +237,30 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<AssignmentRemoteDataSource>(
     () => AssignmentRemoteDataSourceImpl(),
   );
-  
+
   // Repository
   getIt.registerLazySingleton<AssignmentRepository>(
-    () => AssignmentRepositoryImpl(remoteDataSource: getIt<AssignmentRemoteDataSource>()),
+    () => AssignmentRepositoryImpl(
+      remoteDataSource: getIt<AssignmentRemoteDataSource>(),
+    ),
   );
-  
+
   // Use Cases
-  getIt.registerLazySingleton(() => assignment_prefix.GetAssignmentsUseCase(getIt<AssignmentRepository>()));
-  getIt.registerLazySingleton(() => AddAssignmentUseCase(getIt<AssignmentRepository>()));
+  getIt.registerLazySingleton(
+    () =>
+        assignment_prefix.GetAssignmentsUseCase(getIt<AssignmentRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => AddAssignmentUseCase(getIt<AssignmentRepository>()),
+  );
   // BLoC
-  getIt.registerFactory(() => AssignmentBloc(
-    getAssignmentsUseCase: getIt<assignment_prefix.GetAssignmentsUseCase>(),
-    addAssignmentUseCase: getIt<AddAssignmentUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => AssignmentBloc(
+      getAssignmentsUseCase: getIt<assignment_prefix.GetAssignmentsUseCase>(),
+      addAssignmentUseCase: getIt<AddAssignmentUseCase>(),
+    ),
+  );
+
   // ========================================
   // NEW ASSIGNMENT FEATURE DEPENDENCIES
   // ========================================
@@ -202,23 +268,32 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<NewAssignmentRemoteDataSource>(
     () => NewAssignmentRemoteDataSourceImpl(),
   );
-    getIt.registerLazySingleton<NewAssignmentLocalDataSource>(
-    () => NewAssignmentLocalDataSourceImpl(prefs:getIt<SharedPreferences>()),
+  getIt.registerLazySingleton<NewAssignmentLocalDataSource>(
+    () => NewAssignmentLocalDataSourceImpl(prefs: getIt<SharedPreferences>()),
   );
   // Repository
   getIt.registerLazySingleton<NewAssignmentRepository>(
-    () => NewAssignmentRepositoryImpl(getIt<NewAssignmentRemoteDataSource>(),getIt<NewAssignmentLocalDataSource>()),
+    () => NewAssignmentRepositoryImpl(
+      getIt<NewAssignmentRemoteDataSource>(),
+      getIt<NewAssignmentLocalDataSource>(),
+    ),
   );
   // Use Cases
-  getIt.registerLazySingleton(() => AddNewAssignmentUseCase(getIt<NewAssignmentRepository>()));
-  getIt.registerLazySingleton(() => GetClassesUseCase(getIt<NewAssignmentRepository>()));
+  getIt.registerLazySingleton(
+    () => AddNewAssignmentUseCase(getIt<NewAssignmentRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetClassesUseCase(getIt<NewAssignmentRepository>()),
+  );
 
   // BLoC
-  getIt.registerFactory(() => NewAssignmentBloc(
-    addNewAssignmentUseCase: getIt<AddNewAssignmentUseCase>(),
-    getClassesUseCase: getIt<GetClassesUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => NewAssignmentBloc(
+      addNewAssignmentUseCase: getIt<AddNewAssignmentUseCase>(),
+      getClassesUseCase: getIt<GetClassesUseCase>(),
+    ),
+  );
+
   // ========================================
   // ASSIGNMENT SUBMISSION FEATURE DEPENDENCIES
   // ========================================
@@ -226,18 +301,24 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<SubmissionRemoteDataSource>(
     () => SubmissionRemoteDataSource(),
   );
-  
+
   // Repository
   getIt.registerLazySingleton<SubmissionRepository>(
-    () => SubmissionRepositoryImpl(remoteDataSource: getIt<SubmissionRemoteDataSource>()),
+    () => SubmissionRepositoryImpl(
+      remoteDataSource: getIt<SubmissionRemoteDataSource>(),
+    ),
   );
-  
+
   // Use Case
-  getIt.registerLazySingleton(() => SubmitGradeUseCase(getIt<SubmissionRepository>()));
-  
+  getIt.registerLazySingleton(
+    () => SubmitGradeUseCase(getIt<SubmissionRepository>()),
+  );
+
   // BLoC
-  getIt.registerFactory(() => SubmissionBloc(submitGradeUseCase: getIt<SubmitGradeUseCase>()));
-  
+  getIt.registerFactory(
+    () => SubmissionBloc(submitGradeUseCase: getIt<SubmitGradeUseCase>()),
+  );
+
   // ========================================
   // ZOOM MEETING FEATURE DEPENDENCIES
   // ========================================
@@ -245,24 +326,32 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<ZoomMeetingRemoteDataSource>(
     () => ZoomMeetingRemoteDataSourceImpl(),
   );
-  
+
   // Repository
   getIt.registerLazySingleton<ZoomMeetingRepository>(
     () => ZoomMeetingRepositoryImpl(getIt<ZoomMeetingRemoteDataSource>()),
   );
-  
+
   // Use Cases
-  getIt.registerLazySingleton(() => ScheduleMeetingUseCase(getIt<ZoomMeetingRepository>()));
-  getIt.registerLazySingleton(() => GetAvailableClassesUseCase(getIt<ZoomMeetingRepository>()));
-  getIt.registerLazySingleton(() => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()));
-  
+  getIt.registerLazySingleton(
+    () => ScheduleMeetingUseCase(getIt<ZoomMeetingRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetAvailableClassesUseCase(getIt<ZoomMeetingRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()),
+  );
+
   // BLoC
-  getIt.registerFactory(() => ZoomMeetingBloc(
-    scheduleMeetingUseCase: getIt<ScheduleMeetingUseCase>(),
-    getAvailableClassesUseCase: getIt<GetAvailableClassesUseCase>(),
-    getMeetingOptionsUseCase: getIt<GetMeetingOptionsUseCase>(),
-  ));
-  
+  getIt.registerFactory(
+    () => ZoomMeetingBloc(
+      scheduleMeetingUseCase: getIt<ScheduleMeetingUseCase>(),
+      getAvailableClassesUseCase: getIt<GetAvailableClassesUseCase>(),
+      getMeetingOptionsUseCase: getIt<GetMeetingOptionsUseCase>(),
+    ),
+  );
+
   // ========================================
   // CORE BLOCS
   // ========================================
