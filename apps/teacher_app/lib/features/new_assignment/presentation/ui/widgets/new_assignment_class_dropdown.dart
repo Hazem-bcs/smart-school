@@ -24,7 +24,6 @@ class NewAssignmentClassDropdown extends StatelessWidget {
             bottom: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
           ),
           child: DropdownButtonFormField<String>(
-            value: selectedClass,
             decoration: InputDecoration(
               labelText: 'Select Classes/Students',
               filled: true,
@@ -71,9 +70,10 @@ class NewAssignmentClassDropdown extends StatelessWidget {
               color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
               size: 28,
             ),
+            value: selectedClass,
             items: availableClasses.map((String classItem) {
               return DropdownMenuItem<String>(
-                value: classItem == 'Choose Target' ? null : classItem,
+                value: classItem,
                 child: Text(
                   classItem,
                   style: TextStyle(

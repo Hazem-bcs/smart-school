@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teacher_app/features/new_assignment/presentation/blocs/new_assignment_event.dart';
-import 'package:teacher_app/features/new_assignment/presentation/ui/widgets/decorated_section_container.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
-import '../widgets/section_title.dart';
-import '../widgets/action_tile.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import '../widgets/new_assignment_title_field.dart';
 import '../widgets/new_assignment_description_field.dart';
@@ -40,9 +37,10 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
   final TextEditingController _pointsController = TextEditingController();
 
   // Form data
-  String? _selectedClass;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  String? _selectedClass = 'Choose Target';
+  List<String> availableClasses = ['Choose Target'];
 
   @override
   void initState() {
@@ -201,25 +199,14 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
                       
                       BlocBuilder<NewAssignmentBloc, NewAssignmentState>(
                         builder: (context, state) {
-                          final availableClasses = state is NewAssignmentClassesLoaded
-                              ? ['Choose Target', ...state.classes]
-                              : <String>['Choose Target'];
-
-                          // إذا لم تكن selectedClass موجودة في القائمة، أعد تعيينها
-                          if (_selectedClass != null && !availableClasses.contains(_selectedClass)) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted) {
-                                setState(() {
-                                  _selectedClass = null;
-                                });
-                              }
-                            });
-                          }
-
+                          print('here');
+                          if(state is NewAssignmentClassesLoaded) {
+                            availableClasses =  ['Choose Target' , ...state.classes];
+                            }
                           return NewAssignmentClassDropdown(
                             selectedClass: _selectedClass,
                             availableClasses: availableClasses,
-                            onChanged: (val) => setState(() => _selectedClass = val),
+                            onChanged: (val) => setState(() =>  _selectedClass = val),
                             isDark: isDark,
                             validator: validateClass,
                           );
@@ -307,7 +294,6 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       return;
     }
     // Create assignment entity
-    print('object');
 
     final assignment = NewAssignmentEntity(
       title: _titleController.text.trim(),
@@ -322,9 +308,16 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
 
   void _showSnackBar(String message) {
     if (!mounted) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(
+          message,
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

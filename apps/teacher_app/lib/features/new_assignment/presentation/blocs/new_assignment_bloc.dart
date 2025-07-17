@@ -13,10 +13,7 @@ class NewAssignmentBloc extends Bloc<NewAssignmentEvent, NewAssignmentState> {
   }
 
   Future<void> _onPublish(OnPublish event, Emitter<NewAssignmentState> emit) async {
-    print('here1');
     emit(NewAssignmentLoading());
-    
-    print('here');
     try {
       await addNewAssignmentUseCase(event.assignment);
       emit(NewAssignmentSent());
