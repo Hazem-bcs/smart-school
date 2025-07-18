@@ -1,6 +1,5 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_school/widgets/app_exports.dart';
-import 'package:smart_school/widgets/app_icon_widget.dart';
 
 class DrawerItem extends StatelessWidget {
   final VoidCallback onTap;

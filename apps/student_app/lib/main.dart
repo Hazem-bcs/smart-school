@@ -5,6 +5,8 @@ import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
 import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
+import 'package:smart_school/features/schedule/presentation/pages/schedule_page.dart';
+import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
@@ -19,7 +21,7 @@ import 'features/authentication/presentation/pages/on_boarding.dart';
 import 'features/dues/presentation/blocs/dues_bloc.dart';
 import 'features/dues/presentation/pages/dues_page.dart';
 import 'features/homework/presentation/pages/homework_page.dart';
-import 'features/post/presentation/pages/add_post_page.dart';
+
 import 'features/profile/presentation/bolcs/profile_bloc.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/resource/presintation/blocs/resource_bloc.dart';
@@ -88,7 +90,6 @@ class MyApp extends StatelessWidget {
               '/onBoarding': (context) => OnBoardingPage(),
               '/login': (context) => LoginPage(),
               '/home': (context) => HomePage(),
-              '/addPost': (context) => AddPostPage(),
               '/teacherPage': (context) => TeachersPage(),
               '/appDrawerWidget': (context) => AppDrawerWidget(),
               '/homeWorkPage': (context) => HomeworkPage(),
@@ -99,6 +100,8 @@ class MyApp extends StatelessWidget {
               '/attendancePage': (context) => AttendancePage(),
               '/resourcesPage': (context) => ResourcesPage(),
               '/notificationPage': (context) => NotificationPage(),
+              '/settings': (context) => SettingsScreen(),
+              '/schedule': (context) => SchedulePage(),
             },
           );
         },

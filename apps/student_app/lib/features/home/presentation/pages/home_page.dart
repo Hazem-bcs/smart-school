@@ -1,9 +1,70 @@
+// import 'package:core/theme/constants/colors.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_svg/svg.dart';
+// import '../../../../widgets/responsive/responsive_helper.dart';
+// import '../../../../widgets/shared_bottom_navigation.dart';
+// import '../widgets/app_drawer.dart';
+//
+// class HomePage extends StatefulWidget {
+//   const HomePage({super.key});
+//
+//   @override
+//   State<HomePage> createState() => _HomePageState();
+// }
+//
+// class _HomePageState extends State<HomePage> {
+//   int _currentIndex = 1;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       drawer: AppDrawerWidget(),
+//       appBar: AppBar(
+//         actions: [
+//           GestureDetector(
+//             onTap: () {
+//               Navigator.of(context).pushNamed('/tutorChatView');
+//             },
+//             child: Padding(
+//               padding: const EdgeInsetsDirectional.only(end: 20.0),
+//               child: SvgPicture.asset('assets/svg/chat.svg'),
+//             ),
+//           ),
+//         ],
+//         iconTheme: IconThemeData(color: Colors.white),
+//         title: Text(
+//           "Smart School",
+//           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+//         ),
+//         centerTitle: true,
+//         backgroundColor: primaryColor,
+//       ),
+//       body: SingleChildScrollView(
+//         child: Column(
+//           children: [
+//             SizedBox(
+//               height: ResponsiveHelper.getSpacing(
+//                 context,
+//                 mobile: 80,
+//                 tablet: 100,
+//                 desktop: 120,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: SharedBottomNavigation(currentIndex: _currentIndex),
+//     );
+//   }
+// }
+
+
+
 import 'package:core/theme/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:smart_school/features/post/presentation/widgets/post_widget.dart';
-
-import '../../../schedule/presentation/pages/schedule_page.dart';
+import '../../../../widgets/responsive/responsive_helper.dart';
+import '../../../../widgets/shared_bottom_navigation.dart';
 import '../widgets/app_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,19 +75,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  int _currentIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
-        onPressed: () {
-          // Navigator.of(context).pushReplacement(
-          //   MaterialPageRoute(builder: (context) => ScheduleScreen()),
-          // );
-        },
-
-        child: Icon(Icons.add, color: Colors.white),
-      ),
       drawer: AppDrawerWidget(),
       appBar: AppBar(
         actions: [
@@ -48,7 +108,24 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: primaryColor,
       ),
-      body: PostWidget(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: ResponsiveHelper.getSpacing(
+                context,
+                mobile: 80,
+                tablet: 100,
+                desktop: 120,
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: SharedBottomNavigation(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
