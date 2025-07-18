@@ -178,7 +178,7 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
     // Sample schedule data based on selected date
     final selectedDate = widget.selectedDate;
     final dayOfWeek = selectedDate.weekday;
-    final dayOfMonth = selectedDate.day;
+    final _ = selectedDate.day;
     
     // Different schedules for different days
     switch (dayOfWeek) {

@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             context,
                             icon: Icons.phone,
                             title: 'Phone',
-                            subtitle: state.userEntity.email ?? 'N/A',
+                            subtitle: state.userEntity.email ,
                           ),
                           const SizedBox(height: 15),
                           _buildInfoCard(

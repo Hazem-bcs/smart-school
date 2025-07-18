@@ -43,7 +43,7 @@ import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
 import 'features/atendance/presentation/blocs/attendance_bloc.dart';
 
-final   getIt = GetIt.instance;
+final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
   // استدعاء دوال الإعداد بالترتيب
@@ -59,27 +59,72 @@ Future<void> setupDependencies() async {
   await attendance_di.setupAttendanceDependencies(getIt);
 
   // AI Tutor dependencies
-  getIt.registerLazySingleton<AITutorRemoteDataSource>(() => AITutorRemoteDataSourceImpl());
-  getIt.registerLazySingleton<AITutorRepository>(() => AITutorRepositoryImpl(
-    remoteDataSource: getIt<AITutorRemoteDataSource>(),
-    networkInfo: getIt(),
-  ));
-  getIt.registerLazySingleton<SendChatMessageUseCase>(() => SendChatMessageUseCase(getIt<AITutorRepository>()));
+  getIt.registerLazySingleton<AITutorRemoteDataSource>(
+    () => AITutorRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<AITutorRepository>(
+    () => AITutorRepositoryImpl(
+      remoteDataSource: getIt<AITutorRemoteDataSource>(),
+      networkInfo: getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<SendChatMessageUseCase>(
+    () => SendChatMessageUseCase(getIt<AITutorRepository>()),
+  );
 
-  getIt.registerFactory(() => AuthBloc(checkAuthStatusUseCase:getIt<CheckAuthStatusUseCase>(), loginUseCase: getIt<LoginUseCase>()));
-  getIt.registerFactory(() => HomeworkBloc(getHomework: getIt<GetHomeworkUseCase>()));
-  getIt.registerFactory(() => QuestionBloc(getQuestionListUseCase: getIt<GetQuestionListUseCase>(), submitHomeworkUseCase: getIt<SubmitHomeworkUseCase>()));
-  getIt.registerFactory(() => DuesBloc(getMyDuesUseCase: getIt<GetMyDuesUseCase>()));
-  getIt.registerFactory(() => ProfileBloc(getUserProfileUseCase: getIt<GetUserProfileUseCase>()));
-  getIt.registerFactory(() => SubjectBloc(getSubjectUseCase: getIt<GetSubjectUseCase>()));
-  getIt.registerFactory(() => SubjectListBloc(getSubjectLListUseCase:getIt<GetSubjectLListUseCase>()));
-  getIt.registerFactory(() => NotificationBloc(getNotificationListUseCase:getIt<GetNotificationListUseCase>()));
-  getIt.registerFactory(() => ResourceBloc(getResourceListUseCase:getIt<GetResourceListUseCase>()));
-  getIt.registerFactory(() => ChatBloc(getGeminiResponse:getIt<SendChatMessageUseCase>()));
-  getIt.registerFactory(() => AttendanceBloc(
-    getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
-    getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
-  ));
-  getIt.registerFactory(() => TeacherListBloc(teacherListUseCase: getIt<GetTeacherListUseCase>()));
-  getIt.registerFactory(() => TeacherDetailsBloc(teacherByIdUseCase: getIt<GetTeacherByIdUseCase>()));
+  getIt.registerFactory(
+    () => AuthBloc(
+      checkAuthStatusUseCase: getIt<CheckAuthStatusUseCase>(),
+      loginUseCase: getIt<LoginUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => HomeworkBloc(getHomework: getIt<GetHomeworkUseCase>()),
+  );
+  getIt.registerFactory(
+    () => QuestionBloc(
+      getQuestionListUseCase: getIt<GetQuestionListUseCase>(),
+      submitHomeworkUseCase: getIt<SubmitHomeworkUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => DuesBloc(getMyDuesUseCase: getIt<GetMyDuesUseCase>()),
+  );
+  getIt.registerFactory(
+    () => ProfileBloc(getUserProfileUseCase: getIt<GetUserProfileUseCase>()),
+  );
+  getIt.registerFactory(
+    () => SubjectBloc(getSubjectUseCase: getIt<GetSubjectUseCase>()),
+  );
+  getIt.registerFactory(
+    () => SubjectListBloc(
+      getSubjectLListUseCase: getIt<GetSubjectLListUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => NotificationBloc(
+      getNotificationListUseCase: getIt<GetNotificationListUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => ResourceBloc(getResourceListUseCase: getIt<GetResourceListUseCase>()),
+  );
+  getIt.registerFactory(
+    () => ChatBloc(getGeminiResponse: getIt<SendChatMessageUseCase>()),
+  );
+  getIt.registerFactory(
+    () => AttendanceBloc(
+      getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
+      getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => TeacherListBloc(teacherListUseCase: getIt<GetTeacherListUseCase>()),
+  );
+  getIt.registerFactory(
+    () =>
+        TeacherDetailsBloc(teacherByIdUseCase: getIt<GetTeacherByIdUseCase>()),
+  );
+
+
 }

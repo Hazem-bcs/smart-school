@@ -1,4 +1,4 @@
-import 'package:sizer/sizer.dart';
+
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';

@@ -2,13 +2,9 @@ import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../features/authentication/presentation/blocs/auth_bloc.dart';
 import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/splash_page.dart';
-import '../../features/home/presentation/pages/home_page.dart';
-import '../../features/profile/presentation/bolcs/profile_bloc.dart';
-import '../../features/schedule/presentation/pages/schedule_page.dart';
 import '../../../injection_container.dart' as di;
 
 class AppRoutes {

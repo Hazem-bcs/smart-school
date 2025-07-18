@@ -1,7 +1,4 @@
 import 'package:core/domain/entities/user_entity.dart';
-import 'package:core/theme/constants/app_strings.dart';
-import 'package:core/theme/constants/colors.dart';
-
 import '../../../../widgets/app_exports.dart';
 
 class EditProfilePage extends StatefulWidget {
