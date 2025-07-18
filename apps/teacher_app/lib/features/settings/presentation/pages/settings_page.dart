@@ -7,7 +7,7 @@ import 'package:teacher_app/core/responsive/responsive_widgets.dart';
 import 'package:teacher_app/core/routing/navigation_extension.dart';
 import 'package:teacher_app/core/widgets/shared_bottom_navigation.dart';
 import 'package:teacher_app/features/assignment/presentation/ui/pages/assignments_page.dart';
-import 'package:teacher_app/features/schedule/presentation/ui/pages/schedule_page.dart';
+import 'package:teacher_app/features/schedule/presentation/pages/schedule_page.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_state.dart';
 import 'package:core/blocs/theme/theme_event.dart';

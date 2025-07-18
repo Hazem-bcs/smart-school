@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teacher_app/features/schedule/domain/entities/schedule_entity.dart';
-import '../../../../../core/responsive/responsive_helper.dart';
+import '../../../../core/responsive/responsive_helper.dart';
 import 'schedule_card.dart';
 
 class AnimatedScheduleList extends StatefulWidget {

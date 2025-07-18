@@ -8,7 +8,7 @@ import '../widgets/quick_action_button.dart';
 
 
 import '../../../../assignment/presentation/ui/pages/assignments_page.dart';
-import '../../../../schedule/presentation/ui/pages/schedule_page.dart';
+import '../../../../schedule/presentation/pages/schedule_page.dart';
 import '../../../../../core/widgets/shared_bottom_navigation.dart';
 import '../../../../../core/routing/navigation_extension.dart';
 

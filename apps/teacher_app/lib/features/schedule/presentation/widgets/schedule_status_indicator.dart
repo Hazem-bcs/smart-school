@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/responsive/responsive_helper.dart';
-import '../../../domain/entities/schedule_entity.dart';
+import '../../../../core/responsive/responsive_helper.dart';
+import '../../domain/entities/schedule_entity.dart';
 
 class ScheduleStatusIndicator extends StatelessWidget {
   final ScheduleStatus status;
