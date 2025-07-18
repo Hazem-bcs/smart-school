@@ -195,41 +195,35 @@ Future<void> setupDependencies() async {
   // SETTINGS FEATURE DEPENDENCIES
   // ========================================
 
-  // 1. Data Sources (تعتمد على Dio و SharedPreferences مثلاً، لكن ليس على بعضها البعض بشكل مباشر)
-  // سجل مصدر البيانات المحلي أولاً لأنه لا يعتمد عادةً على Dio
+  // 4. Bloc (يعتمد على Use Case)
+  getIt.registerFactory(() => SettingsBloc(logoutUser: getIt<LogoutUser>()));
   getIt.registerLazySingleton<Dio>(() => Dio());
+
+  // 3. Use Case (يعتمد على Repository)
+  getIt.registerLazySingleton(() => LogoutUser(getIt<SettingsRepository>()));
+
+  // 2. Repository (يعتمد على Data Sources)
+  getIt.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(
+      remoteDataSource: getIt<SettingsRemoteDataSource>(),
+      localDataSource: getIt<SettingsLocalDataSource>(),
+    ),
+  );
+
+  //4. data source
   getIt.registerLazySingleton<SettingsLocalDataSource>(
     () => SettingsLocalDataSourceImpl(
       sharedPreferences: getIt<SharedPreferences>(),
     ), // تأكد من استيراد SettingsLocalDataSourceImpl
   );
 
-  // ثم سجل مصدر البيانات عن بُعد (يعتمد على Dio)
   getIt.registerLazySingleton<SettingsRemoteDataSource>(
     () => SettingsRemoteDataSourceImpl(
-      dio: getIt<Dio>(), // Dio يجب أن يكون مسجلًا الآن
-      baseUrl:
-          'YOUR_API_BASE_URL', // <== هام: استبدل هذا بعنوان الـ API الأساسي الفعلي الخاص بك
+      dio: getIt<Dio>(),
+      baseUrl: 'YOUR_API_BASE_URL',
     ),
   );
 
-
-  // 2. Repository (يعتمد على Data Sources)
-  getIt.registerLazySingleton<SettingsRepository>(
-    () => SettingsRepositoryImpl(
-      remoteDataSource: getIt<SettingsRemoteDataSource>(),
-      localDataSource:
-          getIt<SettingsLocalDataSource>(), // الآن سيتم توفيره من GetIt
-      // إذا كان Repository يعتمد على NetworkInfo، فقم بتمريره هنا:
-      // networkInfo: getIt<NetworkInfo>(), // تأكد من تسجيل NetworkInfo إذا كنت تستخدمه
-    ),
-  );
-
-  // 3. Use Case (يعتمد على Repository)
-  getIt.registerLazySingleton(() => LogoutUser(getIt<SettingsRepository>()));
-
-  // 4. Bloc (يعتمد على Use Case)
-  getIt.registerFactory(() => SettingsBloc(logoutUser: getIt<LogoutUser>()));
   // ========================================
   // ASSIGNMENT FEATURE DEPENDENCIES
   // ========================================
