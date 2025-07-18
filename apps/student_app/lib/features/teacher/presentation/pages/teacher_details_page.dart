@@ -1,19 +1,16 @@
 import 'package:sizer/sizer.dart';
-import 'package:smart_school/features/profile/presentation/bolcs/profile_bloc.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
 
+import '../../../subject/presentation/pages/subject_details_page.dart';
+
 class TeacherDetailsPage extends StatefulWidget {
   final int teacherId;
-  final TeacherEntity teacher;
+  final TeacherEntity? teacher;
 
-  const TeacherDetailsPage({
-    super.key,
-    required this.teacherId,
-    required this.teacher,
-  });
+  const TeacherDetailsPage({super.key, required this.teacherId, this.teacher});
 
   @override
   State<TeacherDetailsPage> createState() => _TeacherPageState();
@@ -25,6 +22,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     context.read<TeacherDetailsBloc>().add(
       GetTeacherById(teacherId: widget.teacherId),
     );
+    context.read<SubjectListBloc>().add(GetSubjectListEvent());
     super.initState();
   }
 
@@ -49,10 +47,11 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
       ),
       body: BlocBuilder<TeacherDetailsBloc, TeacherDetailsState>(
         builder: (context, state) {
-          if (state is TeacherDetailsInitial || state is TeacherDetailsLoading) {
+          if (state is TeacherDetailsInitial ||
+              state is TeacherDetailsLoading) {
             return const Center(child: AppLoadingWidget());
           }
-          if (state is TeacherDetailsError ) {
+          if (state is TeacherDetailsError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -71,16 +70,17 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
             );
           }
           if (state is TeacherDetailsLoaded) {
+            final TeacherEntity loadedTeacher = state.teacher;
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   AppBarImageWidget(
-                    title: "name",
+                    title: loadedTeacher.name,
                     height: 200,
                     isImage: true,
-                    imageName: widget.teacher.imageUrl ??"assets/images/user.png",
+                    imageName: loadedTeacher.imageUrl,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -88,26 +88,28 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
+                        //bio
                         Align(
                           alignment: Alignment.centerLeft,
                           child: AppTextWidget(
                             text: AppStrings.bio,
                             style: TextStyle(
                               color: primaryColor,
-                              fontSize: 26.sp,
+                              fontSize: 26,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.5,
                             ),
                           ),
                         ),
                         const SizedBox(height: 8),
+                        //subject
                         Align(
                           alignment: Alignment.centerLeft,
                           child: AppTextWidget(
-                            text: widget.teacher.description,
+                            text: loadedTeacher.description,
                             style: TextStyle(
                               color: tertiaryColor,
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontWeight: FontWeight.normal,
                               height: 1.5,
                             ),
@@ -120,7 +122,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                             text: AppStrings.subjects,
                             style: TextStyle(
                               color: primaryColor,
-                              fontSize: 26.sp,
+                              fontSize: 26,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.5,
                             ),
@@ -134,8 +136,52 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                             }
                             if (state is SubjectListLoaded) {
                               if (state.subjectEntityList.isNotEmpty) {
-                                return AppSubjectCard(
-                                  subject: state.subjectEntityList.first,
+                                return GridView.builder(
+                                  padding: const EdgeInsets.all(16.0),
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 16.0,
+                                        mainAxisSpacing: 16.0,
+                                        childAspectRatio: 0.75,
+                                      ),
+                                  itemCount: state.subjectEntityList.length,
+                                  itemBuilder: (context, index) {
+                                    final subject =
+                                        state.subjectEntityList[index];
+                                    return LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        return ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            minHeight: constraints.maxHeight,
+                                            maxHeight: constraints.maxHeight,
+                                            minWidth: constraints.maxWidth,
+                                            maxWidth: constraints.maxWidth,
+                                          ),
+                                          child: AppSubjectCard(
+                                            subject: subject,
+                                            onTap: () {
+                                              Navigator.of(
+                                                context,
+                                              ).pushReplacement(
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                          SubjectDetailsPage(
+                                                            subjectId:
+                                                                subject.id,
+                                                          ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                 );
                               } else {
                                 return const Center(
