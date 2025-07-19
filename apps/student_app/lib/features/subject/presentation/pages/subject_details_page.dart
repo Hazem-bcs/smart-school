@@ -3,8 +3,6 @@ import 'package:core/theme/constants/app_text_style.dart';
 import 'package:core/theme/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
-import 'package:smart_school/widgets/app_bar_widget.dart';
 import '../../../../widgets/app_loading_widget.dart';
 import '../blocs/subject/subject_bloc.dart';
 

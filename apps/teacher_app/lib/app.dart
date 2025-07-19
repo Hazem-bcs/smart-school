@@ -7,6 +7,7 @@ import 'package:sizer/sizer.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_state.dart';
 import 'package:core/blocs/theme/theme_event.dart';
+import 'features/settings/presentation/blocs/settings_bloc.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/presentation/blocs/auth_bloc.dart';
 import 'core/routing/app_routes.dart';
@@ -19,24 +20,25 @@ class TeacherApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         // Connectivity BLoC - ضروري للتطبيق كاملاً
-        BlocProvider(
-          create: (context) => di.getIt<ConnectivityBloc>(),
-        ),
+        BlocProvider(create: (context) => di.getIt<ConnectivityBloc>()),
         // Auth BLoC - ضروري للتحقق من حالة المصادقة
-        BlocProvider(
-          create: (context) => di.getIt<AuthBloc>(),
-        ),
+        BlocProvider(create: (context) => di.getIt<AuthBloc>()),
         // Theme BLoC - لإدارة الثيمات
-        BlocProvider(
-          create: (context) => ThemeBloc()..add(InitializeTheme()),
-        ),
+        BlocProvider(create: (context) => ThemeBloc()..add(InitializeTheme())),
+        BlocProvider(create: (context) => di.getIt<SettingsBloc>()),
       ],
       child: Sizer(
         builder: (context, orientation, screenType) {
           return BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, themeState) {
-              final theme = themeState is ThemeLoaded ? themeState.currentTheme : ThemeData.light();
-              final themeMode = themeState is ThemeLoaded ? themeState.themeMode : ThemeMode.system;
+              final theme =
+                  themeState is ThemeLoaded
+                      ? themeState.currentTheme
+                      : ThemeData.light();
+              final themeMode =
+                  themeState is ThemeLoaded
+                      ? themeState.themeMode
+                      : ThemeMode.system;
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'app_title'.tr(),
@@ -58,4 +60,4 @@ class TeacherApp extends StatelessWidget {
       ),
     );
   }
-} 
+}

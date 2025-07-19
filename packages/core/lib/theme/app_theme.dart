@@ -4,13 +4,13 @@ class AppTheme {
   AppTheme._();
 
   // ألوان وتخصيصات teacher
-  static const Color primary = Color(0xFF2196F3);      // Blue
-  static const Color secondary = Color(0xFF1976D2);    // Darker Blue
-  static const Color accent = Color(0xFF64B5F6);       // Light Blue
-  static const Color success = Color(0xFF4CAF50);      // Green
-  static const Color warning = Color(0xFFFF9800);      // Orange
-  static const Color error = Color(0xFFF44336);        // Red
-  static const Color info = Color(0xFF00BCD4);         // Cyan
+  static const Color primary = Color(0xFF2196F3); // Blue
+  static const Color secondary = Color(0xFF1976D2); // Darker Blue
+  static const Color accent = Color(0xFF64B5F6); // Light Blue
+  static const Color success = Color(0xFF4CAF50); // Green
+  static const Color warning = Color(0xFFFF9800); // Orange
+  static const Color error = Color(0xFFF44336); // Red
+  static const Color info = Color(0xFF00BCD4); // Cyan
   static const Color surfaceLight = Color(0xFFF8FBFF);
   static const Color surfaceDark = Color(0xFF1A1A2E);
   static const Color textPrimary = Color(0xFF1A1A1A);
@@ -39,7 +39,7 @@ class AppTheme {
       elevation: 2,
       centerTitle: true,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: surfaceLight,
       elevation: 2,
       margin: EdgeInsets.zero,
@@ -58,19 +58,33 @@ class AppTheme {
         backgroundColor: primary,
         foregroundColor: Colors.white,
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: primary,
         side: const BorderSide(color: primary),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
       ),
     ),
     switchTheme: SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.white : Colors.grey),
-      trackColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? primary : Colors.grey.shade300),
+      thumbColor: MaterialStateProperty.resolveWith(
+        (states) =>
+            states.contains(MaterialState.selected)
+                ? Colors.white
+                : Colors.grey,
+      ),
+      trackColor: MaterialStateProperty.resolveWith(
+        (states) =>
+            states.contains(MaterialState.selected)
+                ? primary
+                : Colors.grey.shade300,
+      ),
     ),
     dividerTheme: const DividerThemeData(
       color: Color(0xFFE0E0E0),
@@ -122,7 +136,7 @@ class AppTheme {
       elevation: 2,
       centerTitle: true,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: surfaceDark,
       elevation: 2,
       margin: EdgeInsets.zero,
@@ -141,19 +155,33 @@ class AppTheme {
         backgroundColor: accent,
         foregroundColor: Colors.black,
         elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: accent,
         side: const BorderSide(color: accent),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
       ),
     ),
     switchTheme: SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.black : Colors.grey.shade600),
-      trackColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? accent : Colors.grey.shade600),
+      thumbColor: MaterialStateProperty.resolveWith(
+        (states) =>
+            states.contains(MaterialState.selected)
+                ? Colors.black
+                : Colors.grey.shade600,
+      ),
+      trackColor: MaterialStateProperty.resolveWith(
+        (states) =>
+            states.contains(MaterialState.selected)
+                ? accent
+                : Colors.grey.shade600,
+      ),
     ),
     dividerTheme: const DividerThemeData(
       color: Color(0xFF424242),
@@ -186,13 +214,17 @@ class AppTheme {
   static ThemeData getTheme(Brightness brightness) {
     return brightness == Brightness.light ? lightTheme : darkTheme;
   }
-  
+
   static ThemeData getSystemTheme() {
-    final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
     return getTheme(brightness);
   }
-  
-  static ThemeData createAppTheme({required Brightness brightness, required Color accentColor}) {
+
+  static ThemeData createAppTheme({
+    required Brightness brightness,
+    required Color accentColor,
+  }) {
     final baseTheme = getTheme(brightness);
     return baseTheme.copyWith(
       colorScheme: baseTheme.colorScheme.copyWith(
@@ -204,16 +236,20 @@ class AppTheme {
           backgroundColor: accentColor,
           foregroundColor: Colors.white,
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: accentColor,
           side: BorderSide(color: accentColor),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
         ),
       ),
     );
   }
-} 
+}

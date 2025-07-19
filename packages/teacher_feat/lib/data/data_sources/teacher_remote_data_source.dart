@@ -1,5 +1,3 @@
-
-
 import 'package:core/data/models/subject_model.dart';
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/failures.dart';
@@ -35,7 +33,7 @@ class TeacherRemoteDataSourceImpl extends TeacherRemoteDataSource {
       TeacherModel(
         id: 1,
         name: 'mazen',
-        image: 'https://cdn.mos.cms.futurecdn.net/kXUihcLa33aC96RgbUpX6a.png',
+        image: 'assets/images/user.png',
         description: 'good teacher_feat',
         phone: '0941321444',
         address: 'Middle City next to Jiva market',
@@ -87,22 +85,48 @@ class TeacherRemoteDataSourceImpl extends TeacherRemoteDataSource {
         "name": "Rama",
         "image": "https://safasfasf",
         "description": 'مدرسة مواد عدة لديها مهارات جيدة',
-        "subjects": "['id' : '3','name' : 'علوم' , 'image': 'null']",
+        "subjects": [
+          {
+            'id': 3,
+            'name': 'علوم',
+            'image':
+                'https://images.unsplash.com/photo-1542831371-29b0f74f94dd?fit=crop&w=800&q=80',
+          },
+        ],
       },
       {
         "id": "2",
         "name": "ahmad",
         "image": "https://safasfasf",
         "description": 'مدرس مواد عدة لديه مهارات جيدة',
-        "subjects": "['id' : '1','name' : 'رياضيات' , 'image': 'null']",
+        "subjects": [
+          {
+            'id': 1,
+            'name': 'رياضيات',
+            'image':
+                'https://images.unsplash.com/photo-1510904221195-ad9211c6d376?fit=crop&w=800&q=80',
+          },
+        ],
       },
       {
         "id": "3",
         "name": "mazen",
         "image": "https://safasfasf",
         "description": 'مدرس مواد عدة لديه مهارات جيدة',
-        "subjects":
-            "[ ['id' : '1','name' : 'رياضيات' , 'image': 'null'], ['id' : '2','name' : 'عربي' , 'image': 'null']]",
+        "subjects": [
+          {
+            'id': 1,
+            'name': 'رياضيات',
+            'image':
+                'https://images.unsplash.com/photo-1554988775-8178120b08e2?fit=crop&w=800&q=80',
+          },
+          {
+            'id': 2,
+            'name': 'عربي',
+            'image':
+                'https://images.unsplash.com/photo-1554988775-8178120b08e2?fit=crop&w=800&q=80',
+          },
+        ],
       },
     ];
     return Right(dummyJson.map((json) => TeacherModel.fromJson(json)).toList());

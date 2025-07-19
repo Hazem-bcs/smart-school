@@ -18,7 +18,7 @@ import '../../../features/settings/presentation/pages/about_app_page.dart';
 import '../../../features/settings/presentation/pages/help_faq_page.dart';
 import '../../../features/assignment/presentation/ui/pages/assignments_page.dart';
 
-import '../../../features/schedule/presentation/ui/pages/schedule_page.dart';
+import '../../features/schedule/presentation/pages/schedule_page.dart';
 import '../../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';

@@ -19,10 +19,12 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
       // return (response.data as List)
       //     .map((json) => MonthlyAttendanceModel.fromJson(json))
       //     .toList();
-      
+
       // Mock data for now
       await Future.delayed(const Duration(milliseconds: 500));
+
       return [
+
          MonthlyAttendanceModel(monthName: 'January', attendanceCount: 15, absenceCount: 16, monthNumber: 1),
          MonthlyAttendanceModel(monthName: 'February', attendanceCount: 20, absenceCount: 8, monthNumber: 2),
          MonthlyAttendanceModel(monthName: 'March', attendanceCount: 22, absenceCount: 9, monthNumber: 3),
@@ -42,7 +44,7 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
       // TODO: Replace with actual API endpoint
       // final response = await dio.get('/attendance/details/$year/$month');
       // return AttendanceModel.fromJson(response.data);
-      
+
       // Mock data for now
       await Future.delayed(const Duration(milliseconds: 500));
       return AttendanceModel(
@@ -57,4 +59,4 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
       throw Exception('Failed to load attendance details: $e');
     }
   }
-} 
+}
