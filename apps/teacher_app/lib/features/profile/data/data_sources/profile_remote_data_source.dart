@@ -62,28 +62,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<Either<Failure, ProfileModel>> updateProfile(ProfileModel profileModel) async {
-    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
-    await Future.delayed(const Duration(milliseconds: 800));
-    print('ProfileModel Data:');
-    print('ID: ${profileModel.id}');
-    print('Name: ${profileModel.name}');
-    print('Bio: ${profileModel.bio}');
-    print('Contact Info:');
-    print('  Email: ${profileModel.contactInfoModel.email}');
-    print('  Phone: ${profileModel.contactInfoModel.phone}');
-    print('Avatar URL: ${profileModel.avatarUrl}');
-    print('Social Media:');
-    for (var social in profileModel.socialMediaModel) {
-      print('  Platform: ${social.platform}');
-      print('  URL: ${social.url}');
-      print('  Icon: ${social.icon}');
-    }
-    print('Professional Info:');
-    print('  Subjects Taught: ${profileModel.professionalInfoModel.subjectsTaught}');
-    print('  Grade Levels: ${profileModel.professionalInfoModel.gradeLevels}');
-    print('  Department: ${profileModel.professionalInfoModel.department}');
-    print('  Qualifications: ${profileModel.professionalInfoModel.qualifications}');
-    print('  Certifications: ${profileModel.professionalInfoModel.certifications}');
     final Map<String, dynamic> response = {
       'success': true,
       'statuscode': 200,

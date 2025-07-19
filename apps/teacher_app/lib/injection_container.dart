@@ -53,9 +53,7 @@ import 'features/settings/presentation/blocs/settings_bloc.dart';
 import 'features/assignment/data/data_sources/remote/assignment_remote_data_source.dart';
 import 'features/assignment/data/repositories_impl/assignment_repository_impl.dart';
 import 'features/assignment/domain/repositories/assignment_repository.dart';
-import 'features/assignment/domain/usecases/get_assignments_usecase.dart'
-    as assignment_prefix;
-import 'features/assignment/domain/usecases/add_assignment_usecase.dart';
+import 'features/assignment/domain/usecases/get_assignments_usecase.dart' as assignment_prefix;
 import 'features/assignment/presentation/blocs/assignment_bloc.dart';
 
 // Assignment Submission feature imports
@@ -248,17 +246,13 @@ Future<void> setupDependencies() async {
 
   // Use Cases
   getIt.registerLazySingleton(
-    () =>
-        assignment_prefix.GetAssignmentsUseCase(getIt<AssignmentRepository>()),
+    () => assignment_prefix.GetAssignmentsUseCase(getIt<AssignmentRepository>()),
   );
-  getIt.registerLazySingleton(
-    () => AddAssignmentUseCase(getIt<AssignmentRepository>()),
-  );
+  
   // BLoC
   getIt.registerFactory(
     () => AssignmentBloc(
       getAssignmentsUseCase: getIt<assignment_prefix.GetAssignmentsUseCase>(),
-      addAssignmentUseCase: getIt<AddAssignmentUseCase>(),
     ),
   );
 

@@ -13,19 +13,29 @@ class AssignmentModel extends Assignment {
   });
 
   factory AssignmentModel.fromJson(Map<String, dynamic> json) {
-    return AssignmentModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      subtitle: json['subtitle'] as String,
-      isCompleted: json['isCompleted'] as bool,
-      dueDate: DateTime.parse(json['dueDate'] as String),
-      submittedCount: json['submittedCount'] as int,
-      totalCount: json['totalCount'] as int,
-      status: AssignmentStatus.values.firstWhere(
-        (e) => e.toString() == 'AssignmentStatus.' + (json['status'] as String),
-        orElse: () => AssignmentStatus.ungraded,
-      ),
-    );
+      return AssignmentModel(
+        id: json['id']?.toString() ?? '',
+        title: json['title']?.toString() ?? '',
+        subtitle: json['subtitle']?.toString() ?? '',
+        isCompleted: json['isCompleted'] as bool? ?? false,
+        dueDate: DateTime.parse(json['dueDate']?.toString() ?? DateTime.now().toIso8601String()),
+        submittedCount: json['submittedCount'] as int? ?? 0,
+        totalCount: json['totalCount'] as int? ?? 0,
+        status: _parseAssignmentStatus(json['status']?.toString() ?? 'ungraded'),
+      );
+  }
+
+  static AssignmentStatus _parseAssignmentStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'graded':
+        return AssignmentStatus.graded;
+      case 'ungraded':
+        return AssignmentStatus.ungraded;
+      case 'all':
+        return AssignmentStatus.all;
+      default:
+        return AssignmentStatus.ungraded;
+    }
   }
 
   Map<String, dynamic> toJson() {

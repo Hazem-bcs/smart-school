@@ -14,12 +14,4 @@ class LoadAssignments extends AssignmentEvent {
 
   @override
   List<Object?> get props => [searchQuery, filter];
-}
-
-class AddAssignment extends AssignmentEvent {
-  final Assignment assignment;
-  const AddAssignment(this.assignment);
-
-  @override
-  List<Object?> get props => [assignment];
 } 

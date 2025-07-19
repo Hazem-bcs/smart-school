@@ -11,6 +11,9 @@ import '../widgets/assignments_app_bar.dart';
 import '../widgets/assignments_search_field.dart';
 import '../widgets/assignments_filter_chips.dart';
 import '../widgets/assignments_empty_state.dart';
+import '../widgets/assignments_error_state.dart';
+import '../widgets/assignments_loading_state.dart';
+import '../widgets/assignments_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/assignment_bloc.dart';
 import '../../blocs/assignment_event.dart';
@@ -111,44 +114,24 @@ class _AssignmentsPageState extends State<AssignmentsPage>
                   child: BlocBuilder<AssignmentBloc, AssignmentState>(
                     builder: (context, state) {
                       if (state is AssignmentLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const AssignmentsLoadingState();
                       } else if (state is AssignmentLoaded) {
                         final assignments = state.assignments;
                         if (assignments.isEmpty) {
                           return AssignmentsEmptyState(searchQuery: _searchController.text);
                         }
-                        return RefreshIndicator(
-                          onRefresh: _onRefresh,
-                          child: ListView.separated(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-                              vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-                            ),
-                            itemCount: assignments.length,
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20),
-                            ),
-                            itemBuilder: (context, index) {
-                              final assignment = assignments[index];
-                              return Card(
-                                color: isDark ? AppColors.darkCardBackground : theme.cardColor,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                elevation: 4,
-                                shadowColor: isDark ? Colors.black.withOpacity(0.15) : Colors.grey.withOpacity(0.08),
-                                margin: EdgeInsets.zero,
-                                child: AssignmentListTile(
-                                  title: assignment.title,
-                                  subtitle: assignment.subtitle,
-                                  isCompleted: assignment.isCompleted,
-                                  index: index,
-                                  onTap: () => _onAssignmentTap(assignment),
-                                ),
-                              );
-                            },
-                          ),
+                        return AssignmentsList(
+                          assignments: assignments,
+                          isDark: isDark,
+                          onAssignmentTap: _onAssignmentTap,
+                          onRefresh: () => _onRefresh(),
                         );
                       } else if (state is AssignmentError) {
-                        return Center(child: Text('Error: ${state.message}'));
+                        return AssignmentsErrorState(
+                          message: state.message,
+                          searchQuery: _searchController.text.isNotEmpty ? _searchController.text : null,
+                          filter: _selectedFilter.toString().split('.').last,
+                        );
                       }
                       return const SizedBox.shrink();
                     },
@@ -168,12 +151,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
   void _onSearchChanged() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      context.read<AssignmentBloc>().add(
-        LoadAssignments(
-          searchQuery: _searchController.text,
-          filter: _selectedFilter,
-        ),
-      );
+      _loadAssignmentsWithCurrentFilters();
     });
   }
 
@@ -181,25 +159,24 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     setState(() {
       _selectedFilter = status;
     });
-    context.read<AssignmentBloc>().add(
-      LoadAssignments(
-        searchQuery: _searchController.text,
-        filter: status,
-      ),
-    );
+    _loadAssignmentsWithCurrentFilters();
   }
 
   Future<void> _onRefresh() async {
+    _loadAssignmentsWithCurrentFilters();
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  void _loadAssignmentsWithCurrentFilters() {
     context.read<AssignmentBloc>().add(
       LoadAssignments(
-        searchQuery: _searchController.text,
+        searchQuery: _searchController.text.isNotEmpty ? _searchController.text : null,
         filter: _selectedFilter,
       ),
     );
-    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   void _onAssignmentTap(Assignment assignment) {
     context.goToAssignmentSubmission(assignment.id);
   }
-} 
+}
