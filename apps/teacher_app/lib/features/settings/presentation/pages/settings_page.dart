@@ -639,25 +639,4 @@ class _SettingsScreenState extends State<SettingsScreen>
       context.setLocale(const Locale('ar'));
     }
   }
-
-  void _onNavItemTap(int index) {
-    switch (index) {
-      case 0: // Dashboard
-        context.goToHome(className: 'Default Class');
-        break;
-      case 1: // Assignments
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AssignmentsPage()),
-        );
-        break;
-      case 2: // Schedule
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const SchedulePage()),
-        );
-        break;
-      case 3: // Settings
-        // Already on Settings page
-        break;
-    }
-  }
 }
