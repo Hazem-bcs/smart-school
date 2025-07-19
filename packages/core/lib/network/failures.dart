@@ -29,3 +29,7 @@ class CacheFailure extends Failure {
 class UnknownFailure extends Failure {
   const UnknownFailure({required super.message});
 }
+
+class UnAuthenticated extends Failure {
+  const UnAuthenticated({required super.message});
+}

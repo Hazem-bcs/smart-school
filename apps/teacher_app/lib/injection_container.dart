@@ -6,8 +6,11 @@ import 'package:core/injection_container.dart' as core_di;
 import 'package:auth/injection_container.dart' as auth_di;
 import 'package:password/injection_container.dart' as password_di;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import 'package:teacher_app/features/new_assignment/data/data_sources/newAssignmentLocalDataSource.dart';
 import 'package:teacher_app/features/new_assignment/domain/usecases/get_classes_use_case.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
 import 'features/new_assignment/domain/usecases/add_new_assignment_usecase.dart';
 import 'features/new_assignment/presentation/blocs/new_assignment_bloc.dart';
 
@@ -31,13 +34,11 @@ import 'features/home/domain/repositories/home_repository.dart';
 import 'features/home/presentation/blocs/home_bloc.dart';
 
 // Profile feature imports
-import 'features/profile/data/data_sources/profile_local_data_source.dart';
 import 'features/profile/data/data_sources/profile_remote_data_source.dart';
 import 'features/profile/data/repositories/profile_repository_impl.dart';
 import 'features/profile/domain/repositories/profile_repository.dart';
 import 'features/profile/domain/usecases/get_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
-import 'features/profile/presentation/blocs/profile_bloc.dart';
 
 // Settings feature imports
 import 'features/settings/presentation/blocs/settings_bloc.dart';
@@ -81,6 +82,11 @@ Future<void> setupDependencies() async {
   await core_di.setupCoreDependencies(getIt);
   await auth_di.setupAuthDependencies(getIt);
   await password_di.setupPasswordDependencies(getIt);
+
+
+  getIt.registerLazySingleton<LocalDataSource>(
+    () => LocalDataSourceImpl(),
+  );
   
   // ========================================
   // AUTH FEATURE DEPENDENCIES
@@ -99,6 +105,7 @@ Future<void> setupDependencies() async {
     () => AuthRepositoryImpl(
       remoteDataSource: getIt<AuthRemoteDataSource>(),
       localDataSource: getIt<AuthLocalDataSource>(),
+      prefs: getIt<SharedPreferences>(),
     ),
   );
   
@@ -142,19 +149,17 @@ Future<void> setupDependencies() async {
   // PROFILE FEATURE DEPENDENCIES
   // ========================================
   // Data Sources
-  getIt.registerLazySingleton<ProfileLocalDataSource>(
-    () => ProfileLocalDataSourceImpl(),
-  );
+
 
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
-    () => ProfileRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
+    () => ProfileRemoteDataSourceImpl(),
   );
 
   // Repository
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(
       remoteDataSource: getIt<ProfileRemoteDataSource>(),
-      localDataSource: getIt<ProfileLocalDataSource>(),
+      localDataSource: getIt<LocalDataSource>(),
     ),
   );
 
@@ -163,8 +168,11 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(() => UpdateProfileUseCase(getIt<ProfileRepository>()));
 
   // BLoC
-  getIt.registerFactory(() => ProfileBloc(
+  getIt.registerFactory(() => ProfileViewBloc(
     getProfileUseCase: getIt<GetProfileUseCase>(),
+  ));
+
+    getIt.registerFactory(() => ProfileEditBloc(
     updateProfileUseCase: getIt<UpdateProfileUseCase>(),
   ));
   

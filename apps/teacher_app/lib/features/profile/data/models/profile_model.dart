@@ -1,16 +1,38 @@
 import '../../domain/entities/profile.dart';
 
-class ProfileModel extends Profile {
+class ProfileModel {
+  final String id;
+  final String name;
+  final String title;
+  final String subtitle;
+  final String avatarUrl;
+  final ContactInfoModel contactInfo;
+  final List<SocialMediaModel> socialMedia;
+  final ProfessionalInfoModel professionalInfo;
+
   ProfileModel({
-    required super.id,
-    required super.name,
-    required super.title,
-    required super.subtitle,
-    required super.avatarUrl,
-    required super.contactInfo,
-    required super.socialMedia,
-    required super.professionalInfo,
+    required this.id,
+    required this.name,
+    required this.title,
+    required this.subtitle,
+    required this.avatarUrl,
+    required this.contactInfo,
+    required this.socialMedia,
+    required this.professionalInfo,
   });
+
+  Profile toEntity() {
+    return Profile(
+      id: id,
+      name: name,
+      title: title,
+      subtitle: subtitle,
+      avatarUrl: avatarUrl,
+      contactInfo: contactInfo.toEntity(),
+      socialMedia: socialMedia.map((e) => e.toEntity()).toList(),
+      professionalInfo: professionalInfo.toEntity(),
+    );
+  }
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
@@ -34,17 +56,20 @@ class ProfileModel extends Profile {
       'title': title,
       'subtitle': subtitle,
       'avatarUrl': avatarUrl,
-      'contactInfo': (contactInfo as ContactInfoModel).toJson(),
-      'socialMedia': socialMedia.map((item) => (item as SocialMediaModel).toJson()).toList(),
-      'professionalInfo': (professionalInfo as ProfessionalInfoModel).toJson(),
+      'contactInfo': (contactInfo).toJson(),
+      'socialMedia': socialMedia.map((item) => (item).toJson()).toList(),
+      'professionalInfo': (professionalInfo).toJson(),
     };
   }
 }
 
-class ContactInfoModel extends ContactInfo {
+class ContactInfoModel {
+  final String email;
+  final String phone;
+
   ContactInfoModel({
-    required super.email,
-    required super.phone,
+    required this.email,
+    required this.phone,
   });
 
   factory ContactInfoModel.fromJson(Map<String, dynamic> json) {
@@ -60,13 +85,24 @@ class ContactInfoModel extends ContactInfo {
       'phone': phone,
     };
   }
+
+  ContactInfo toEntity() {
+    return ContactInfo(
+      email: email,
+      phone: phone,
+    );
+  }
 }
 
-class SocialMediaModel extends SocialMedia {
+class SocialMediaModel {
+  final String platform;
+  final String url;
+  final String icon;
+
   SocialMediaModel({
-    required super.platform,
-    required super.url,
-    required super.icon,
+    required this.platform,
+    required this.url,
+    required this.icon,
   });
 
   factory SocialMediaModel.fromJson(Map<String, dynamic> json) {
@@ -84,21 +120,41 @@ class SocialMediaModel extends SocialMedia {
       'icon': icon,
     };
   }
+
+  SocialMedia toEntity() {
+    return SocialMedia(
+      platform: platform,
+      url: url,
+      icon: icon,
+    );
+  }
 }
 
-class ProfessionalInfoModel extends ProfessionalInfo {
+class ProfessionalInfoModel {
+  final List<String> subjectsTaught;
+  final List<String> gradeLevels;
+  final String department;
+  final String qualifications;
+  final String certifications;
+
   ProfessionalInfoModel({
-    required super.subjectsTaught,
-    required super.gradeLevels,
-    required super.department,
-    required super.qualifications,
-    required super.certifications,
+    required this.subjectsTaught,
+    required this.gradeLevels,
+    required this.department,
+    required this.qualifications,
+    required this.certifications,
   });
 
   factory ProfessionalInfoModel.fromJson(Map<String, dynamic> json) {
     return ProfessionalInfoModel(
-      subjectsTaught: List<String>.from(json['subjectsTaught'] ?? []),
-      gradeLevels: List<String>.from(json['gradeLevels'] ?? []),
+      subjectsTaught: (json['subjectsTaught'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      gradeLevels: (json['gradeLevels'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       department: json['department'] ?? '',
       qualifications: json['qualifications'] ?? '',
       certifications: json['certifications'] ?? '',
@@ -114,4 +170,16 @@ class ProfessionalInfoModel extends ProfessionalInfo {
       'certifications': certifications,
     };
   }
-} 
+
+  ProfessionalInfo toEntity() {
+    return ProfessionalInfo(
+      subjectsTaught: subjectsTaught,
+      gradeLevels: gradeLevels,
+      department: department,
+      qualifications: qualifications,
+      certifications: certifications,
+    );
+  }
+}
+
+

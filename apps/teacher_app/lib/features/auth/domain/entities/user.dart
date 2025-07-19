@@ -4,6 +4,11 @@ class User {
   final String name;
   final String role;
   final String? avatar;
+  final String? phone;
+  final String? department;
+  final int? experienceYears;
+  final String? qualification;
+  final String? bio;
   final DateTime createdAt;
   final DateTime? lastLoginAt;
 
@@ -13,6 +18,11 @@ class User {
     required this.name,
     required this.role,
     this.avatar,
+    this.phone,
+    this.department,
+    this.experienceYears,
+    this.qualification,
+    this.bio,
     required this.createdAt,
     this.lastLoginAt,
   });
@@ -23,6 +33,11 @@ class User {
     String? name,
     String? role,
     String? avatar,
+    String? phone,
+    String? department,
+    int? experienceYears,
+    String? qualification,
+    String? bio,
     DateTime? createdAt,
     DateTime? lastLoginAt,
   }) {
@@ -32,6 +47,11 @@ class User {
       name: name ?? this.name,
       role: role ?? this.role,
       avatar: avatar ?? this.avatar,
+      phone: phone ?? this.phone,
+      department: department ?? this.department,
+      experienceYears: experienceYears ?? this.experienceYears,
+      qualification: qualification ?? this.qualification,
+      bio: bio ?? this.bio,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
     );

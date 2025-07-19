@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../blocs/profile_bloc.dart';
-import '../../blocs/profile_event.dart';
-import '../../blocs/profile_state.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_view_event.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_view_state.dart';
 import '../../../domain/entities/profile.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/info_card.dart';
@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     // Load profile when page is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProfileBloc>().add(LoadProfile());
+      context.read<ProfileViewBloc>().add(LoadProfile());
     });
   }
 
@@ -73,13 +73,13 @@ class _ProfilePageState extends State<ProfilePage>
         opacity: _fadeAnimation,
         child: SlideTransition(
           position: _slideAnimation,
-          child: BlocBuilder<ProfileBloc, ProfileState>(
+          child: BlocBuilder<ProfileViewBloc, ProfileViewState>(
             builder: (context, state) {
-              if (state is ProfileLoading) {
+              if (state is ProfileViewLoading) {
                 return _buildLoadingState();
-              } else if (state is ProfileLoaded) {
+              } else if (state is ProfileViewLoaded) {
                 return _buildLoadedState(state.profile);
-              } else if (state is ProfileError) {
+              } else if (state is ProfileViewError) {
                 return _buildErrorState(state.message);
               } else {
                 return _buildInitialState();
@@ -143,20 +143,20 @@ class _ProfilePageState extends State<ProfilePage>
                 icon: 'email',
                 primaryText: 'Email',
                 secondaryText: profile.contactInfo.email,
-                onTap: () {
-                  context.read<ProfileBloc>().add(
-                    ContactAction(action: 'email', value: profile.contactInfo.email),
-                  );
-                },
+                // onTap: () {
+                //   context.read<ProfileViewBloc>().add(
+                    // ContactAction(action: 'email', value: profile.contactInfo.email),
+                //   );
+                // },
               ),
               InfoCardItem(
                 icon: 'phone',
                 primaryText: 'Phone',
                 secondaryText: profile.contactInfo.phone,
                 onTap: () {
-                  context.read<ProfileBloc>().add(
-                    ContactAction(action: 'phone', value: profile.contactInfo.phone),
-                  );
+                  // context.read<ProfileViewBloc>().add(
+                  //   ContactAction(action: 'phone', value: profile.contactInfo.phone),
+                  // );
                 },
               ),
             ],
@@ -170,9 +170,9 @@ class _ProfilePageState extends State<ProfilePage>
                 icon: social.icon,
                 primaryText: social.platform,
                 onTap: () {
-                  context.read<ProfileBloc>().add(
-                    NavigateToSocialMedia(social.url),
-                  );
+                  // context.read<ProfileBloc>().add(
+                  //   NavigateToSocialMedia(social.url),
+                  // );
                 },
               )).toList(),
             ),
@@ -237,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage>
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              context.read<ProfileBloc>().add(LoadProfile());
+              context.read<ProfileViewBloc>().add(LoadProfile());
             },
             child: const Text('Retry'),
           ),

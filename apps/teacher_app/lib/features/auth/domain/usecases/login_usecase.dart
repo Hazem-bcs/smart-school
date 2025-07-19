@@ -1,13 +1,14 @@
+import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:teacher_app/features/auth/domain/entities/user.dart';
 import '../repositories/auth_repository.dart';
-import '../entities/auth_response.dart';
 
 class LoginUseCase {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
 
-  Future<Either<String, AuthResponse>> call(String email, String password) async {
+  Future<Either<Failure, User>> call(String email, String password) async {
     return await repository.login(email, password);
   }
 } 

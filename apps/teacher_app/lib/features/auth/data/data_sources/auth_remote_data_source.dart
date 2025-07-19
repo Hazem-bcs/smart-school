@@ -1,9 +1,12 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import 'package:core/network/dio_client.dart';
+import 'package:teacher_app/features/auth/data/models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<Map<String, dynamic>> login(String email, String password);
-  Future<Map<String, dynamic>> checkAuthStatus(String token);
-  Future<void> logout(String token);
+  Future<Either<Failure, UserModel>> login(String email, String password);
+  Future<Either<Failure, UserModel>> checkAuthStatus(int userId);
+  Future<Either<Failure, void>> logout(int userId);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -12,71 +15,90 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<Map<String, dynamic>> login(String email, String password) async {
-    // محاكاة تأخير الشبكة
+  Future<Either<Failure, UserModel>> login(String email, String password) async {
+    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
     await Future.delayed(const Duration(milliseconds: 800));
-    
-    // قبول أي بيانات دخول وإرجاع بيانات وهمية عامة
-    return {
+    // مثال على شكل الـ JSON المتوقع من السيرفر
+    final Map<String, dynamic> response = {
       'success': true,
-      'message': 'تم تسجيل الدخول بنجاح',
+      'statuscode': 200,
       'data': {
-        'user': {
-          'id': 1,
+        'id': '1',
           'name': 'معلم تجريبي',
           'email': email,
           'role': 'teacher',
-          'profile_photo': 'https://example.com/default-avatar.jpg',
+        'avatar': 'https://example.com/default-avatar.jpg',
           'phone': '+966501234567',
           'department': 'الرياضيات',
           'experience_years': 3,
           'qualification': 'بكالوريوس في الرياضيات',
           'bio': 'معلم رياضيات في المدرسة الثانوية',
+        'created_at': DateTime.now().toIso8601String(),
+        'last_login_at': DateTime.now().toIso8601String(),
         },
-        'token': 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
-        'refresh_token': 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
-        'expires_at': DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
-      }
+      'message': 'تم تسجيل الدخول بنجاح',
     };
+
+    // منطق معالجة الاستجابة
+    if (response['statuscode'] == 200) {
+      final user = UserModel.fromJson(response['data']);
+      return Right(user);
+    } else {
+      // يمكنك تخصيص أنواع الأخطاء حسب statuscode أو الرسالة
+      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+    }
   }
 
   @override
-  Future<Map<String, dynamic>> checkAuthStatus(String token) async {
-    // محاكاة تأخير الشبكة
+  Future<Either<Failure, UserModel>> checkAuthStatus(int userId) async {
+    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
     await Future.delayed(const Duration(milliseconds: 500));
-    
-    // قبول أي توكن وإرجاع بيانات وهمية عامة
-    return {
+    // مثال على شكل الـ JSON المتوقع من السيرفر
+    final Map<String, dynamic> response = {
       'success': true,
-      'message': 'التوكن صالح',
+      'statuscode': 200,
       'data': {
-        'user': {
-          'id': 1,
+        'id': '1',
           'name': 'معلم تجريبي',
           'email': 'teacher@example.com',
           'role': 'teacher',
-          'profile_photo': 'https://example.com/default-avatar.jpg',
+        'avatar': 'https://example.com/default-avatar.jpg',
           'phone': '+966501234567',
           'department': 'الرياضيات',
           'experience_years': 3,
           'qualification': 'بكالوريوس في الرياضيات',
           'bio': 'معلم رياضيات في المدرسة الثانوية',
-        },
-        'is_valid': true,
-        'expires_at': DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
-      }
+        'created_at': DateTime.now().toIso8601String(),
+        'last_login_at': DateTime.now().toIso8601String(),
+      },
+      'message': 'تم التحقق من حالة المصادقة بنجاح',
     };
+
+    // منطق معالجة الاستجابة
+    if (response['statuscode'] == 200) {
+      final user = UserModel.fromJson(response['data']);
+      return Right(user);
+    } else {
+      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+    }
   }
 
   @override
-  Future<void> logout(String token) async {
-    // محاكاة تأخير الشبكة
+  Future<Either<Failure, void>> logout(int userId) async {
+    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
     await Future.delayed(const Duration(milliseconds: 300));
-    
-    // محاكاة تسجيل الخروج بنجاح
-    print('تم تسجيل الخروج بنجاح للمستخدم مع التوكن: ${token.substring(0, 10)}...');
-    
-    // يمكن إضافة منطق إضافي هنا مثل مسح البيانات المحلية
-    // أو إرسال إشعار للسيرفر (عندما يكون متاحاً)
+    // مثال على شكل الـ JSON المتوقع من السيرفر
+    final Map<String, dynamic> response = {
+      'success': true,
+      'statuscode': 200,
+      'message': 'تم تسجيل الخروج بنجاح',
+    };
+
+    // منطق معالجة الاستجابة
+    if (response['statuscode'] == 200) {
+      return const Right(null);
+    } else {
+      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+    }
   }
 } 

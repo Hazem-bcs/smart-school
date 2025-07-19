@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             // Navigate directly to home page after successful login
-            context.goToHome(className: 'Default Class');
+            context.goToHome();
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

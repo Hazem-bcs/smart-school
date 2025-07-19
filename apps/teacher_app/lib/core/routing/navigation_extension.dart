@@ -15,11 +15,10 @@ extension NavigationExtension on BuildContext {
 
   
   // Navigate to home page with class name
-  void goToHome({required String className}) {
+  void goToHome() {
     Navigator.pushReplacementNamed(
       this,
       AppRoutes.home,
-      arguments: {'className': className},
     );
   }
   

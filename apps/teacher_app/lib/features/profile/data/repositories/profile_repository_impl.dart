@@ -1,14 +1,14 @@
 import 'package:dartz/dartz.dart';
-import '../../domain/repositories/profile_repository.dart';
+import 'package:core/network/failures.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import '../../domain/entities/profile.dart';
-import '../data_sources/profile_remote_data_source.dart';
-import '../data_sources/profile_local_data_source.dart';
-import '../data_sources/profile_mock_data_source.dart';
 import '../models/profile_model.dart';
+import '../data_sources/profile_remote_data_source.dart';
+import '../../domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource remoteDataSource;
-  final ProfileLocalDataSource localDataSource;
+  final LocalDataSource localDataSource;
 
   ProfileRepositoryImpl({
     required this.remoteDataSource,
@@ -16,25 +16,16 @@ class ProfileRepositoryImpl implements ProfileRepository {
   });
 
   @override
-  Future<Either<String, Profile>> getProfile() async {
-    try {
-      // For demo purposes, return mock data
-      final mockProfile = ProfileMockDataSource.getMockProfile();
-      // Save to local cache
-      await localDataSource.saveProfile(mockProfile);
-      return Right(mockProfile as Profile);
-    } catch (e) {
-      // If mock fails, try local cache
-      try {
-        final localProfile = await localDataSource.getProfile();
-        if (localProfile != null) {
-          return Right(localProfile as Profile);
-        }
-      } catch (localError) {
-        // Both mock and local failed
-      }
-      return Left(e.toString());
+  Future<Either<Failure, Profile>> getProfile() async {
+    final userId = await localDataSource.getUserId();
+    if (userId == null) {
+      return Left(UnAuthenticated(message: 'user is not logged in'));
     }
+    final result = await remoteDataSource.getProfile(userId);
+    return result.fold(
+      (failure) => Left(failure),
+      (profileModel) => Right(profileModel.toEntity()),
+    );
   }
 
   @override
@@ -46,14 +37,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
         title: profile.title,
         subtitle: profile.subtitle,
         avatarUrl: profile.avatarUrl,
-        contactInfo: profile.contactInfo,
-        socialMedia: profile.socialMedia,
-        professionalInfo: profile.professionalInfo,
+        contactInfo: profile.contactInfo.toModel(),
+        socialMedia: profile.socialMedia.map((e) => e.toModel()).toList(),
+        professionalInfo: profile.professionalInfo.toModel(),
       );
       
       final updatedProfile = await remoteDataSource.updateProfile(profileModel);
-      // Update local cache
-      await localDataSource.saveProfile(updatedProfile);
       return Right(updatedProfile as Profile);
     } catch (e) {
       return Left(e.toString());

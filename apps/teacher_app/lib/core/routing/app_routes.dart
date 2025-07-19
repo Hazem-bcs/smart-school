@@ -5,6 +5,8 @@ import 'package:teacher_app/features/assignment_submission/presentation/ui/pages
 import 'package:teacher_app/features/home/domain/usecases/get_assignments_usecase.dart';
 import 'package:teacher_app/features/new_assignment/presentation/blocs/new_assignment_bloc.dart';
 import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_assignment_page.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
+import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
 import '../../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../../features/home/presentation/ui/pages/home_page.dart';
@@ -30,7 +32,6 @@ import '../../../features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart
 import '../../../features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
 import '../../../features/zoom_meeting/domain/usecases/get_available_classes_usecase.dart';
 import '../../../features/zoom_meeting/domain/usecases/get_meeting_options_usecase.dart';
-import '../../../features/profile/presentation/blocs/profile_bloc.dart';
 import '../../../features/profile/domain/usecases/get_profile_usecase.dart';
 import '../../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../../injection_container.dart' as di;
@@ -112,9 +113,8 @@ class AppRoutes {
       case profile:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => ProfileBloc(
+            create: (_) => ProfileViewBloc(
               getProfileUseCase: di.getIt<GetProfileUseCase>(),
-              updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
             ),
             child: const ProfilePage(),
           ),
@@ -124,8 +124,7 @@ class AppRoutes {
       case editProfile:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => ProfileBloc(
-              getProfileUseCase: di.getIt<GetProfileUseCase>(),
+            create: (_) => ProfileEditBloc(
               updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
             ),
             child: const EditProfilePage(),

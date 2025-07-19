@@ -1,12 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 // ToDo: here shared a local data in core for all feature
-abstract class AuthLocalDataSource {
+abstract class LocalDataSource {
   Future<void> saveId(int userId);
   Future<int?> getUserId();
    Future<void> clearUserId();
 }
 
-class AuthLocalDataSourceImpl implements AuthLocalDataSource {
+class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   Future<void> saveId(int userId) async {

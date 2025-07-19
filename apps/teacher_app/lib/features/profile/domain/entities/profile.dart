@@ -1,3 +1,5 @@
+import 'package:teacher_app/features/profile/data/models/profile_model.dart';
+
 class Profile {
   final String id;
   final String name;
@@ -7,7 +9,7 @@ class Profile {
   final ContactInfo contactInfo;
   final List<SocialMedia> socialMedia;
   final ProfessionalInfo professionalInfo;
-
+  
   Profile({
     required this.id,
     required this.name,
@@ -18,6 +20,19 @@ class Profile {
     required this.socialMedia,
     required this.professionalInfo,
   });
+
+    ProfileModel toModel() {
+    return ProfileModel(
+      id: id,
+      name: name,
+      title: title,
+      subtitle: subtitle,
+      avatarUrl: avatarUrl,
+      contactInfo: contactInfo.toModel(),
+      socialMedia: socialMedia.map((sm) => sm.toModel()).toList(),
+      professionalInfo: professionalInfo.toModel(),
+    );
+  }
 }
 
 class ContactInfo {
@@ -28,6 +43,13 @@ class ContactInfo {
     required this.email,
     required this.phone,
   });
+
+  ContactInfoModel toModel() {
+    return ContactInfoModel(
+      email: email,
+      phone: phone,
+    );
+  }
 }
 
 class SocialMedia {
@@ -40,6 +62,14 @@ class SocialMedia {
     required this.url,
     required this.icon,
   });
+
+  SocialMediaModel toModel() {
+    return SocialMediaModel(
+      platform: platform,
+      url: url,
+      icon: icon,
+    );
+  }
 }
 
 class ProfessionalInfo {
@@ -56,4 +86,14 @@ class ProfessionalInfo {
     required this.qualifications,
     required this.certifications,
   });
+
+  ProfessionalInfoModel toModel() {
+    return ProfessionalInfoModel(
+      subjectsTaught: subjectsTaught,
+      gradeLevels: gradeLevels,
+      department: department,
+      qualifications: qualifications,
+      certifications: certifications,
+    );
+  }
 } 

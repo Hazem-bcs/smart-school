@@ -1,11 +1,9 @@
+import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
-import '../entities/user.dart';
-import '../entities/auth_response.dart';
+import 'package:teacher_app/features/auth/domain/entities/user.dart';
 
 abstract class AuthRepository {
-  Future<Either<String, AuthResponse>> login(String email, String password);
-  Future<Either<String, User>> checkAuthStatus();
-  Future<void> logout();
-  Future<String?> getStoredToken();
-  Future<User?> getStoredUser();
+  Future<Either<Failure, User>> login(String email, String password);
+  Future<Either<Failure, bool>> checkAuthStatus();
+  Future<Either<Failure, void>> logout();
 } 
