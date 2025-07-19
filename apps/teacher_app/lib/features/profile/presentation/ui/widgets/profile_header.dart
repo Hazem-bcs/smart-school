@@ -35,18 +35,9 @@ class ProfileHeader extends StatelessWidget {
           
           // Title
           Text(
-            profile.title,
+            profile.bio,
             textAlign: TextAlign.center,
           ),
-          
-          const SizedBox(height: 4),
-          
-          // Subtitle
-          Text(
-            profile.subtitle,
-            textAlign: TextAlign.center,
-          ),
-          
           const SizedBox(height: 24),
           
           // Edit Profile Button

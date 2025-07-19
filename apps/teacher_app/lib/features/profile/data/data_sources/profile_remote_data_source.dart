@@ -19,11 +19,35 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         'id': userId.toString(),
         'name': 'معلم تجريبي',
         'bio': 'نبذة عن المعلم ...',
-        'email': 'teacher@school.com',
-        'phone': '+1234567890',
-        'department': 'الرياضيات',
-        'subjects': ['Mathematics', 'Physics'],
-        'avatar': 'https://example.com/avatar.jpg',
+        'contactInfo': {
+          'email': 'teacher@school.com',
+          'phone': '+1234567890',
+        },
+        'avatarUrl': 'https://example.com/avatar.jpg',
+        'socialMedia': [
+          {
+            'platform': 'X',
+            'url': 'X/teacher.com',
+            'icon': 'assets/icons/x_icon.svg',
+          },
+          {
+            'platform': 'Facebook',
+            'url': 'facebook/teacher.com',
+            'icon': 'assets/icons/facebook_icon.svg',
+          },
+          {
+            'platform': 'Instagram',
+            'url': 'instagram/teacher.com',
+            'icon': 'assets/icons/instagram_icon.svg',
+          },
+        ],
+        'professionalInfo': {
+          'subjectsTaught': ['Mathematics', 'Physics'],
+          'gradeLevels': ['الصف العاشر', 'الصف الحادي عشر', 'الصف الثاني عشر'],
+          'department': 'الرياضيات',
+          'qualifications': 'ماجستير في الرياضيات التطبيقية',
+          'certifications': 'شهادة تدريس معتمدة من وزارة التربية والتعليم',
+        },
       },
       'message': 'تم جلب البيانات بنجاح',
     };
@@ -40,6 +64,26 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<Either<Failure, ProfileModel>> updateProfile(ProfileModel profileModel) async {
     // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
     await Future.delayed(const Duration(milliseconds: 800));
+    print('ProfileModel Data:');
+    print('ID: ${profileModel.id}');
+    print('Name: ${profileModel.name}');
+    print('Bio: ${profileModel.bio}');
+    print('Contact Info:');
+    print('  Email: ${profileModel.contactInfoModel.email}');
+    print('  Phone: ${profileModel.contactInfoModel.phone}');
+    print('Avatar URL: ${profileModel.avatarUrl}');
+    print('Social Media:');
+    for (var social in profileModel.socialMediaModel) {
+      print('  Platform: ${social.platform}');
+      print('  URL: ${social.url}');
+      print('  Icon: ${social.icon}');
+    }
+    print('Professional Info:');
+    print('  Subjects Taught: ${profileModel.professionalInfoModel.subjectsTaught}');
+    print('  Grade Levels: ${profileModel.professionalInfoModel.gradeLevels}');
+    print('  Department: ${profileModel.professionalInfoModel.department}');
+    print('  Qualifications: ${profileModel.professionalInfoModel.qualifications}');
+    print('  Certifications: ${profileModel.professionalInfoModel.certifications}');
     final Map<String, dynamic> response = {
       'success': true,
       'statuscode': 200,

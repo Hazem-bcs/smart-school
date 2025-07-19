@@ -1,36 +1,34 @@
-import '../../domain/entities/profile.dart';
+
+import 'package:teacher_app/features/profile/domain/entities/profile.dart';
 
 class ProfileModel {
   final String id;
   final String name;
-  final String title;
-  final String subtitle;
+  final String bio;
   final String avatarUrl;
-  final ContactInfoModel contactInfo;
-  final List<SocialMediaModel> socialMedia;
-  final ProfessionalInfoModel professionalInfo;
+  final ContactInfoModel contactInfoModel;
+  final List<SocialMediaModel> socialMediaModel;
+  final ProfessionalInfoModel professionalInfoModel;
 
   ProfileModel({
     required this.id,
     required this.name,
-    required this.title,
-    required this.subtitle,
+    required this.bio,
     required this.avatarUrl,
-    required this.contactInfo,
-    required this.socialMedia,
-    required this.professionalInfo,
+    required this.contactInfoModel,
+    required this.socialMediaModel,
+    required this.professionalInfoModel,
   });
 
   Profile toEntity() {
     return Profile(
       id: id,
       name: name,
-      title: title,
-      subtitle: subtitle,
+      bio: bio,
       avatarUrl: avatarUrl,
-      contactInfo: contactInfo.toEntity(),
-      socialMedia: socialMedia.map((e) => e.toEntity()).toList(),
-      professionalInfo: professionalInfo.toEntity(),
+      contactInfo: contactInfoModel.toEntity(),
+      socialMedia: socialMediaModel.map((e) => e.toEntity()).toList(),
+      professionalInfo: professionalInfoModel.toEntity(),
     );
   }
 
@@ -38,14 +36,13 @@ class ProfileModel {
     return ProfileModel(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      title: json['title'] ?? '',
-      subtitle: json['subtitle'] ?? '',
+      bio: json['bio'] ?? '',
       avatarUrl: json['avatarUrl'] ?? '',
-      contactInfo: ContactInfoModel.fromJson(json['contactInfo'] ?? {}),
-      socialMedia: (json['socialMedia'] as List<dynamic>?)
+      contactInfoModel: ContactInfoModel.fromJson(json['contactInfo'] ?? {}),
+      socialMediaModel: (json['socialMedia'] as List<dynamic>?)
           ?.map((item) => SocialMediaModel.fromJson(item as Map<String, dynamic>))
           .toList() ?? [],
-      professionalInfo: ProfessionalInfoModel.fromJson(json['professionalInfo'] ?? {}),
+      professionalInfoModel: ProfessionalInfoModel.fromJson(json['professionalInfo'] ?? {}),
     );
   }
 
@@ -53,12 +50,11 @@ class ProfileModel {
     return {
       'id': id,
       'name': name,
-      'title': title,
-      'subtitle': subtitle,
+      'bio': bio,
       'avatarUrl': avatarUrl,
-      'contactInfo': (contactInfo).toJson(),
-      'socialMedia': socialMedia.map((item) => (item).toJson()).toList(),
-      'professionalInfo': (professionalInfo).toJson(),
+      'contactInfo': (contactInfoModel).toJson(),
+      'socialMedia': socialMediaModel.map((item) => (item).toJson()).toList(),
+      'professionalInfo': (professionalInfoModel).toJson(),
     };
   }
 }

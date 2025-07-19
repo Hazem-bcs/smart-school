@@ -6,6 +6,8 @@ abstract class ProfileEditEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class LoadProfile extends ProfileEditEvent {}
+
 class SaveProfile extends ProfileEditEvent {
   final Profile profile;
   SaveProfile(this.profile);

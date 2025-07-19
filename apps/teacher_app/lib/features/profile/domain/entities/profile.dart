@@ -3,8 +3,7 @@ import 'package:teacher_app/features/profile/data/models/profile_model.dart';
 class Profile {
   final String id;
   final String name;
-  final String title;
-  final String subtitle;
+  final String bio;
   final String avatarUrl;
   final ContactInfo contactInfo;
   final List<SocialMedia> socialMedia;
@@ -13,8 +12,7 @@ class Profile {
   Profile({
     required this.id,
     required this.name,
-    required this.title,
-    required this.subtitle,
+    required this.bio,
     required this.avatarUrl,
     required this.contactInfo,
     required this.socialMedia,
@@ -25,12 +23,11 @@ class Profile {
     return ProfileModel(
       id: id,
       name: name,
-      title: title,
-      subtitle: subtitle,
+      bio: bio,
       avatarUrl: avatarUrl,
-      contactInfo: contactInfo.toModel(),
-      socialMedia: socialMedia.map((sm) => sm.toModel()).toList(),
-      professionalInfo: professionalInfo.toModel(),
+      contactInfoModel: contactInfo.toModel(),
+      socialMediaModel: socialMedia.map((sm) => sm.toModel()).toList(),
+      professionalInfoModel: professionalInfo.toModel(),
     );
   }
 }

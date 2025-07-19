@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:core/network/failures.dart';
 import 'package:teacher_app/core/local_data_source.dart';
 import '../../domain/entities/profile.dart';
-import '../models/profile_model.dart';
 import '../data_sources/profile_remote_data_source.dart';
 import '../../domain/repositories/profile_repository.dart';
 
@@ -29,23 +28,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Either<String, Profile>> updateProfile(Profile profile) async {
-    try {
-      final profileModel = ProfileModel(
-        id: profile.id,
-        name: profile.name,
-        title: profile.title,
-        subtitle: profile.subtitle,
-        avatarUrl: profile.avatarUrl,
-        contactInfo: profile.contactInfo.toModel(),
-        socialMedia: profile.socialMedia.map((e) => e.toModel()).toList(),
-        professionalInfo: profile.professionalInfo.toModel(),
-      );
-      
-      final updatedProfile = await remoteDataSource.updateProfile(profileModel);
-      return Right(updatedProfile as Profile);
-    } catch (e) {
-      return Left(e.toString());
-    }
+  Future<Either<Failure, Profile>> updateProfile(Profile profile) async {
+    final result = await remoteDataSource.updateProfile(profile.toModel());
+    return result.fold(
+      (failure) => Left(failure),
+      (profileModel) => Right(profileModel.toEntity()),
+    );
   }
 } 

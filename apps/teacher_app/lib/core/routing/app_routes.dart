@@ -126,6 +126,7 @@ class AppRoutes {
           builder: (_) => BlocProvider(
             create: (_) => ProfileEditBloc(
               updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
+              getProfileUseCase: di.getIt<GetProfileUseCase>(),
             ),
             child: const EditProfilePage(),
           ),

@@ -195,6 +195,7 @@ Future<void> setupDependencies() async {
 
     getIt.registerFactory(() => ProfileEditBloc(
     updateProfileUseCase: getIt<UpdateProfileUseCase>(),
+    getProfileUseCase: getIt<GetProfileUseCase>(),
   ));
   
   // ========================================

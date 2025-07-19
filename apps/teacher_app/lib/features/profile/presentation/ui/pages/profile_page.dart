@@ -124,133 +124,133 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildLoadedState(Profile profile) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Profile Header
-          ProfileHeader(
-            profile: profile,
-            onEditProfile: () {
-              context.goToEditProfile();
-            },
-          ),
-          
-          // Contact Information Card
-          InfoCard(
-            title: 'Contact Information',
-            items: [
-              InfoCardItem(
-                icon: 'email',
-                primaryText: 'Email',
-                secondaryText: profile.contactInfo.email,
-                // onTap: () {
-                //   context.read<ProfileViewBloc>().add(
-                    // ContactAction(action: 'email', value: profile.contactInfo.email),
-                //   );
-                // },
-              ),
-              InfoCardItem(
-                icon: 'phone',
-                primaryText: 'Phone',
-                secondaryText: profile.contactInfo.phone,
-                onTap: () {
-                  // context.read<ProfileViewBloc>().add(
-                  //   ContactAction(action: 'phone', value: profile.contactInfo.phone),
-                  // );
-                },
-              ),
-            ],
-          ),
-          
-          // Social Media Card
-          if (profile.socialMedia.isNotEmpty)
-            InfoCard(
-              title: 'Social Media',
-              items: profile.socialMedia.map((social) => InfoCardItem(
-                icon: social.icon,
-                primaryText: social.platform,
-                onTap: () {
-                  // context.read<ProfileBloc>().add(
-                  //   NavigateToSocialMedia(social.url),
-                  // );
-                },
-              )).toList(),
+    return RefreshIndicator(
+      onRefresh: () async {
+        // Trigger profile refresh
+        context.read<ProfileViewBloc>().add(LoadProfile());
+        // Wait a bit to show the refresh animation
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      color: ProfileTheme.primary,
+      backgroundColor: Colors.white,
+      strokeWidth: 3.0,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            // Profile Header
+            ProfileHeader(
+              profile: profile,
+              onEditProfile: () {
+                context.goToEditProfile();
+              },
             ),
-          
-          // Professional Information Card
-          InfoCard(
-            title: 'Professional Information',
-            items: [
-              InfoCardItem(
-                icon: 'book_open',
-                primaryText: 'Subjects Taught',
-                secondaryText: profile.professionalInfo.subjectsTaught.join(', '),
+            
+            // Contact Information Card
+            InfoCard(
+              title: 'Contact Information',
+              items: [
+                InfoCardItem(
+                  icon: 'email',
+                  primaryText: 'Email',
+                  secondaryText: profile.contactInfo.email,
+                  onTap: () => print(profile.contactInfo.email),
+                ),
+                InfoCardItem(
+                  icon: 'phone',
+                  primaryText: 'Phone',
+                  secondaryText: profile.contactInfo.phone,
+                  onTap: () {
+                  },
+                ),
+              ],
+            ),
+            
+            // Social Media Card
+            if (profile.socialMedia.isNotEmpty)
+              InfoCard(
+                title: 'Social Media',
+                items: profile.socialMedia.map((social) => InfoCardItem(
+                  icon: social.icon,
+                  primaryText: social.platform,
+                  onTap: () {},
+                )).toList(),
               ),
-              InfoCardItem(
-                icon: 'users',
-                primaryText: 'Grade Levels',
-                secondaryText: profile.professionalInfo.gradeLevels.join(', '),
-              ),
-              InfoCardItem(
-                icon: 'building',
-                primaryText: 'Department',
-                secondaryText: profile.professionalInfo.department,
-              ),
-              InfoCardItem(
-                icon: 'graduation_cap',
-                primaryText: 'Qualifications',
-                secondaryText: profile.professionalInfo.qualifications,
-              ),
-              InfoCardItem(
-                icon: 'certificate',
-                primaryText: 'Certifications',
-                secondaryText: profile.professionalInfo.certifications,
-              ),
-            ],
-          ),
-          
-          const SizedBox(height: 24),
-        ],
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildErrorState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[400],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<ProfileViewBloc>().add(LoadProfile());
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      color: ProfileTheme.primary,
+      backgroundColor: Colors.white,
+      strokeWidth: 3.0,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height - 200,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Error loading profile',
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<ProfileViewBloc>().add(LoadProfile());
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          Text(
-            'Error loading profile',
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              context.read<ProfileViewBloc>().add(LoadProfile());
-            },
-            child: const Text('Retry'),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildInitialState() {
-    return const Center(
-      child: Text(
-        'Welcome to your profile',
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<ProfileViewBloc>().add(LoadProfile());
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      color: ProfileTheme.primary,
+      backgroundColor: Colors.white,
+      strokeWidth: 3.0,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height - 200,
+          child: const Center(
+            child: Text(
+              'Welcome to your profile\nPull down to load profile data',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ),
       ),
     );
   }
-} 
+}
