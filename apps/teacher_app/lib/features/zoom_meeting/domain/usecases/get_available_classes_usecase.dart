@@ -1,3 +1,5 @@
+import 'package:core/network/failures.dart';
+import 'package:dartz/dartz.dart';
 import '../repositories/zoom_meeting_repository.dart';
 
 class GetAvailableClassesUseCase {
@@ -5,7 +7,7 @@ class GetAvailableClassesUseCase {
 
   GetAvailableClassesUseCase(this.repository);
 
-  Future<List<String>> call() async {
+  Future<Either<Failure, List<String>>> call() async {
     return await repository.getAvailableClasses();
   }
 } 

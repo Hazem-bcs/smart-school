@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/zoom_meeting_entity.dart';
 import '../../domain/usecases/schedule_meeting_usecase.dart';
@@ -30,26 +31,31 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
     Emitter<ZoomMeetingState> emit,
   ) async {
     emit(ZoomMeetingLoading());
-    
-    try {
-      final classes = await getAvailableClassesUseCase();
-      final options = await getMeetingOptionsUseCase();
-      
-      final optionStates = <String, bool>{};
-      for (final option in options) {
-        optionStates[option.id] = option.isEnabled;
-      }
-      
-      emit(ZoomMeetingDataLoaded(
-        availableClasses: classes,
-        selectedDate: DateTime.now(),
-        selectedTime: DateTime.now(),
-        meetingOptions: options,
-        optionStates: optionStates,
-      ));
-    } catch (e) {
-      emit(ZoomMeetingError('Failed to load initial data: $e'));
-    }
+    final classesResult = await getAvailableClassesUseCase();
+    await classesResult.fold(
+      (failure) async {
+        emit(ZoomMeetingError(failure.message));
+      },
+      (classes) async {
+        final optionsResult = await getMeetingOptionsUseCase();
+        optionsResult.fold(
+          (failure) => emit(ZoomMeetingError(failure.message)),
+          (options) {
+            final optionStates = <String, bool>{};
+            for (final option in options) {
+              optionStates[option.id] = option.isEnabled;
+            }
+            emit(ZoomMeetingDataLoaded(
+              availableClasses: classes,
+              selectedDate: DateTime.now(),
+              selectedTime: DateTime.now(),
+              meetingOptions: options,
+              optionStates: optionStates,
+            ));
+          },
+        );
+      },
+    );
   }
 
   void _onTopicChanged(
@@ -69,7 +75,6 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
     if (state is ZoomMeetingDataLoaded) {
       final currentState = state as ZoomMeetingDataLoaded;
       final selectedClasses = List<String>.from(currentState.selectedClasses);
-      
       if (event.isSelected) {
         if (!selectedClasses.contains(event.className)) {
           selectedClasses.add(event.className);
@@ -77,7 +82,6 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
       } else {
         selectedClasses.remove(event.className);
       }
-      
       emit(currentState.copyWith(selectedClasses: selectedClasses));
     }
   }
@@ -110,7 +114,6 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
       final currentState = state as ZoomMeetingDataLoaded;
       final optionStates = Map<String, bool>.from(currentState.optionStates);
       optionStates[event.optionId] = event.isEnabled;
-      
       emit(currentState.copyWith(optionStates: optionStates));
     }
   }
@@ -121,41 +124,33 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
   ) async {
     if (state is ZoomMeetingDataLoaded) {
       final currentState = state as ZoomMeetingDataLoaded;
-      
-      // Validate form
       if (currentState.topic.trim().isEmpty) {
         emit(ZoomMeetingError('Please enter a meeting topic'));
         return;
       }
-      
       if (currentState.selectedClasses.isEmpty) {
         emit(ZoomMeetingError('Please select at least one class'));
         return;
       }
-      
       emit(ZoomMeetingScheduling());
-      
-      try {
-        final meeting = ZoomMeetingEntity(
-          id: '',
-          topic: currentState.topic,
-          invitedClasses: currentState.selectedClasses,
-          scheduledDate: currentState.selectedDate,
-          scheduledTime: currentState.selectedTime,
-          enableWaitingRoom: currentState.optionStates['waiting_room'] ?? true,
-          recordAutomatically: currentState.optionStates['record_meeting'] ?? false,
-        );
-        
-        final result = await scheduleMeetingUseCase(meeting);
-        
-        emit(ZoomMeetingScheduled(
-          meetingId: result.meetingId ?? '',
-          meetingUrl: result.meetingUrl ?? 'https://zoom.us/j/123456789',
-          password: result.password ?? '',
-        ));
-      } catch (e) {
-        emit(ZoomMeetingError('Failed to schedule meeting: $e'));
-      }
+      final meeting = ZoomMeetingEntity(
+        id: '',
+        topic: currentState.topic,
+        invitedClasses: currentState.selectedClasses,
+        scheduledDate: currentState.selectedDate,
+        scheduledTime: currentState.selectedTime,
+        enableWaitingRoom: currentState.optionStates['waiting_room'] ?? true,
+        recordAutomatically: currentState.optionStates['record_meeting'] ?? false,
+      );
+      final result = await scheduleMeetingUseCase(meeting);
+      result.fold(
+        (failure) => emit(ZoomMeetingError(failure.message)),
+        (scheduledMeeting) => emit(ZoomMeetingScheduled(
+          meetingId: scheduledMeeting.meetingId ?? '',
+          meetingUrl: scheduledMeeting.meetingUrl ?? 'https://zoom.us/j/123456789',
+          password: scheduledMeeting.password ?? '',
+        )),
+      );
     }
   }
 } 

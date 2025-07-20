@@ -1,3 +1,5 @@
+import '../../domain/entities/zoom_meeting_entity.dart';
+
 class ZoomMeetingModel {
   final String id;
   final String topic;
@@ -52,4 +54,30 @@ class ZoomMeetingModel {
       'password': password,
     };
   }
+
+  ZoomMeetingEntity toEntity() => ZoomMeetingEntity(
+    id: id,
+    topic: topic,
+    invitedClasses: invitedClasses,
+    scheduledDate: scheduledDate,
+    scheduledTime: scheduledTime,
+    enableWaitingRoom: enableWaitingRoom,
+    recordAutomatically: recordAutomatically,
+    meetingUrl: meetingUrl,
+    meetingId: meetingId,
+    password: password,
+  );
+
+  factory ZoomMeetingModel.fromEntity(ZoomMeetingEntity entity) => ZoomMeetingModel(
+    id: entity.id,
+    topic: entity.topic,
+    invitedClasses: entity.invitedClasses,
+    scheduledDate: entity.scheduledDate,
+    scheduledTime: entity.scheduledTime,
+    enableWaitingRoom: entity.enableWaitingRoom,
+    recordAutomatically: entity.recordAutomatically,
+    meetingUrl: entity.meetingUrl,
+    meetingId: entity.meetingId,
+    password: entity.password,
+  );
 } 
