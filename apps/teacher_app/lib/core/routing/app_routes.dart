@@ -7,18 +7,19 @@ import 'package:teacher_app/features/new_assignment/presentation/blocs/new_assig
 import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_assignment_page.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
+import 'package:teacher_app/features/settings/presentation/ui/pages/settings_page.dart';
 import '../../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../../features/home/presentation/ui/pages/home_page.dart';
 
 import '../../../features/profile/presentation/ui/pages/profile_page.dart';
 import '../../../features/profile/presentation/ui/pages/edit_profile_page.dart';
-import '../../../features/settings/presentation/pages/settings_page.dart';
 import '../../../features/settings/presentation/pages/about_app_page.dart';
 import '../../../features/settings/presentation/pages/help_faq_page.dart';
 import '../../../features/assignment/presentation/ui/pages/assignments_page.dart';
 
 import '../../features/schedule/presentation/pages/schedule_page.dart';
+import '../../features/schedule/presentation/blocs/schedule_bloc.dart';
 import '../../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_page.dart';
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
@@ -135,7 +136,7 @@ class AppRoutes {
         
       case AppRoutes.settings:
         return MaterialPageRoute(
-          builder: (_) => const SettingsScreen(),
+          builder: (_) => const SettingsPage(),
           settings: settings,
         );
         
@@ -180,7 +181,10 @@ class AppRoutes {
         
         case schedule:
         return MaterialPageRoute(
-          builder: (_) => const SchedulePage(),
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<ScheduleBloc>(),
+            child: const SchedulePage(),
+          ),
           settings: settings,
         );
         

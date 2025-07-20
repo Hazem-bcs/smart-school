@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import '../repositories/schedule_repository.dart';
 import '../entities/schedule_entity.dart';
 
@@ -6,7 +8,7 @@ class GetScheduleForDateUseCase {
 
   GetScheduleForDateUseCase(this.repository);
 
-  Future<List<ScheduleEntity>> call(DateTime date) async {
+  Future<Either<Failure, List<ScheduleEntity>>> call(DateTime date) async {
     return await repository.getScheduleForDate(date);
   }
 } 

@@ -1,20 +1,31 @@
 import '../../domain/entities/schedule_entity.dart';
 
-class ScheduleModel extends ScheduleEntity {
-  ScheduleModel({
-    required super.id,
-    required super.title,
-    required super.description,
-    required super.startTime,
-    required super.endTime,
-    required super.className,
-    required super.subject,
-    required super.teacherId,
-    required super.location,
-    required super.type,
-    required super.status,
+class ScheduleModel {
+  final String id;
+  final String title;
+  final String description;
+  final DateTime startTime;
+  final DateTime endTime;
+  final String className;
+  final String subject;
+  final String teacherId;
+  final String location;
+  final ScheduleType type;
+  final ScheduleStatus status;
+
+  const ScheduleModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.className,
+    required this.subject,
+    required this.teacherId,
+    required this.location,
+    required this.type,
+    required this.status,
   });
-  
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
     return ScheduleModel(
@@ -47,6 +58,34 @@ class ScheduleModel extends ScheduleEntity {
       'status': status.toString().split('.').last,
     };
   }
+
+  ScheduleEntity toEntity() => ScheduleEntity(
+    id: id,
+    title: title,
+    description: description,
+    startTime: startTime,
+    endTime: endTime,
+    className: className,
+    subject: subject,
+    teacherId: teacherId,
+    location: location,
+    type: type,
+    status: status,
+  );
+
+  factory ScheduleModel.fromEntity(ScheduleEntity entity) => ScheduleModel(
+    id: entity.id,
+    title: entity.title,
+    description: entity.description,
+    startTime: entity.startTime,
+    endTime: entity.endTime,
+    className: entity.className,
+    subject: entity.subject,
+    teacherId: entity.teacherId,
+    location: entity.location,
+    type: entity.type,
+    status: entity.status,
+  );
 
   static ScheduleType _parseScheduleType(String type) {
     switch (type) {

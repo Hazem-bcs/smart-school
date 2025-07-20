@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/responsive/responsive_widgets.dart';
 import '../../../../core/widgets/shared_bottom_navigation.dart';
-import '../widgets/animated_schedule_list.dart';
-import '../widgets/week_picker_widget.dart';
+import '../blocs/schedule_bloc.dart';
+import '../blocs/schedule_event.dart';
+import '../blocs/schedule_state.dart';
+import '../widgets/index.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -18,11 +20,16 @@ class _SchedulePageState extends State<SchedulePage>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  DateTime _selectedDate = DateTime.now(); // التاريخ المختار حالياً
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    _initializeAnimations();
+    _loadInitialData();
+  }
+
+  void _initializeAnimations() {
     _pageAnimationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -42,7 +49,13 @@ class _SchedulePageState extends State<SchedulePage>
       ),
     );
 
-    _pageAnimationController.forward(); // بدء التحريك
+    _pageAnimationController.forward();
+  }
+
+  void _loadInitialData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ScheduleBloc>().add(LoadScheduleForDate(_selectedDate));
+    });
   }
 
   @override
@@ -57,74 +70,79 @@ class _SchedulePageState extends State<SchedulePage>
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: _buildAppBar(theme),
+      appBar: ScheduleAppBar(onRefresh: _onRefresh),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SlideTransition(
           position: _slideAnimation,
           child: ResponsiveContent(
-            child: Column(
-              children: [
-                WeekPicker(
-                  selectedDate: _selectedDate,
-                  onDateSelected: _onDateSelected,
-                ),
-                // عرض التاريخ المختار (مثل الصورة التي أرسلتها)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    // محاذاة لليمين للنص العربي
-                    child: Text(
-                      // تنسيق التاريخ "الخميس، 18 يوليو 2025" باللغة العربية
-                      ' ${DateFormat('d MMMM yyyy', 'ar').format(_selectedDate)}',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.textTheme.bodyLarge?.color,
+            child: BlocListener<ScheduleBloc, ScheduleState>(
+              listener: (context, state) {
+                if (state is ScheduleError) {
+                  ScheduleSnackBarHelper.showErrorMessage(context, state.message);
+                }
+              },
+              child: BlocBuilder<ScheduleBloc, ScheduleState>(
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      WeekPicker(
+                        selectedDate: _selectedDate,
+                        onDateSelected: _onDateSelected,
                       ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: AnimatedScheduleList(selectedDate: _selectedDate),
-                ),
-              ],
+                      ScheduleDateHeader(selectedDate: _selectedDate),
+                      Expanded(
+                        child: ScheduleRefreshWrapper(
+                          onRefresh: _onRefresh,
+                          child: _buildScheduleContent(state),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: SharedBottomNavigation(
-        currentIndex: 2, // مؤشر صفحة الجدول الزمني
-      ),
+      bottomNavigationBar: const SharedBottomNavigation(currentIndex: 2),
     );
   }
 
-  // بناء الـ AppBar الخاص بالصفحة
-  PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    final isDark = theme.brightness == Brightness.dark;
-
-    return AppBar(
-      title: Text(
-        'Weekly Schedule',
-        style: theme.textTheme.headlineSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white : const Color(0xFF0E141B),
-        ),
-      ),
-      automaticallyImplyLeading: false,
-      // لا يوجد زر رجوع تلقائي
-      backgroundColor:
-          isDark ? const Color(0xFF1A1A2E) : const Color(0xFFF8F9FA),
-      elevation: 0,
-      // إزالة الظل
-      centerTitle: true, // توسيط العنوان
-    );
+  Widget _buildScheduleContent(ScheduleState state) {
+    if (state is ScheduleLoading) {
+      return const ScheduleLoadingWidget();
+    } else if (state is ScheduleLoaded) {
+      return AnimatedScheduleList(
+        selectedDate: _selectedDate,
+        schedules: state.schedules,
+      );
+    } else if (state is ScheduleError) {
+      return ScheduleErrorWidget(
+        message: state.message,
+        onRetry: _onRefresh,
+      );
+    } else {
+      return const ScheduleEmptyWidget();
+    }
   }
 
-  // عند اختيار تاريخ جديد
+  Future<void> _onRefresh() async {
+    ScheduleSnackBarHelper.showRefreshMessage(context);
+    
+    context.read<ScheduleBloc>().add(LoadScheduleForDate(_selectedDate));
+    
+    await Future.delayed(const Duration(milliseconds: 800));
+    
+    if (mounted) {
+      ScheduleSnackBarHelper.showSuccessMessage(context);
+    }
+  }
+
   void _onDateSelected(DateTime date) {
     setState(() {
-      _selectedDate = date; // تحديث التاريخ المختار
+      _selectedDate = date;
     });
+    context.read<ScheduleBloc>().add(LoadScheduleForDate(date));
   }
 }

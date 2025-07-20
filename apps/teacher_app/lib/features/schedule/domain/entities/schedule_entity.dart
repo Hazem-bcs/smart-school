@@ -1,4 +1,6 @@
-class ScheduleEntity {
+import 'package:equatable/equatable.dart';
+
+class ScheduleEntity extends Equatable {
   final String id;
   final String title;
   final String description;
@@ -11,7 +13,7 @@ class ScheduleEntity {
   final ScheduleType type;
   final ScheduleStatus status;
 
-  ScheduleEntity({
+  const ScheduleEntity({
     required this.id,
     required this.title,
     required this.description,
@@ -24,6 +26,21 @@ class ScheduleEntity {
     required this.type,
     required this.status,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    title,
+    description,
+    startTime,
+    endTime,
+    className,
+    subject,
+    teacherId,
+    location,
+    type,
+    status,
+  ];
 }
 
 enum ScheduleType {

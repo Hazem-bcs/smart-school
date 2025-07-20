@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/responsive/responsive_helper.dart';
 
 class CalendarDayCell extends StatelessWidget {
   final int dayNumber;

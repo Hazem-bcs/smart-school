@@ -44,12 +44,15 @@ import 'features/profile/domain/usecases/get_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
 
 // Settings feature imports
-import 'features/settings/data/datasources/settings_local_data_source.dart';
-import 'features/settings/data/datasources/settings_remote_data_source.dart';
-import 'features/settings/data/repositories/settings_repository_impl.dart';
 import 'features/settings/domain/repositories/settings_repository.dart';
-import 'features/settings/domain/usecases/logout_user.dart';
+import 'features/settings/domain/usecases/logout_usecase.dart' as settings_logout;
 import 'features/settings/presentation/blocs/settings_bloc.dart';
+import 'features/settings/data/repositories_impl/settings_repository_impl.dart';
+import 'features/settings/data/data_sources/remote/settings_remote_data_source.dart';
+import 'features/settings/data/data_sources/local/settings_local_data_source.dart';
+
+// Theme BLoC imports
+import 'package:core/blocs/theme/theme_bloc.dart';
 
 // Assignment feature imports
 import 'features/assignment/data/data_sources/remote/assignment_remote_data_source.dart';
@@ -74,6 +77,13 @@ import 'features/zoom_meeting/data/repositories/zoom_meeting_repository_impl.dar
 import 'features/zoom_meeting/data/data_sources/zoom_meeting_remote_data_source.dart';
 import 'features/zoom_meeting/domain/repositories/zoom_meeting_repository.dart';
 import 'features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
+
+// Schedule feature imports
+import 'features/schedule/domain/usecases/get_schedule_for_date_usecase.dart';
+import 'features/schedule/data/repositories/schedule_repository_impl.dart';
+import 'features/schedule/data/data_sources/schedule_remote_data_source.dart';
+import 'features/schedule/domain/repositories/schedule_repository.dart';
+import 'features/schedule/presentation/blocs/schedule_bloc.dart';
 
 // Core BLoCs imports
 import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -202,15 +212,17 @@ Future<void> setupDependencies() async {
   // ========================================
   // SETTINGS FEATURE DEPENDENCIES
   // ========================================
+  // Data Sources
+  getIt.registerLazySingleton<SettingsRemoteDataSource>(
+    () => SettingsRemoteDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<SettingsLocalDataSource>(
+    () => SettingsLocalDataSourceImpl(
+      sharedPreferences: getIt<SharedPreferences>(),
+    ),
+  );
 
-  // 4. Bloc (يعتمد على Use Case)
-  getIt.registerFactory(() => SettingsBloc(logoutUser: getIt<LogoutUser>()));
-  getIt.registerLazySingleton<Dio>(() => Dio());
-
-  // 3. Use Case (يعتمد على Repository)
-  getIt.registerLazySingleton(() => LogoutUser(getIt<SettingsRepository>()));
-
-  // 2. Repository (يعتمد على Data Sources)
+  // Repository
   getIt.registerLazySingleton<SettingsRepository>(
     () => SettingsRepositoryImpl(
       remoteDataSource: getIt<SettingsRemoteDataSource>(),
@@ -218,19 +230,20 @@ Future<void> setupDependencies() async {
     ),
   );
 
-  //4. data source
-  getIt.registerLazySingleton<SettingsLocalDataSource>(
-    () => SettingsLocalDataSourceImpl(
-      sharedPreferences: getIt<SharedPreferences>(),
-    ), // تأكد من استيراد SettingsLocalDataSourceImpl
+  // Use Cases
+  getIt.registerLazySingleton(
+    () => settings_logout.LogoutUseCase(getIt<SettingsRepository>()),
   );
 
-  getIt.registerLazySingleton<SettingsRemoteDataSource>(
-    () => SettingsRemoteDataSourceImpl(
-      dio: getIt<Dio>(),
-      baseUrl: 'YOUR_API_BASE_URL',
+  // BLoC
+  getIt.registerFactory(
+    () => SettingsBloc(
+      logoutUseCase: getIt<settings_logout.LogoutUseCase>(),
     ),
   );
+
+  // Theme BLoC
+  getIt.registerFactory(() => ThemeBloc());
 
   // ========================================
   // ASSIGNMENT FEATURE DEPENDENCIES
@@ -357,6 +370,31 @@ Future<void> setupDependencies() async {
       scheduleMeetingUseCase: getIt<ScheduleMeetingUseCase>(),
       getAvailableClassesUseCase: getIt<GetAvailableClassesUseCase>(),
       getMeetingOptionsUseCase: getIt<GetMeetingOptionsUseCase>(),
+    ),
+  );
+
+  // ========================================
+  // SCHEDULE FEATURE DEPENDENCIES
+  // ========================================
+  // Data Source
+  getIt.registerLazySingleton<ScheduleRemoteDataSource>(
+    () => ScheduleRemoteDataSourceImpl(),
+  );
+
+  // Repository
+  getIt.registerLazySingleton<ScheduleRepository>(
+    () => ScheduleRepositoryImpl(getIt<ScheduleRemoteDataSource>()),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(
+    () => GetScheduleForDateUseCase(getIt<ScheduleRepository>()),
+  );
+
+  // BLoC
+  getIt.registerFactory(
+    () => ScheduleBloc(
+      getScheduleForDateUseCase: getIt<GetScheduleForDateUseCase>(),
     ),
   );
 

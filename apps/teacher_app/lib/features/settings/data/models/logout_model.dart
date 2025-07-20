@@ -1,23 +1,33 @@
-// lib/features/settings/data/models/logout_model.dart
+import '../../domain/entities/logout_entity.dart';
 
-import '../../domain/entities/logout_status_entity.dart';
-
-class LogoutModel extends LogoutStatusEntity {
-  const LogoutModel({required super.success});
+class LogoutModel extends LogoutEntity {
+  const LogoutModel({
+    required super.success,
+    super.message,
+    super.userId,
+  });
 
   factory LogoutModel.fromJson(Map<String, dynamic> json) {
-    // افترض أن الـ backend يرسل 'message' أو 'status'
-    // أو ببساطة status code 200 يعني نجاح
-    // هنا نفترض وجود مفتاح 'success' في JSON
     return LogoutModel(
-      success: json['success'] ?? true, // إذا لم يكن هناك مفتاح 'success', افترض النجاح
+      success: json['success'] ?? false,
+      message: json['message'],
+      userId: json['user_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    // هذا ليس ضروريًا لعملية Logout عادةً لأننا لا نرسل هذا Model إلى backend
     return {
       'success': success,
+      'message': message,
+      'user_id': userId,
     };
+  }
+
+  factory LogoutModel.fromEntity(LogoutEntity entity) {
+    return LogoutModel(
+      success: entity.success,
+      message: entity.message,
+      userId: entity.userId,
+    );
   }
 }
