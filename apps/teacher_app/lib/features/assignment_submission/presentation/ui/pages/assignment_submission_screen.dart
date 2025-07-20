@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:teacher_app/core/routing/navigation_extension.dart';
 import '../../blocs/submission_bloc.dart';
 import '../../blocs/submission_event.dart';
 import '../../blocs/submission_state.dart';
@@ -10,6 +11,7 @@ import '../widgets/student_card.dart';
 import '../widgets/student_response_card.dart';
 import '../widgets/primary_call_to_action.dart';
 import '../widgets/secondary_actions.dart';
+import '../widgets/error_retry_widget.dart';
 
 class AssignmentSubmissionScreen extends StatelessWidget {
   final String assignmentId;
@@ -55,6 +57,31 @@ class _AssignmentSubmissionViewState extends State<_AssignmentSubmissionView> {
             final currentStudent = state.students[state.currentStudentIndex];
             _wasGraded = currentStudent.isGraded;
           } else if (state is SubmissionSuccess) {
+            if (state.message == 'تم وضع الواجب كمصحح بنجاح') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.white, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(state.message ?? '')),
+                    ],
+                  ),
+                  backgroundColor: isDark ? AppColors.darkSuccess : AppColors.success,
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              );
+              // سبب التحذير: لا يجب استخدام BuildContext بعد فجوة async (مثل Future.delayed) بدون التحقق من mounted
+              // الحل: استخدم WidgetsBinding.instance.addPostFrameCallback مع context.goBack() من NavigationExtension
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) context.goBack();
+              });
+              return;
+            }
             // Show different message based on whether it was an update or new grade
             final message = _wasGraded ? 'Grade updated successfully!' : 'Grade submitted successfully!';
             final icon = _wasGraded ? Icons.update : Icons.check_circle;
@@ -94,65 +121,130 @@ class _AssignmentSubmissionViewState extends State<_AssignmentSubmissionView> {
                 ),
               ),
             );
+          } else if (state is GradeSubmissionError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(state.message)),
+                  ],
+                ),
+                backgroundColor: isDark ? AppColors.darkDestructive : AppColors.error,
+                duration: const Duration(seconds: 4),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            );
+          } else if (state is MarkAsGradedError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(state.message)),
+                  ],
+                ),
+                backgroundColor: isDark ? AppColors.darkDestructive : AppColors.error,
+                duration: const Duration(seconds: 4),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            );
           }
         },
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              floating: false,
-              snap: false,
-              expandedHeight: 120,
-              backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.info,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                onPressed: () => Navigator.of(context).maybePop(),
-              ),
-              title: Text(
-                'Assignment Submission',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark 
-                          ? [AppColors.darkGradientStart, AppColors.darkGradientEnd]
-                          : [AppColors.info, AppColors.primary],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+        child: BlocBuilder<SubmissionBloc, SubmissionState>(
+          builder: (context, state) {
+            if (state is SubmissionLoadError) {
+              // في حالة فشل تحميل البيانات، نعرض شاشة خطأ مع زر إعادة المحاولة
+              return Scaffold(
+                backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+                appBar: AppBar(
+                  backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.info,
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                  title: Text(
+                    'Assignment Submission',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                body: Center(
+                  child: ErrorRetryWidget(
+                    message: state.message,
+                    assignmentId: state.assignmentId,
+                    retryButtonText: 'إعادة تحميل البيانات',
+                  ),
+                ),
+              );
+            }
+            
+            return CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  floating: false,
+                  snap: false,
+                  expandedHeight: 120,
+                  backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.info,
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                  title: Text(
+                    'Assignment Submission',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark 
+                              ? [AppColors.darkGradientStart, AppColors.darkGradientEnd]
+                              : [AppColors.info, AppColors.primary],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const StudentCard(),
-                      const SizedBox(height: 24),
-                      const StudentResponseCard(),
-                      const SizedBox(height: 24),
-                      const ImageCarousel(),
-                      const SizedBox(height: 24),
-                      const GradingForm(),
-                      const SizedBox(height: 32),
-                      const PrimaryCallToAction(),
-                      const SizedBox(height: 16),
-                      const SecondaryActions(),
-                      // Add bottom padding to prevent overflow
-                      const SizedBox(height: 32),
-                    ],
+                SliverToBoxAdapter(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const StudentCard(),
+                          const SizedBox(height: 24),
+                          const StudentResponseCard(),
+                          const SizedBox(height: 24),
+                          const ImageCarousel(),
+                          const SizedBox(height: 24),
+                          const GradingForm(),
+                          const SizedBox(height: 32),
+                          PrimaryCallToAction(assignmentId: widget.assignmentId),
+                          const SizedBox(height: 16),
+                          const SecondaryActions(),
+                          // Add bottom padding to prevent overflow
+                          const SizedBox(height: 32),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     );

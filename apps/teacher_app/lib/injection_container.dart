@@ -8,6 +8,8 @@ import 'package:auth/injection_container.dart' as auth_di;
 import 'package:password/injection_container.dart' as password_di;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teacher_app/core/local_data_source.dart';
+import 'package:teacher_app/features/assignment_submission/domain/usecases/mark_assignment_as_graded_usecase.dart';
+import 'package:teacher_app/features/assignment_submission/presentation/blocs/submission_event.dart';
 import 'package:teacher_app/features/new_assignment/data/data_sources/newAssignmentLocalDataSource.dart';
 import 'package:teacher_app/features/new_assignment/domain/usecases/get_classes_use_case.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
@@ -62,6 +64,7 @@ import 'features/assignment_submission/presentation/blocs/submission_bloc.dart';
 import 'features/assignment_submission/domain/repositories/submission_repository.dart';
 import 'features/assignment_submission/data/data_sources/submission_remote_data_source.dart';
 import 'features/assignment_submission/data/repositories/submission_repository_impl.dart';
+import 'features/assignment_submission/domain/usecases/get_student_submissions_usecase.dart';
 
 // Zoom Meeting feature imports
 import 'features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
@@ -308,10 +311,20 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(
     () => SubmitGradeUseCase(getIt<SubmissionRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => GetStudentSubmissionsUseCase(getIt<SubmissionRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => MarkAssignmentAsGradedUseCase(getIt<SubmissionRepository>()),
+  );
 
   // BLoC
   getIt.registerFactory(
-    () => SubmissionBloc(submitGradeUseCase: getIt<SubmitGradeUseCase>()),
+    () => SubmissionBloc(
+      submitGradeUseCase: getIt<SubmitGradeUseCase>(),
+      getStudentSubmissionsUseCase: getIt<GetStudentSubmissionsUseCase>(),
+      markAssignmentAsGradedUseCase: getIt<MarkAssignmentAsGradedUseCase>(),
+    ),
   );
 
   // ========================================

@@ -1,5 +1,7 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
+import '../../domain/entities/student_submission.dart';
 import '../../domain/repositories/submission_repository.dart';
-import '../../domain/entities/submission.dart';
 import '../data_sources/submission_remote_data_source.dart';
 
 class SubmissionRepositoryImpl implements SubmissionRepository {
@@ -8,17 +10,21 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
   SubmissionRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Submission> getSubmission(String id) {
-    return remoteDataSource.getSubmission(id);
+  Future<Either<Failure, List<StudentSubmission>>> getStudentSubmissions() async {
+    final result = await remoteDataSource.getStudentSubmissions();
+    return result.fold(
+      (failure) => Left(failure),
+      (models) => Right(models.map((m) => m.toEntity()).toList()),
+    );
   }
 
   @override
-  Future<void> submitGrade(String submissionId, String grade, String feedback) {
+  Future<Either<Failure, bool>> submitGrade(String submissionId, String grade, String feedback) {
     return remoteDataSource.submitGrade(submissionId, grade, feedback);
   }
 
   @override
-  Future<List<Submission>> getSubmissionsForAssignment(String assignmentId) {
-    return remoteDataSource.getSubmissionsForAssignment(assignmentId);
+  Future<Either<Failure, bool>> markAssignmentAsGraded(String assignmentId) {
+    return remoteDataSource.markAssignmentAsGraded(assignmentId);
   }
 } 

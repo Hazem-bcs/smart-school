@@ -14,6 +14,9 @@ class SecondaryActions extends StatelessWidget {
       builder: (context, state) {
         if (state is SubmissionDataLoaded) {
           return _buildNavigationButtons(context, state);
+        } else if (state is GradeSubmissionError) {
+          // في حالة خطأ التصحيح، نعرض أزرار التنقل مع البيانات المحفوظة
+          return _buildNavigationButtons(context, state);
         }
         
         return _buildLoadingButtons(context);
