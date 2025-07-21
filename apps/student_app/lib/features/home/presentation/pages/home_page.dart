@@ -58,13 +58,12 @@
 //   }
 // }
 
-
-
 import 'package:core/theme/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
+import '../../../zoom/presentation/widgets/zoom_meetings_button.dart';
 import '../widgets/app_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,7 +74,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
@@ -106,19 +104,22 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: primaryColor,
+        backgroundColor: const Color(0xFF7B61FF),
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(
               height: ResponsiveHelper.getSpacing(
                 context,
-                mobile: 80,
+                mobile: 20,
                 tablet: 100,
                 desktop: 120,
               ),
             ),
+            ZoomMeetingsButton(),
           ],
         ),
       ),
