@@ -5,6 +5,7 @@ import 'package:smart_school/features/atendance/presentation/blocs/attendance_bl
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
+import 'package:smart_school/features/new_assignment/presentation/pages/new_assignment_page.dart';
 import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
 import 'package:smart_school/features/schedule/presentation/pages/schedule_page.dart';
 import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
@@ -104,6 +105,7 @@ class MyApp extends StatelessWidget {
               '/notificationPage': (context) => NotificationPage(),
               '/settings': (context) => SettingsScreen(),
               '/schedule': (context) => SchedulePage(),
+              '/assignments': (context) => NewAssignmentPage(),
             },
           );
         },

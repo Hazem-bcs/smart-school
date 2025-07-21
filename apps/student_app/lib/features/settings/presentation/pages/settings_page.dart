@@ -106,7 +106,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     isDark: isDark,
                     scaleAnimation: _scaleAnimation,
                     onEditProfile: () {
-                      context.goToEditProfile();
+                      Navigator.pushNamed(context, '/profilePage');
+                      // context.goToEditProfile();
                     },
                   ),
                   SettingsSection(
