@@ -99,6 +99,16 @@ class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProvider
           }
           
           return _buildImageCarousel(context, images);
+        } else if (state is GradeSubmissionError) {
+          // في حالة خطأ التصحيح، نعرض الصور مع البيانات المحفوظة
+          final student = state.students[state.currentStudentIndex];
+          final images = student.images;
+          
+          if (images.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          
+          return _buildImageCarousel(context, images);
         }
         
         return const SizedBox.shrink();

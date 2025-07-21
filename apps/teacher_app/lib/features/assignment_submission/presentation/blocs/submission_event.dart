@@ -49,3 +49,10 @@ class NavigateToStudent extends SubmissionEvent {
 
 // Refresh submission data
 class RefreshSubmissionData extends SubmissionEvent {} 
+
+class MarkAssignmentAsGraded extends SubmissionEvent {
+  final String assignmentId;
+  MarkAssignmentAsGraded(this.assignmentId);
+  @override
+  List<Object?> get props => [assignmentId];
+} 

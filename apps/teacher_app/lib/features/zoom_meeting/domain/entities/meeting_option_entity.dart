@@ -1,4 +1,6 @@
-class MeetingOptionEntity {
+import 'package:equatable/equatable.dart';
+
+class MeetingOptionEntity extends Equatable {
   final String id;
   final String title;
   final bool isEnabled;
@@ -10,4 +12,7 @@ class MeetingOptionEntity {
     this.isEnabled = false,
     this.description,
   });
+
+  @override
+  List<Object?> get props => [id, title, isEnabled, description];
 } 

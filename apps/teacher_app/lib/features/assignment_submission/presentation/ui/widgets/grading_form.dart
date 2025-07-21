@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:teacher_app/features/assignment_submission/domain/entities/student_submission.dart';
 import '../../blocs/submission_bloc.dart';
 import '../../blocs/submission_state.dart';
 import '../../blocs/submission_event.dart';
@@ -31,20 +32,33 @@ class _GradingFormState extends State<GradingForm> {
       builder: (context, state) {
         if (state is SubmissionDataLoaded) {
           final student = state.students[state.currentStudentIndex];
+          // إذا تغير الطالب الحالي، أفرغ الحقول
+          if (_gradeController.text.isNotEmpty && _gradeController.text != (student.grade ?? '')) {
+            _gradeController.text = student.grade?.toString() ?? '';
+          }
+          if (_commentsController.text.isNotEmpty && _commentsController.text != (student.feedback ?? '')) {
+            _commentsController.text = student.feedback ?? '';
+          }
           return _buildGradingForm(context, student);
+        } else if (state is GradeSubmissionError) {
+          // في حالة خطأ التصحيح، نعرض النموذج مع القيم السابقة
+          final student = state.students[state.currentStudentIndex];
+          // إعادة تعبئة الحقول بالقيم السابقة
+          _gradeController.text = state.grade;
+          _commentsController.text = state.feedback;
+          return _buildGradingForm(context, student, isErrorState: true);
         }
-        
         return _buildLoadingForm(context);
       },
     );
   }
 
-  Widget _buildGradingForm(BuildContext context, StudentSubmission student) {
+  Widget _buildGradingForm(BuildContext context, StudentSubmission student, {bool isErrorState = false}) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     
     // Initialize controllers with current values if editing
-    if (_isEditing && student.isGraded) {
+    if (_isEditing && student.isGraded && !isErrorState) {
       if (_gradeController.text.isEmpty) {
         _gradeController.text = student.grade?.toString() ?? '';
       }
@@ -67,6 +81,10 @@ class _GradingFormState extends State<GradingForm> {
             offset: const Offset(0, 4),
           ),
         ],
+        border: isErrorState ? Border.all(
+          color: isDark ? AppColors.darkDestructive : AppColors.error,
+          width: 2,
+        ) : null,
       ),
       child: Form(
         key: _formKey,
@@ -86,7 +104,7 @@ class _GradingFormState extends State<GradingForm> {
                     ),
                   ),
                 ),
-                if (student.isGraded && !_isEditing)
+                if (student.isGraded && !_isEditing && !isErrorState)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -105,7 +123,41 @@ class _GradingFormState extends State<GradingForm> {
               ],
             ),
             
-            if (student.isGraded && !_isEditing) ...[
+            if (isErrorState) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkDestructive.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isDark ? AppColors.darkDestructive : AppColors.error,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: isDark ? AppColors.darkDestructive : AppColors.error,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'فشل في حفظ التصحيح. حاول مجددًا.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isDark ? AppColors.darkDestructive : AppColors.error,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            
+            if (student.isGraded && !_isEditing && !isErrorState) ...[
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -169,7 +221,7 @@ class _GradingFormState extends State<GradingForm> {
               // Grade Field
               TextFormField(
                 controller: _gradeController,
-                enabled: !student.isGraded || _isEditing,
+                enabled: !student.isGraded || _isEditing || isErrorState,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Grade (0-100)',
@@ -227,7 +279,7 @@ class _GradingFormState extends State<GradingForm> {
               TextFormField(
                 controller: _commentsController,
                 maxLines: 4,
-                enabled: !student.isGraded || _isEditing,
+                enabled: !student.isGraded || _isEditing || isErrorState,
                 decoration: InputDecoration(
                   labelText: 'Comments',
                   hintText: 'Add feedback or comments...',
@@ -270,7 +322,7 @@ class _GradingFormState extends State<GradingForm> {
               // Action Buttons
               Row(
                 children: [
-                  if (_isEditing) ...[
+                  if (_isEditing || isErrorState) ...[
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () {

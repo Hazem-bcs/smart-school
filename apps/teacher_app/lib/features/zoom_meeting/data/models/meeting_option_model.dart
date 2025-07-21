@@ -1,3 +1,5 @@
+import '../../domain/entities/meeting_option_entity.dart';
+
 class MeetingOptionModel {
   final String id;
   final String title;
@@ -28,4 +30,18 @@ class MeetingOptionModel {
       'description': description,
     };
   }
+
+  MeetingOptionEntity toEntity() => MeetingOptionEntity(
+    id: id,
+    title: title,
+    isEnabled: isEnabled,
+    description: description,
+  );
+
+  factory MeetingOptionModel.fromEntity(MeetingOptionEntity entity) => MeetingOptionModel(
+    id: entity.id,
+    title: entity.title,
+    isEnabled: entity.isEnabled,
+    description: entity.description,
+  );
 } 

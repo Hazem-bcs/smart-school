@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:core/theme/index.dart';
 import '../../../../core/responsive/responsive_helper.dart';
 import '../../../../core/responsive/responsive_widgets.dart';

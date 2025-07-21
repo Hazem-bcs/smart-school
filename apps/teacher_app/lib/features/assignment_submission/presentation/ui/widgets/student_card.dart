@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:teacher_app/features/assignment_submission/domain/entities/student_submission.dart';
 import '../../blocs/submission_bloc.dart';
 import '../../blocs/submission_state.dart';
 
@@ -12,6 +13,10 @@ class StudentCard extends StatelessWidget {
     return BlocBuilder<SubmissionBloc, SubmissionState>(
       builder: (context, state) {
         if (state is SubmissionDataLoaded) {
+          final student = state.students[state.currentStudentIndex];
+          return _buildStudentCard(context, student);
+        } else if (state is GradeSubmissionError) {
+          // في حالة خطأ التصحيح، نعرض بيانات الطالب المحفوظة
           final student = state.students[state.currentStudentIndex];
           return _buildStudentCard(context, student);
         }

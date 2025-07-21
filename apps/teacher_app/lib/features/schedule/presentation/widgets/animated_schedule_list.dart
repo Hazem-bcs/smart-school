@@ -5,10 +5,12 @@ import 'schedule_card.dart';
 
 class AnimatedScheduleList extends StatefulWidget {
   final DateTime selectedDate;
+  final List<ScheduleEntity> schedules;
 
   const AnimatedScheduleList({
     super.key,
     required this.selectedDate,
+    required this.schedules,
   });
 
   @override
@@ -30,8 +32,9 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
   @override
   void didUpdateWidget(AnimatedScheduleList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedDate != widget.selectedDate) {
-      // Reinitialize animations when date changes
+    if (oldWidget.selectedDate != widget.selectedDate || 
+        oldWidget.schedules != widget.schedules) {
+      // Reinitialize animations when date or schedules change
       _initializeAnimations();
     }
   }
@@ -134,6 +137,13 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
                             color: isDark ? Colors.white54 : Colors.grey[600],
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'اسحب للأسفل للتحديث',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: isDark ? Colors.white38 : Colors.grey[500],
+                          ),
+                        ),
                       ],
                     ),
                   )
@@ -174,10 +184,23 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
   }
 
   List<Map<String, dynamic>> _getScheduleItems() {
-    // Sample schedule data based on selected date
+    // إذا كانت هناك بيانات من Bloc، استخدمها
+    if (widget.schedules.isNotEmpty) {
+      return widget.schedules.map((schedule) {
+        return {
+          'id': schedule.id,
+          'icon': _getIconForSubject(schedule.subject),
+          'title': schedule.title,
+          'subtitle': '${_formatTime(schedule.startTime)} - ${_formatTime(schedule.endTime)}',
+          'status': schedule.status,
+          'schedule': schedule,
+        };
+      }).toList();
+    }
+
+    // إذا لم تكن هناك بيانات، استخدم البيانات الوهمية
     final selectedDate = widget.selectedDate;
     final dayOfWeek = selectedDate.weekday;
-    final dayOfMonth = selectedDate.day;
     
     // Different schedules for different days
     switch (dayOfWeek) {
@@ -263,75 +286,112 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
             'status': ScheduleStatus.upcoming,
           },
           {
-            'id': 'lit101',
-            'icon': Icons.book,
-            'title': 'الأدب',
-            'subtitle': '11:00 AM - 12:00 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'comp111',
+            'id': 'comp1010',
             'icon': Icons.computer,
             'title': 'الحاسوب',
-            'subtitle': '2:00 PM - 3:00 PM',
-            'status': ScheduleStatus.completed,
+            'subtitle': '11:00 AM - 12:00 PM',
+            'status': ScheduleStatus.upcoming,
           },
         ];
       case 5: // Friday
         return [
           {
-            'id': 'rel112',
-            'icon': Icons.book,
+            'id': 'rel1111',
+            'icon': Icons.menu_book,
             'title': 'التربية الإسلامية',
-            'subtitle': '8:00 AM - 9:00 AM',
-            'status': ScheduleStatus.completed,
-          },
-          {
-            'id': 'sport113',
-            'icon': Icons.sports_soccer,
-            'title': 'التربية البدنية',
-            'subtitle': '10:00 AM - 11:00 AM',
+            'subtitle': '9:00 AM - 10:00 AM',
             'status': ScheduleStatus.upcoming,
           },
           {
-            'id': 'music114',
-            'icon': Icons.music_note,
-            'title': 'الموسيقى',
-            'subtitle': '1:00 PM - 2:00 PM',
+            'id': 'arab1212',
+            'icon': Icons.edit,
+            'title': 'اللغة العربية',
+            'subtitle': '10:30 AM - 11:30 AM',
             'status': ScheduleStatus.upcoming,
           },
         ];
-      default: // Weekend (Saturday/Sunday)
-        return [
-          {
-            'id': 'weekend',
-            'icon': Icons.weekend,
-            'title': 'عطلة نهاية الأسبوع',
-            'subtitle': 'لا توجد دروس اليوم',
-            'status': ScheduleStatus.completed,
-          },
-        ];
+      default: // Weekend
+        return [];
     }
   }
 
+  IconData _getIconForSubject(String subject) {
+    switch (subject.toLowerCase()) {
+      case 'الرياضيات':
+      case 'mathematics':
+      case 'math':
+        return Icons.book;
+      case 'العلوم':
+      case 'science':
+        return Icons.science;
+      case 'الفيزياء':
+      case 'physics':
+        return Icons.science;
+      case 'الكيمياء':
+      case 'chemistry':
+        return Icons.science;
+      case 'الأحياء':
+      case 'biology':
+        return Icons.science;
+      case 'التاريخ':
+      case 'history':
+        return Icons.history_edu;
+      case 'الجغرافيا':
+      case 'geography':
+        return Icons.public;
+      case 'اللغة العربية':
+      case 'arabic':
+        return Icons.edit;
+      case 'اللغة الإنجليزية':
+      case 'english':
+        return Icons.edit;
+      case 'التربية الإسلامية':
+      case 'islamic':
+        return Icons.menu_book;
+      case 'الفنون':
+      case 'art':
+        return Icons.palette;
+      case 'الحاسوب':
+      case 'computer':
+        return Icons.computer;
+      default:
+        return Icons.school;
+    }
+  }
+
+  String _formatTime(DateTime time) {
+    final hour = time.hour;
+    final minute = time.minute;
+    final period = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    return '${displayHour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $period';
+  }
+
   String _getDateString() {
-    final selectedDate = widget.selectedDate;
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    const months = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-    ];
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selected = DateTime(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day);
     
-    final dayName = days[selectedDate.weekday - 1];
-    final monthName = months[selectedDate.month - 1];
-    final dayNumber = selectedDate.day;
-    final year = selectedDate.year;
-    
-    return '$dayName، $dayNumber $monthName $year';
+    if (selected == today) {
+      return 'اليوم';
+    } else if (selected == today.add(const Duration(days: 1))) {
+      return 'غداً';
+    } else if (selected == today.subtract(const Duration(days: 1))) {
+      return 'أمس';
+    } else {
+      // تنسيق التاريخ باللغة العربية
+      final days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      final months = [
+        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      ];
+      
+      return '${days[widget.selectedDate.weekday - 1]}، ${widget.selectedDate.day} ${months[widget.selectedDate.month - 1]}';
+    }
   }
 
   void _onScheduleItemTap(Map<String, dynamic> item) {
-    // TODO: Navigate to schedule item details
-    print('Schedule item tapped: ${item['title']}');
+    // يمكن إضافة منطق إضافي هنا عند النقر على عنصر الجدول
+    print('Tapped on schedule item: ${item['title']}');
   }
 } 

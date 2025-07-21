@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/responsive/responsive_helper.dart';
-import '../../../../core/responsive/responsive_widgets.dart';
 import 'package:core/theme/index.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -10,12 +9,12 @@ class ProfileCard extends StatelessWidget {
   final VoidCallback onEditProfile;
 
   const ProfileCard({
-    Key? key,
+    super.key,
     required this.theme,
     required this.isDark,
     required this.scaleAnimation,
     required this.onEditProfile,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,21 +2,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/submit_grade_usecase.dart';
 import 'submission_event.dart';
 import 'submission_state.dart';
+import '../../domain/usecases/get_student_submissions_usecase.dart';
+import '../../domain/entities/student_submission.dart';
+import '../../domain/usecases/mark_assignment_as_graded_usecase.dart';
 
 class SubmissionBloc extends Bloc<SubmissionEvent, SubmissionState> {
-  final SubmitGradeUseCase? submitGradeUseCase;
-  
-  // Mock data for demonstration
+  final GetStudentSubmissionsUseCase getStudentSubmissionsUseCase;
+  final SubmitGradeUseCase submitGradeUseCase;
+  final MarkAssignmentAsGradedUseCase markAssignmentAsGradedUseCase;
+
   List<StudentSubmission> _students = [];
   int _currentStudentIndex = 0;
+  String? _currentAssignmentId;
 
-  SubmissionBloc({this.submitGradeUseCase}) : super(SubmissionIdle()) {
+  SubmissionBloc({required this.getStudentSubmissionsUseCase,required this.submitGradeUseCase,required this.markAssignmentAsGradedUseCase}) : super(SubmissionIdle()) {
     on<LoadSubmissionData>(_onLoadSubmissionData);
     on<SubmitGrade>(_onSubmitGrade);
     on<NavigateToNextStudent>(_onNavigateToNextStudent);
     on<NavigateToPreviousStudent>(_onNavigateToPreviousStudent);
     on<NavigateToStudent>(_onNavigateToStudent);
     on<RefreshSubmissionData>(_onRefreshSubmissionData);
+    on<MarkAssignmentAsGraded>(_onMarkAssignmentAsGraded);
   }
 
   Future<void> _onLoadSubmissionData(
@@ -24,94 +30,84 @@ class SubmissionBloc extends Bloc<SubmissionEvent, SubmissionState> {
     Emitter<SubmissionState> emit,
   ) async {
     emit(SubmissionLoading());
+    _currentAssignmentId = event.assignmentId;
     
-    try {
-      // Mock data - replace with actual API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      _students = [
-        StudentSubmission(
-          id: '1',
-          studentName: 'Olivia Bennett',
-          response: 'The central theme of the novel revolves around the quest for identity and belonging in a society undergoing rapid transformation. The protagonist, Chloe, navigates her cultural background and her desire to integrate with her peers. This inner conflict fuels the narrative and shapes Chloe\'s journey of self-discovery.',
-          images: [
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuAaD4QFtFzumfJTmc8dZpX1E7ZZiiBy3S5RfyW2xHt_-VV6nri7AOQd9XFpgiwJMjjvV8lOzxpPcYHyERfdNYqSP4fkl2DpPj9wBy-QpMG1RR7TUkpqnG5MJ5Usnpg4lR6XKvB4BeLjex76QC8bq9YT6UhrSQCso448YWNJBbmmaJ9lU-1nFgAls9DruO3Z4jN8oyj3doObNi8yU2e-p9RmE92Dtm6CEs1450za3Ywi94F0FM9qI_LAp0lPzxY1p5QRi-mofQDfPY8_',
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuCoFqAIUnZ6twyCprcHwJmS_c3n3n1GVnwUzD1m1M10oqOLcUwq5dn9kaLLVobOLZKVafUk6baUC4a1KHKZCftsDjqByn1GKT3vgZjKVO-6lo9ygxv5zkXnfYh_8pt40hsqsnPL8JFtxcI6Ya4rfMhXswLMtVTYzk7VkPPFXOItOEx3hr8ewlHQ1Dbx8W2btlaZW4tyqmOCUxk6tw8k3Mf-LYI8bl64A_ii_tckmnZGR_NYrnumnYF6KtzGYsOIQrSLgQ9-I3NZCH20'
-          ],
-          submittedAt: DateTime.now().subtract(const Duration(days: 2)),
-          isGraded: false,
-        ),
-        StudentSubmission(
-          id: '2',
-          studentName: 'Emma Wilson',
-          response: 'The novel explores themes of cultural identity and social integration through the lens of a young protagonist navigating complex societal expectations. The narrative delves into the challenges of maintaining one\'s heritage while seeking acceptance in a rapidly changing world.',
-          images: [
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuAaD4QFtFzumfJTmc8dZpX1E7ZZiiBy3S5RfyW2xHt_-VV6nri7AOQd9XFpgiwJMjjvV8lOzxpPcYHyERfdNYqSP4fkl2DpPj9wBy-QpMG1RR7TUkpqnG5MJ5Usnpg4lR6XKvB4BeLjex76QC8bq9YT6UhrSQCso448YWNJBbmmaJ9lU-1nFgAls9DruO3Z4jN8oyj3doObNi8yU2e-p9RmE92Dtm6CEs1450za3Ywi94F0FM9qI_LAp0lPzxY1p5QRi-mofQDfPY8_'
-          ],
-          submittedAt: DateTime.now().subtract(const Duration(days: 1)),
-          isGraded: true,
-          grade: '85',
-          feedback: 'Excellent analysis of cultural themes. Well-structured response.',
-        ),
-        StudentSubmission(
-          id: '3',
-          studentName: 'James Rodriguez',
-          response: 'The story presents a compelling exploration of identity formation in multicultural societies. The protagonist\'s journey reflects the universal struggle of finding one\'s place in the world while honoring cultural roots.',
-          images: [],
-          submittedAt: DateTime.now().subtract(const Duration(hours: 6)),
-          isGraded: false,
-        ),
-      ];
-      
-      _currentStudentIndex = 0;
-      
-      emit(SubmissionDataLoaded(
-        students: _students,
-        currentStudentIndex: _currentStudentIndex,
-        hasNextStudent: _students.length > 1,
-        hasPreviousStudent: false,
-      ));
-    } catch (e) {
-      emit(SubmissionError('Failed to load submission data: $e'));
-    }
+    final result = await getStudentSubmissionsUseCase();
+    result.fold(
+      (failure) {
+        // في حالة فشل تحميل البيانات، نعرض خطأ مع إمكانية إعادة المحاولة
+        emit(SubmissionLoadError(failure.message, event.assignmentId));
+      },
+      (students) {
+        _students = students;
+        _currentStudentIndex = 0;
+        emit(SubmissionDataLoaded(
+          students: _students,
+          currentStudentIndex: _currentStudentIndex,
+          hasNextStudent: _students.length > 1,
+          hasPreviousStudent: false,
+        ));
+      },
+    );
   }
 
   Future<void> _onSubmitGrade(
     SubmitGrade event,
     Emitter<SubmissionState> emit,
   ) async {
+    // حفظ الحالة الحالية قبل التحميل
+    final currentStudents = List<StudentSubmission>.from(_students);
+    final currentIndex = _currentStudentIndex;
+    final hasNext = _currentStudentIndex < _students.length - 1;
+    final hasPrevious = _currentStudentIndex > 0;
+    
     emit(SubmissionLoading());
     
-    try {
-      if (submitGradeUseCase != null) {
-        await submitGradeUseCase!(event.submissionId, event.grade, event.feedback);
-      } else {
-        // Mock implementation
-        await Future.delayed(const Duration(seconds: 2));
-        
-        // Update local data
-        if (_currentStudentIndex < _students.length) {
+    final result = await submitGradeUseCase(event.submissionId, event.grade, event.feedback);
+    result.fold(
+      (failure) {
+        // في حالة فشل التصحيح، نعود للحالة الأصلية مع رسالة الخطأ
+        emit(GradeSubmissionError(
+          message: failure.message,
+          submissionId: event.submissionId,
+          grade: event.grade,
+          feedback: event.feedback,
+          students: currentStudents,
+          currentStudentIndex: currentIndex,
+          hasNextStudent: hasNext,
+          hasPreviousStudent: hasPrevious,
+        ));
+      },
+      (success) {
+        if (success == true) {
+          // تحديث الطالب الحالي فقط في القائمة
           _students[_currentStudentIndex] = _students[_currentStudentIndex].copyWith(
             grade: event.grade,
             feedback: event.feedback,
             isGraded: true,
           );
+          emit(SubmissionSuccess(message: 'تم حفظ التصحيح بنجاح'));
+          emit(SubmissionDataLoaded(
+            students: _students,
+            currentStudentIndex: _currentStudentIndex,
+            hasNextStudent: _currentStudentIndex < _students.length - 1,
+            hasPreviousStudent: _currentStudentIndex > 0,
+          ));
+        } else {
+          // في حالة فشل التصحيح، نعود للحالة الأصلية
+          emit(GradeSubmissionError(
+            message: 'لم يتم حفظ التصحيح. حاول مجددًا.',
+            submissionId: event.submissionId,
+            grade: event.grade,
+            feedback: event.feedback,
+            students: currentStudents,
+            currentStudentIndex: currentIndex,
+            hasNextStudent: hasNext,
+            hasPreviousStudent: hasPrevious,
+          ));
         }
-      }
-      
-      emit(SubmissionSuccess());
-      
-      // Reload data to show updated state
-      await Future.delayed(const Duration(seconds: 1));
-      emit(SubmissionDataLoaded(
-        students: _students,
-        currentStudentIndex: _currentStudentIndex,
-        hasNextStudent: _currentStudentIndex < _students.length - 1,
-        hasPreviousStudent: _currentStudentIndex > 0,
-      ));
-    } catch (e) {
-      emit(SubmissionError('Failed to submit grade: $e'));
-    }
+      },
+    );
   }
 
   void _onNavigateToNextStudent(
@@ -163,13 +159,55 @@ class SubmissionBloc extends Bloc<SubmissionEvent, SubmissionState> {
     RefreshSubmissionData event,
     Emitter<SubmissionState> emit,
   ) async {
-    if (_students.isNotEmpty) {
-      add(LoadSubmissionData(_students.first.id));
+    if (_currentAssignmentId != null) {
+      add(LoadSubmissionData(_currentAssignmentId!));
     }
+  }
+
+  Future<void> _onMarkAssignmentAsGraded(
+    MarkAssignmentAsGraded event,
+    Emitter<SubmissionState> emit,
+  ) async {
+    // حفظ الحالة الحالية قبل التحميل
+    final currentStudents = List<StudentSubmission>.from(_students);
+    final currentIndex = _currentStudentIndex;
+    final hasNext = _currentStudentIndex < _students.length - 1;
+    final hasPrevious = _currentStudentIndex > 0;
+    
+    emit(SubmissionLoading());
+    
+    final result = await markAssignmentAsGradedUseCase!(event.assignmentId);
+    result.fold(
+      (failure) {
+        // في حالة فشل وضع الواجب كمصحح، نعود للحالة الأصلية مع رسالة الخطأ
+        emit(MarkAsGradedError(
+          message: failure.message,
+          assignmentId: event.assignmentId,
+          students: currentStudents,
+          currentStudentIndex: currentIndex,
+          hasNextStudent: hasNext,
+          hasPreviousStudent: hasPrevious,
+        ));
+      },
+      (success) {
+        if (success == true) {
+          emit(SubmissionSuccess(message: 'تم وضع الواجب كمصحح بنجاح'));
+        } else {
+          // في حالة فشل وضع الواجب كمصحح، نعود للحالة الأصلية
+          emit(MarkAsGradedError(
+            message: 'لم يتم وضع الواجب كمصحح. حاول مجددًا.',
+            assignmentId: event.assignmentId,
+            students: currentStudents,
+            currentStudentIndex: currentIndex,
+            hasNextStudent: hasNext,
+            hasPreviousStudent: hasPrevious,
+          ));
+        }
+      },
+    );
   }
 }
 
-// Extension to create copy of StudentSubmission
 extension StudentSubmissionExtension on StudentSubmission {
   StudentSubmission copyWith({
     String? id,
