@@ -10,6 +10,7 @@ import 'package:smart_school/features/notification/presintation/bloc/notificatio
 import 'package:smart_school/features/schedule/presentation/pages/schedule_page.dart';
 import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
+import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ResourceBloc>()),
         BlocProvider(create: (context) => di.getIt<ChatBloc>()),
         BlocProvider(create: (context) => di.getIt<AttendanceBloc>()),
+        BlocProvider(create: (context) => di.getIt<ZoomMeetingsBloc>()),
       ],
       child: Sizer(
         builder: (context, orientation, screenType) {

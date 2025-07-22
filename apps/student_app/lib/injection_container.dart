@@ -15,6 +15,8 @@ import 'package:profile/domain/use_cases/get_user_profile_use_case.dart';
 import 'package:profile/injection_container.dart' as profile_di;
 import 'package:resource/domain/use_cases/get_resource_list_use_case.dart';
 import 'package:resource/injection_container.dart' as resource_di;
+import 'package:smart_school/features/zoom/domain/usecase/get_all_zoom_meetings_useCase.dart';
+import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.dart';
 import 'package:subject/domain/use_cases/get_subject_list_use_case.dart';
 import 'package:subject/domain/use_cases/get_subject_use_case.dart';
 import 'package:subject/injection_container.dart' as subject_di;
@@ -42,10 +44,17 @@ import 'features/subject/presentation/blocs/subject_list/subject_list_bloc.dart'
 import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
 import 'features/atendance/presentation/blocs/attendance_bloc.dart';
+import 'features/zoom/data/datasources/zoom_meetings_remote_data_source.dart';
+import 'features/zoom/data/repositories/zoom_meetings_repository_impl.dart';
+import 'package:dio/dio.dart';
+//zoom
 
 final getIt = GetIt.instance;
 
 Future<void> setupDependencies() async {
+
+  getIt.registerLazySingleton<Dio>(() => Dio());
+
   // استدعاء دوال الإعداد بالترتيب
   await core_di.setupCoreDependencies(getIt);
   await auth_di.setupAuthDependencies(getIt);
@@ -127,4 +136,31 @@ Future<void> setupDependencies() async {
   );
 
 
+  //********zoom*********//
+  //********zoom*********//
+
+  // Data Sources
+  getIt.registerLazySingleton<ZoomMeetingsRemoteDataSource>(
+    () => ZoomMeetingsRemoteDataSourceImpl(dio: getIt()),
+  );
+
+  // Repositories
+  getIt.registerLazySingleton<ZoomMeetingsRepositoryImpl>(
+    () => ZoomMeetingsRepositoryImpl(remoteDataSource: getIt()),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(
+    () => GetAllZoomMeetingsUseCase(
+      repository: getIt<ZoomMeetingsRepositoryImpl>(),
+    ),
+  );
+
+  // BLoCs
+  getIt.registerFactory(
+    () => ZoomMeetingsBloc(
+      getAllZoomMeetingsUseCase:
+          getIt(),
+    ),
+  );
 }
