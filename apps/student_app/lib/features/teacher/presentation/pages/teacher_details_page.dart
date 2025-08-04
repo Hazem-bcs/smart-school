@@ -1,3 +1,4 @@
+import 'package:core/theme/app_theme.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
@@ -107,7 +108,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
         Text(
           'Contact Info',
           style: TextStyle(
-            color: primaryColor,
+            color: AppTheme.primary1,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
@@ -182,7 +183,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
         Text(
           'Bio',
           style: TextStyle(
-            color: primaryColor,
+            color: AppTheme.primary1,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
@@ -209,7 +210,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
         Text(
           'Subjects',
           style: TextStyle(
-            color: primaryColor,
+            color:AppTheme.primary1 ,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),

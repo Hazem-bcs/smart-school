@@ -2,29 +2,6 @@ import 'package:smart_school/features/subject/presentation/blocs/subject_list/su
 import 'package:smart_school/features/subject/presentation/pages/subject_details_page.dart';
 import '../../../../widgets/app_exports.dart';
 
-// final List<SubjectEntity> dummySubjects = [
-//   SubjectEntity(id: 1, name: 'الرياضيات', image: 'assets/images/img.png'),
-//   SubjectEntity(
-//     id: 2,
-//     name: 'اللغة العربية',
-//     image: 'https://via.placeholder.com/150/4CAF50/FFFFFF?text=Arabic',
-//   ),
-//   SubjectEntity(
-//     id: 3,
-//     name: 'العلوم',
-//     image: 'https://via.placeholder.com/150/FF9800/FFFFFF?text=Science',
-//   ),
-//   SubjectEntity(
-//     id: 4,
-//     name: 'اللغة الإنجليزية',
-//     image: 'https://via.placeholder.com/150/9C27B0/FFFFFF?text=English',
-//   ),
-//   SubjectEntity(
-//     id: 5,
-//     name: 'التاريخ',
-//     image: 'https://via.placeholder.com/150/795548/FFFFFF?text=History',
-//   ),
-// ];
 
 class SubjectsPage extends StatefulWidget {
   const SubjectsPage({Key? key}) : super(key: key);
@@ -94,7 +71,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
                 return AppSubjectCard(
                   subject: subject,
                   onTap: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
                         builder:
                             (context) =>

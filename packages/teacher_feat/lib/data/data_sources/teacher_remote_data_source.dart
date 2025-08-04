@@ -167,6 +167,8 @@ class TeacherRemoteDataSourceImpl extends TeacherRemoteDataSource {
           name: 'علوم',
           image:
               'https://images.unsplash.com/photo-1542831371-29b0f74f94dd?fit=crop&w=800&q=80',
+          teachers: [],
+          notes: [],
         ),
       ],
     ),
@@ -183,6 +185,8 @@ class TeacherRemoteDataSourceImpl extends TeacherRemoteDataSource {
           name: 'رياضيات',
           image:
               'https://images.unsplash.com/photo-1510904221195-ad9211c6d376?fit=crop&w=800&q=80',
+          teachers: [],
+          notes: [],
         ),
       ],
     ),
@@ -199,12 +203,16 @@ class TeacherRemoteDataSourceImpl extends TeacherRemoteDataSource {
           name: 'رياضيات',
           image:
               'https://images.unsplash.com/photo-1554988775-8178120b08e2?fit=crop&w=800&q=80',
+          teachers: [],
+          notes: [],
         ),
         SubjectModel(
           id: 2,
           name: 'عربي',
           image:
               'https://images.unsplash.com/photo-1554988775-8178120b08e2?fit=crop&w=800&q=80',
+          teachers: [],
+          notes: [],
         ),
       ],
     ),

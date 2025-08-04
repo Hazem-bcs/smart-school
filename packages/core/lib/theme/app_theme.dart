@@ -5,6 +5,7 @@ class AppTheme {
 
   // ألوان وتخصيصات teacher
   static const Color primary = Color(0xFF2196F3); // Blue
+  static const Color primary1 = Color(0xFF7B61FF);
   static const Color secondary = Color(0xFF1976D2); // Darker Blue
   static const Color accent = Color(0xFF64B5F6); // Light Blue
   static const Color success = Color(0xFF4CAF50); // Green

@@ -1,6 +1,5 @@
+
 import 'package:core/domain/entities/subject_entity.dart';
-import 'package:core/theme/constants/app_text_style.dart';
-import 'package:core/theme/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../widgets/app_loading_widget.dart';
@@ -53,78 +52,50 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
           }
           if (state is SubjectLoaded) {
             final SubjectEntity subject = state.subjectEntity;
+            final String teachersText = subject.teachers
+                .map((t) => '• $t')
+                .join('\n');
+            final String notesText = subject.notes
+                .map((n) => '• $n')
+                .join('\n');
+
             return Scaffold(
               appBar: AppBar(
                 title: Text(
                   subject.name,
-                  style: AppTextStyle.appBarTitle(context),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 centerTitle: true,
-                iconTheme: IconThemeData(color: Colors.white),
-                backgroundColor: primaryColor,
+                iconTheme: const IconThemeData(color: Colors.white),
+                backgroundColor: const Color(0xFF7B61FF),
               ),
               body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Hero(
-                      tag: 'subject-image-${subject.id}',
-                      child: Image.network(
-                        subject.image,
-                        height: 250,
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) => Container(
-                              height: 250,
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.book,
-                                size: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildHeader(context, subject),
+                      const SizedBox(height: 25),
+                      _buildDetailsCard(
+                        context,
+                        title: 'المدرسين المتاحين',
+                        content: teachersText,
+                        icon: Icons.people_alt,
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            subject.name,
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text(
-                            'هذه المادة تعتبر أساسية لفهم المفاهيم العلمية المتقدمة وتطوير مهارات التفكير النقدي.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              height: 1.5,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          _buildDetailsCard(
-                            context,
-                            title: 'المدرسين المتاحين',
-                            content: '• أ. أحمد محمود\n• د. سارة فؤاد',
-                            icon: Icons.people_alt,
-                          ),
-                          SizedBox(height: 10,),
-                          _buildDetailsCard(
-                            context,
-                            title: 'ملاحظات',
-                            content: ' •  دروس أسبوعياً 5 \n',
-                            icon: Icons.note,
-                          ),
-                        ],
+                      const SizedBox(height: 15),
+                      _buildDetailsCard(
+                        context,
+                        title: 'ملاحظات',
+                        content: notesText,
+                        icon: Icons.note,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -135,6 +106,31 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
     );
   }
 
+  Widget _buildHeader(BuildContext context, SubjectEntity subject) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          subject.name,
+          style: const TextStyle(
+            fontSize: 34,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF7B61FF),
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'هذه المادة تعتبر أساسية لفهم المفاهيم العلمية المتقدمة وتطوير مهارات التفكير النقدي.',
+          style: TextStyle(
+            fontSize: 16,
+            height: 1.5,
+            color: Color(0xFF5C5C5C),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDetailsCard(
     BuildContext context, {
     required String title,
@@ -142,32 +138,38 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
     required IconData icon,
   }) {
     return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.only(bottom: 15),
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, color: Colors.blueAccent, size: 28),
-                const SizedBox(width: 10),
+                Icon(icon, color: const Color(0xFF7B61FF), size: 30),
+
+                const SizedBox(width: 15),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: const TextStyle(
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                    color: Color(0xFF7B61FF),
                   ),
                 ),
               ],
             ),
-            Divider(height: 20, thickness: 1),
+            const SizedBox(height: 15),
+            const Divider(height: 1, thickness: 1, color: Colors.black12),
+            const SizedBox(height: 15),
             Text(
               content,
-              style: TextStyle(fontSize: 15, color: Colors.black87),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFF5C5C5C),
+                height: 1.5,
+              ),
             ),
           ],
         ),
