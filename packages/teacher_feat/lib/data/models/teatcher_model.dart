@@ -1,4 +1,3 @@
-
 import 'package:core/data/models/subject_model.dart';
 
 import '../../domain/teacher_entity.dart';
@@ -27,8 +26,10 @@ class TeacherModel {
       id: _parseId(json['id']),
       name: _validateName(json['name']),
       image: json['image'],
-      phone: json['phone'],
-      address: json['address'],
+      // phone: json['phone'],
+      // address: json['address'],
+      phone: _validatePhone(json['phone']),
+      address: _validateAddress(json['address']),
       description: _validateDescription(json['description']),
       subjectList: _parseSubjects(json['subjects']),
     );
@@ -69,10 +70,19 @@ class TeacherModel {
     return 'Unknown Teacher';
   }
 
-
   static String _validateDescription(dynamic description) {
     if (description is String) return description.trim();
     return 'No description available';
+  }
+
+  static String _validatePhone(dynamic phone) {
+    if (phone is String) return phone.trim();
+    return 'No phone available';
+  }
+
+  static String _validateAddress(dynamic address) {
+    if (address is String) return address.trim();
+    return 'No address available';
   }
 
   static List<SubjectModel> _parseSubjects(dynamic subjects) {

@@ -23,76 +23,85 @@ class _TeachersPageState extends State<TeachersPage> {
     return Scaffold(
       backgroundColor: backGround,
       appBar: AppBarWidget(title: "Teachers"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<TeacherListBloc, TeacherListState>(
-          builder: (context, state) {
-            if (state is TeacherListInitial || state is TeacherListLoading) {
-              return const Center(child: AppLoadingWidget());
-            }
-            if (state is TeacherListError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Error${state.message}'),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<TeacherListBloc>().add(
-                          GetTeacherList(studentId: 1),
-                        );
-                      },
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              );
-            }
-            if (state is TeacherListLoaded) {
-              final List<TeacherEntity> teachers = state.teacherList;
-
-              if (teachers.isEmpty) {
-                return const Center(child: Text('لا توجد بيانات للمعلمين.'));
-              }
-
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: teachers.length,
-
-                itemBuilder: (context, index) {
-                  final TeacherEntity teacher = teachers[index];
-
-                  return TeacherProfileCard(
-                    imageUrl: teacher.imageUrl,
-                    name: teacher.name,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder:
-                              (context) => TeacherDetailsPage(
-                                teacherId: teacher.id,
-                                teacher: teacher,
-                              ),
-                        ),
+      body: BlocBuilder<TeacherListBloc, TeacherListState>(
+        builder: (context, state) {
+          if (state is TeacherListInitial || state is TeacherListLoading) {
+            return const Center(child: AppLoadingWidget());
+          }
+          if (state is TeacherListError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error: ${state.message}',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<TeacherListBloc>().add(
+                        GetTeacherList(studentId: 1),
                       );
                     },
-                  );
-                },
-              );
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is TeacherListLoaded) {
+            final List<TeacherEntity> teachers = state.teacherList;
+
+            if (teachers.isEmpty) {
+              return const Center(child: Text('لا توجد بيانات للمعلمين.'));
             }
 
-            return const SizedBox.shrink();
-          },
-        ),
+
+            return GridView.builder(
+              padding: const EdgeInsets.all(16.0),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: teachers.length,
+              itemBuilder: (context, index) {
+                final TeacherEntity teacher = teachers[index];
+
+                return TeacherProfileCard(
+                  imageUrl: teacher.imageUrl,
+                  name: teacher.name,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder:
+                            (context) => TeacherDetailsPage(
+                              teacherId: teacher.id,
+                              teacher: teacher,
+                            ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 }
+
+

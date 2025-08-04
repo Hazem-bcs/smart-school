@@ -1,5 +1,3 @@
-
-import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
@@ -22,29 +20,14 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     context.read<TeacherDetailsBloc>().add(
       GetTeacherById(teacherId: widget.teacherId),
     );
-    context.read<SubjectListBloc>().add(GetSubjectListEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarWidget(title: AppStrings.teacherDetails),
       backgroundColor: backGround,
-      appBar: AppBar(
-        title: Text(
-          AppStrings.teacherDetails,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.8,
-          ),
-        ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: primaryColor,
-        elevation: 4,
-      ),
       body: BlocBuilder<TeacherDetailsBloc, TeacherDetailsState>(
         builder: (context, state) {
           if (state is TeacherDetailsInitial ||
@@ -56,13 +39,25 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error loading subject: ${state.message}'),
+                  Text(
+                    'Error: ${state.message}',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       context.read<TeacherDetailsBloc>().add(
                         GetTeacherById(teacherId: widget.teacherId),
                       );
                     },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                     child: const Text('Retry'),
                   ),
                 ],
@@ -73,133 +68,24 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
             final TeacherEntity loadedTeacher = state.teacher;
             return SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  AppBarImageWidget(
-                    title: loadedTeacher.name,
-                    height: 200,
-                    isImage: true,
-                    imageName: loadedTeacher.imageUrl,
-                  ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 10),
-                        //bio
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: AppTextWidget(
-                            text: AppStrings.bio,
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        //subject
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: AppTextWidget(
-                            text: loadedTeacher.description,
-                            style: TextStyle(
-                              color: tertiaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 25),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: AppTextWidget(
-                            text: AppStrings.subjects,
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        BlocBuilder<SubjectListBloc, SubjectListState>(
-                          builder: (context, state) {
-                            if (state is SubjectListLoading) {
-                              return AppLoadingWidget();
-                            }
-                            if (state is SubjectListLoaded) {
-                              if (state.subjectEntityList.isNotEmpty) {
-                                return GridView.builder(
-                                  padding: const EdgeInsets.all(16.0),
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 16.0,
-                                        mainAxisSpacing: 16.0,
-                                        childAspectRatio: 0.75,
-                                      ),
-                                  itemCount: state.subjectEntityList.length,
-                                  itemBuilder: (context, index) {
-                                    final subject =
-                                        state.subjectEntityList[index];
-                                    return LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        return ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                            minHeight: constraints.maxHeight,
-                                            maxHeight: constraints.maxHeight,
-                                            minWidth: constraints.maxWidth,
-                                            maxWidth: constraints.maxWidth,
-                                          ),
-                                          child: AppSubjectCard(
-                                            subject: subject,
-                                            onTap: () {
-                                              Navigator.of(
-                                                context,
-                                              ).pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (context) =>
-                                                          SubjectDetailsPage(
-                                                            subjectId:
-                                                                subject.id,
-                                                          ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              } else {
-                                return const Center(
-                                  child: Text("No subjects found."),
-                                );
-                              }
-                            }
-
-                            if (state is SubjectListFailure) {
-                              return Center(
-                                child: Text("Error: ${state.message}"),
-                              );
-                            }
-                            return const Center(
-                              child: Text("Initial state or no data."),
-                            );
-                          },
-                        ),
+                        // قسم المعلومات الأساسية
+                        _buildInfoCardsSection(loadedTeacher),
+                        const SizedBox(height: 32),
+                        // قسم السيرة الذاتية (Bio)
+                        _buildBioSection(loadedTeacher),
+                        const SizedBox(height: 32),
+                        // قسم المواد الدراسية
+                        _buildSubjectsSection(context, loadedTeacher),
                       ],
                     ),
                   ),
@@ -207,9 +93,159 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
               ),
             );
           }
-          return Text("data");
+          return const Text("Unknown State");
         },
       ),
+    );
+  }
+
+  // دالة مساعدة لبناء قسم بطاقات المعلومات (الهاتف والعنوان)
+  Widget _buildInfoCardsSection(TeacherEntity teacher) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Contact Info',
+          style: TextStyle(
+            color: primaryColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildInfoCard(
+                icon: Icons.phone_android,
+                title: 'Phone',
+                subtitle: teacher.phone.isNotEmpty ? teacher.phone : 'N/A',
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildInfoCard(
+                icon: Icons.location_on,
+                title: 'Address',
+                subtitle: teacher.address.isNotEmpty ? teacher.address : 'N/A',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // دالة مساعدة لبناء بطاقة معلومات فردية
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: primaryColor.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: primaryColor.withOpacity(0.2), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: primaryColor, size: 28),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: const TextStyle(fontSize: 14, color: Colors.black87),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // دالة مساعدة لبناء قسم السيرة الذاتية
+  Widget _buildBioSection(TeacherEntity teacher) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Bio',
+          style: TextStyle(
+            color: primaryColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          teacher.description,
+          style: TextStyle(
+            color: tertiaryColor,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            height: 1.5,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // دالة مساعدة لبناء قسم المواد الدراسية
+  Widget _buildSubjectsSection(BuildContext context, TeacherEntity teacher) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Subjects',
+          style: TextStyle(
+            color: primaryColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (teacher.subjects.isNotEmpty)
+          GridView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 0.75,
+            ),
+            itemCount: teacher.subjects.length,
+            itemBuilder: (context, index) {
+              final subject = teacher.subjects[index];
+              return AppSubjectCard(
+                subject: subject,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              SubjectDetailsPage(subjectId: subject.id),
+                    ),
+                  );
+                },
+              );
+            },
+          )
+        else
+          const Center(child: Text("No subjects found for this teacher.")),
+      ],
     );
   }
 }
