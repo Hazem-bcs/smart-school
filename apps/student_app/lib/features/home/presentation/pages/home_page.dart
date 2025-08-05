@@ -1,70 +1,10 @@
-// import 'package:core/theme/constants/colors.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_svg/svg.dart';
-// import '../../../../widgets/responsive/responsive_helper.dart';
-// import '../../../../widgets/shared_bottom_navigation.dart';
-// import '../widgets/app_drawer.dart';
-//
-// class HomePage extends StatefulWidget {
-//   const HomePage({super.key});
-//
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-//
-// class _HomePageState extends State<HomePage> {
-//   int _currentIndex = 1;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       drawer: AppDrawerWidget(),
-//       appBar: AppBar(
-//         actions: [
-//           GestureDetector(
-//             onTap: () {
-//               Navigator.of(context).pushNamed('/tutorChatView');
-//             },
-//             child: Padding(
-//               padding: const EdgeInsetsDirectional.only(end: 20.0),
-//               child: SvgPicture.asset('assets/svg/chat.svg'),
-//             ),
-//           ),
-//         ],
-//         iconTheme: IconThemeData(color: Colors.white),
-//         title: Text(
-//           "Smart School",
-//           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-//         ),
-//         centerTitle: true,
-//         backgroundColor: primaryColor,
-//       ),
-//       body: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             SizedBox(
-//               height: ResponsiveHelper.getSpacing(
-//                 context,
-//                 mobile: 80,
-//                 tablet: 100,
-//                 desktop: 120,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       bottomNavigationBar: SharedBottomNavigation(currentIndex: _currentIndex),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
 import '../../../zoom/presentation/widgets/zoom_meetings_button.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/promo_slider_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -119,6 +59,8 @@ class _HomePageState extends State<HomePage> {
                 desktop: 120,
               ),
             ),
+            PromoSlider(),
+            SizedBox(height: 500),
             ZoomMeetingsButton(),
           ],
         ),

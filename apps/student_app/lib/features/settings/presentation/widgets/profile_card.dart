@@ -62,7 +62,7 @@ class ProfileCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Teacher Name',
+                    'Student Name',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 18, tablet: 20, desktop: 22),
                       fontWeight: FontWeight.w600,
@@ -71,7 +71,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
                   Text(
-                    'teacher@school.com',
+                    'student@school.com',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
                       color: Colors.white.withOpacity(0.8),
