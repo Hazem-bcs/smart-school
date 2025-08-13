@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New Message</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+        :root {
+            --calm-blue-light: #F0F7FF;
+            --calm-blue-medium: #D6E8FF;
+            --calm-blue-dark: #4A90E2;
+            --gray-light: #F8F9FA;
+            --gray-medium: #E9ECEF;
+            --gray-dark: #6C757D;
+            --accent-orange: #F5A623;
+            --text-dark: #212529;
+            --text-light: #F8F9FA;
+            --background: #FFFFFF;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[var(--gray-light)]">
+<div class="max-w-md mx-auto min-h-screen flex flex-col justify-between">
+<header class="bg-white shadow-sm sticky top-0 z-10">
+<div class="px-4 py-3 flex items-center justify-between">
+<div class="text-[var(--text-dark)]">
+<svg class="feather feather-arrow-left" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="19" x2="5" y1="12" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+</div>
+<h1 class="text-xl font-semibold text-[var(--text-dark)] grow text-center">New Message</h1>
+<div class="w-6"></div>
+</div>
+</header>
+<main class="flex-grow p-6">
+<form action="#" class="space-y-6" method="POST">
+<div>
+<label class="block text-sm font-medium text-[var(--gray-dark)] mb-2" for="subject">Subject</label>
+<div class="mt-1">
+<input class="form-input block w-full rounded-lg border-[var(--gray-medium)] bg-white py-3 px-4 shadow-sm focus:border-[var(--calm-blue-dark)] focus:ring-[var(--calm-blue-dark)] placeholder:text-[var(--gray-dark)]" id="subject" name="subject" placeholder="Regarding homework..." type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--gray-dark)] mb-2" for="message">Message</label>
+<div class="mt-1">
+<textarea class="form-textarea block w-full rounded-lg border-[var(--gray-medium)] bg-white py-3 px-4 shadow-sm focus:border-[var(--calm-blue-dark)] focus:ring-[var(--calm-blue-dark)] placeholder:text-[var(--gray-dark)]" id="message" name="message" placeholder="Type your message here..." rows="12"></textarea>
+</div>
+</div>
+<div>
+<button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-base font-medium text-white bg-[var(--accent-orange)] hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent-orange)] transition-transform active:scale-95" type="submit">
+                        Send
+                    </button>
+</div>
+</form>
+</main>
+<footer class="bg-white border-t border-[var(--gray-medium)] sticky bottom-0">
+<nav class="flex justify-around items-center h-20">
+<a class="flex flex-col items-center text-[var(--gray-dark)] hover:text-[var(--calm-blue-dark)] transition-colors" href="#">
+<svg class="feather feather-home" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<span class="text-xs mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center text-[var(--gray-dark)] hover:text-[var(--calm-blue-dark)] transition-colors" href="#">
+<svg class="feather feather-bar-chart-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
+<span class="text-xs mt-1">Grades</span>
+</a>
+<a class="flex flex-col items-center text-[var(--calm-blue-dark)] hover:text-[var(--calm-blue-dark)] transition-colors" href="#">
+<div class="relative">
+<svg class="feather feather-message-square" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+<span class="absolute -top-1 -right-1 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent-orange)] opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent-orange)]"></span>
+</span>
+</div>
+<span class="text-xs mt-1 font-semibold">Messages</span>
+</a>
+<a class="flex flex-col items-center text-[var(--gray-dark)] hover:text-[var(--calm-blue-dark)] transition-colors" href="#">
+<svg class="feather feather-calendar" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+<span class="text-xs mt-1">Calendar</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

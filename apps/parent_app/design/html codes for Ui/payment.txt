@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --calm-blue-100: #e0e8f0;
+            --calm-blue-600: #4a90e2;
+            --calm-gray-50: #f7f9fa;
+            --calm-gray-100: #edf1f5;
+            --calm-gray-500: #6b7280;
+            --calm-gray-800: #1f2937;
+            --accent-orange: #f59e0b;
+            --status-green: #10b981;
+            --status-red: #ef4444;
+            --status-yellow: #f59e0b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[var(--calm-gray-50)]">
+<div class="relative flex size-full min-h-screen flex-col justify-between group/design-root overflow-x-hidden">
+<div class="flex flex-col">
+<header class="sticky top-0 z-10 bg-white shadow-sm">
+<div class="flex items-center justify-between p-4">
+<button class="text-[var(--calm-gray-800)]">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+</svg>
+</button>
+<h1 class="text-lg font-bold text-[var(--calm-gray-800)]">Payments</h1>
+<div class="w-6"></div>
+</div>
+</header>
+<main class="flex-1 p-4 space-y-4">
+<div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-base font-semibold text-[var(--calm-gray-800)]">Transaction ID: #12345</h2>
+<span class="px-2 py-1 text-xs font-semibold text-white bg-[var(--status-green)] rounded-full">Paid</span>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-[var(--calm-gray-100)] pt-4">
+<div>
+<p class="text-sm text-[var(--calm-gray-500)]">Total Fee (الرسم الإجمالي)</p>
+<p class="text-base font-semibold text-[var(--calm-gray-800)]">S.P 1,800,000</p>
+</div>
+<div class="text-right">
+<p class="text-sm text-[var(--calm-gray-500)]">Paid Fee (الرسم المدفوع)</p>
+<p class="text-base font-semibold text-[var(--calm-gray-800)]">S.P 1,800,000</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-base font-semibold text-[var(--calm-gray-800)]">Transaction ID: #12346</h2>
+<span class="px-2 py-1 text-xs font-semibold text-white bg-[var(--status-red)] rounded-full">Overdue</span>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-[var(--calm-gray-100)] pt-4">
+<div>
+<p class="text-sm text-[var(--calm-gray-500)]">Total Fee (الرسم الإجمالي)</p>
+<p class="text-base font-semibold text-[var(--calm-gray-800)]">S.P 500,000</p>
+</div>
+<div class="text-right">
+<p class="text-sm text-[var(--calm-gray-500)]">Paid Fee (الرسم المدفوع)</p>
+<p class="text-base font-semibold text-[var(--status-red)]">S.P 0</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-base font-semibold text-[var(--calm-gray-800)]">Transaction ID: #12347</h2>
+<span class="px-2 py-1 text-xs font-semibold text-white bg-[var(--status-yellow)] rounded-full">Pending</span>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-[var(--calm-gray-100)] pt-4">
+<div>
+<p class="text-sm text-[var(--calm-gray-500)]">Total Fee (الرسم الإجمالي)</p>
+<p class="text-base font-semibold text-[var(--calm-gray-800)]">S.P 75,000</p>
+</div>
+<div class="text-right">
+<p class="text-sm text-[var(--calm-gray-500)]">Paid Fee (الرسم المدفوع)</p>
+<p class="text-base font-semibold text-[var(--status-yellow)]">S.P 0</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="sticky bottom-0 bg-white border-t border-[var(--calm-gray-100)]">
+<nav class="flex justify-around items-center px-2 pt-2 pb-4">
+<a class="flex flex-col items-center gap-1 text-[var(--calm-blue-600)]" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"></path>
+</svg>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[var(--calm-gray-500)]" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,40H136V24a8,8,0,0,0-16,0V40H40A16,16,0,0,0,24,56V176a16,16,0,0,0,16,16H79.36L57.75,219a8,8,0,0,0,12.5,10l29.59-37h56.32l29.59,37a8,8,0,1,0,12.5-10l-21.61-27H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,136H40V56H216V176ZM104,120v24a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm32-16v40a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm32-16v56a8,8,0,0,1-16,0V88a8,8,0,0,1,16,0Z"></path>
+</svg>
+<span class="text-xs font-medium">Grades</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[var(--calm-gray-500)]" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,128a88,88,0,1,0,88-88A88.1,88.1,0,0,0,40,128ZM128,56a72,72,0,1,1-72,72A72.08,72.08,0,0,1,128,56Zm48,64a8,8,0,0,1-8,8H136v32a8,8,0,0,1-16,0V128H88a8,8,0,0,1,0-16h32V80a8,8,0,0,1,16,0v32h32A8,8,0,0,1,176,120Z"></path>
+</svg>
+<span class="text-xs font-medium">Payments</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[var(--calm-gray-500)]" href="#">
+<svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"></path>
+</svg>
+<span class="text-xs font-medium">Calendar</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

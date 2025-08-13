@@ -1,5 +1,4 @@
 // Core and Auth packages
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/network/dio_client.dart';
@@ -9,7 +8,6 @@ import 'package:password/injection_container.dart' as password_di;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teacher_app/core/local_data_source.dart';
 import 'package:teacher_app/features/assignment_submission/domain/usecases/mark_assignment_as_graded_usecase.dart';
-import 'package:teacher_app/features/assignment_submission/presentation/blocs/submission_event.dart';
 import 'package:teacher_app/features/new_assignment/data/data_sources/newAssignmentLocalDataSource.dart';
 import 'package:teacher_app/features/new_assignment/domain/usecases/get_classes_use_case.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
@@ -21,7 +19,6 @@ import 'features/new_assignment/presentation/blocs/new_assignment_bloc.dart';
 import 'features/auth/domain/usecases/check_auth_status_usecase.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
-import 'features/auth/data/data_sources/auth_local_data_source.dart';
 import 'features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -110,9 +107,7 @@ Future<void> setupDependencies() async {
   // AUTH FEATURE DEPENDENCIES
   // ========================================
   // Data Sources
-  getIt.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(),
-  );
+
 
   getIt.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
@@ -122,7 +117,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: getIt<AuthRemoteDataSource>(),
-      localDataSource: getIt<AuthLocalDataSource>(),
+      localDataSource: getIt<LocalDataSource>(),
       prefs: getIt<SharedPreferences>(),
     ),
   );

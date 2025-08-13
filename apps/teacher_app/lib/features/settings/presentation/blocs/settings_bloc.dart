@@ -16,7 +16,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     emit(LogoutLoading());
     
-    final result = await logoutUseCase(event.userId);
+    final result = await logoutUseCase();
     
     result.fold(
       (failure) => emit(LogoutFailure(message: failure.message)),

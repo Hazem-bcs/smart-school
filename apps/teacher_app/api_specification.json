@@ -1,0 +1,520 @@
+{
+  "project_name": "Smart School Teacher App",
+  "description": "API specification for teacher application backend",
+  "base_url": "https://api.smartschool.com/v1",
+  "features": {
+    "authentication": {
+      "description": "ميزة المصادقة وتسجيل الدخول والخروج",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "description": "تسجيل دخول المعلم",
+          "request_body": {
+            "email": "string",
+            "password": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": {
+              "id": "string",
+              "name": "string",
+              "email": "string",
+              "role": "teacher",
+              "avatar": "string",
+              "phone": "string",
+              "department": "string",
+              "experience_years": "number",
+              "qualification": "string",
+              "bio": "string",
+              "created_at": "datetime",
+              "last_login_at": "datetime"
+            },
+            "message": "تم تسجيل الدخول بنجاح"
+          },
+          "response_error": {
+            "success": false,
+            "statuscode": 401,
+            "message": "بيانات الدخول غير صحيحة"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/auth/check-status/{userId}",
+          "description": "التحقق من حالة المصادقة",
+          "path_params": {
+            "userId": "number"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": {
+              "id": "string",
+              "name": "string",
+              "email": "string",
+              "role": "teacher",
+              "avatar": "string",
+              "phone": "string",
+              "department": "string",
+              "experience_years": "number",
+              "qualification": "string",
+              "bio": "string",
+              "created_at": "datetime",
+              "last_login_at": "datetime"
+            },
+            "message": "تم التحقق من حالة المصادقة بنجاح"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "description": "تسجيل خروج المعلم",
+          "request_body": {
+            "user_id": "number"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "message": "تم تسجيل الخروج بنجاح"
+          }
+        }
+      ]
+    },
+    "profile": {
+      "description": "ميزة الملف الشخصي للمعلم",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/profile/{userId}",
+          "description": "جلب الملف الشخصي للمعلم",
+          "path_params": {
+            "userId": "number"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": {
+              "id": "string",
+              "name": "string",
+              "bio": "string",
+              "contactInfo": {
+                "email": "string",
+                "phone": "string"
+              },
+              "avatarUrl": "string",
+              "socialMedia": [
+                {
+                  "platform": "string",
+                  "url": "string",
+                  "icon": "string"
+                }
+              ],
+              "professionalInfo": {
+                "subjectsTaught": ["string"],
+                "gradeLevels": ["string"],
+                "department": "string",
+                "qualifications": "string",
+                "certifications": "string"
+              }
+            },
+            "message": "تم جلب البيانات بنجاح"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/profile/{userId}",
+          "description": "تحديث الملف الشخصي للمعلم",
+          "path_params": {
+            "userId": "number"
+          },
+          "request_body": {
+            "name": "string",
+            "bio": "string",
+            "contactInfo": {
+              "email": "string",
+              "phone": "string"
+            },
+            "avatarUrl": "string",
+            "socialMedia": [
+              {
+                "platform": "string",
+                "url": "string",
+                "icon": "string"
+              }
+            ],
+            "professionalInfo": {
+              "subjectsTaught": ["string"],
+              "gradeLevels": ["string"],
+              "department": "string",
+              "qualifications": "string",
+              "certifications": "string"
+            }
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": "updated_profile_data",
+            "message": "تم تحديث البيانات بنجاح"
+          }
+        }
+      ]
+    },
+    "assignments": {
+      "description": "ميزة إدارة الواجبات",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/assignments",
+          "description": "جلب قائمة الواجبات مع إمكانية البحث والفلترة",
+          "query_params": {
+            "searchQuery": "string (optional)",
+            "filter": "string (optional) - all, graded, ungraded"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "subtitle": "string",
+                "isCompleted": "boolean",
+                "dueDate": "datetime",
+                "submittedCount": "number",
+                "totalCount": "number",
+                "status": "string"
+              }
+            ],
+            "message": "تم جلب الواجبات بنجاح"
+          }
+        }
+      ]
+    },
+    "new_assignment": {
+      "description": "ميزة إنشاء واجب جديد",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/assignments",
+          "description": "إنشاء واجب جديد",
+          "request_body": {
+            "title": "string",
+            "description": "string",
+            "dueDate": "datetime",
+            "classId": "string",
+            "attachments": ["string"],
+            "instructions": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 201,
+            "data": {
+              "id": "string",
+              "title": "string",
+              "message": "تم إنشاء الواجب بنجاح"
+            }
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/classes/{teacherId}",
+          "description": "جلب قائمة الفصول المتاحة للمعلم",
+          "path_params": {
+            "teacherId": "number"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": ["string"],
+            "message": "تم جلب الفصول بنجاح"
+          }
+        }
+      ]
+    },
+    "assignment_submissions": {
+      "description": "ميزة إدارة تسليمات الطلاب",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/assignments/{assignmentId}/submissions",
+          "description": "جلب تسليمات الطلاب لواجب معين",
+          "path_params": {
+            "assignmentId": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "studentName": "string",
+                "response": "string",
+                "images": ["string"],
+                "submittedAt": "datetime",
+                "isGraded": "boolean",
+                "grade": "string (optional)",
+                "feedback": "string (optional)"
+              }
+            ],
+            "message": "تم جلب بيانات التسليمات بنجاح"
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/submissions/{submissionId}/grade",
+          "description": "تقدير تسليم طالب",
+          "path_params": {
+            "submissionId": "string"
+          },
+          "request_body": {
+            "grade": "string",
+            "feedback": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": true,
+            "message": "تم تقدير التسليم بنجاح"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/assignments/{assignmentId}/mark-graded",
+          "description": "تحديد الواجب كمقدر",
+          "path_params": {
+            "assignmentId": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": true,
+            "message": "تم تحديث حالة الواجب بنجاح"
+          }
+        }
+      ]
+    },
+    "schedule": {
+      "description": "ميزة الجدول الدراسي",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/schedule/{date}",
+          "description": "جلب الجدول الدراسي لتاريخ معين",
+          "path_params": {
+            "date": "date (YYYY-MM-DD)"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "description": "string",
+                "startTime": "datetime",
+                "endTime": "datetime",
+                "className": "string",
+                "subject": "string",
+                "teacherId": "string",
+                "location": "string",
+                "type": "string",
+                "status": "string"
+              }
+            ],
+            "message": "تم تحميل الجدول بنجاح"
+          }
+        }
+      ]
+    },
+    "zoom_meetings": {
+      "description": "ميزة اجتماعات زوم",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/meetings/schedule",
+          "description": "جدولة اجتماع زوم جديد",
+          "request_body": {
+            "topic": "string",
+            "invitedClasses": ["string"],
+            "scheduledDate": "date",
+            "scheduledTime": "time",
+            "enableWaitingRoom": "boolean",
+            "recordAutomatically": "boolean"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": {
+              "id": "string",
+              "topic": "string",
+              "invitedClasses": ["string"],
+              "scheduledDate": "date",
+              "scheduledTime": "time",
+              "enableWaitingRoom": "boolean",
+              "recordAutomatically": "boolean",
+              "meetingUrl": "string",
+              "meetingId": "string",
+              "password": "string"
+            },
+            "message": "تم جدولة الاجتماع بنجاح"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/classes/available",
+          "description": "جلب الفصول المتاحة لجدولة الاجتماعات",
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": ["string"],
+            "message": "تم جلب الفصول المتاحة بنجاح"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/meetings/options",
+          "description": "جلب خيارات الاجتماعات",
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "isEnabled": "boolean",
+                "description": "string"
+              }
+            ],
+            "message": "تم جلب خيارات الاجتماع بنجاح"
+          }
+        }
+      ]
+    },
+    "home": {
+      "description": "ميزة الصفحة الرئيسية",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/classes",
+          "description": "جلب قائمة الفصول للمعلم",
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "imageUrl": "string",
+                "studentCount": "number",
+                "subject": "string"
+              }
+            ],
+            "message": "تم جلب الفصول بنجاح"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/assignments/recent",
+          "description": "جلب الواجبات الحديثة",
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "subtitle": "string",
+                "dueDate": "datetime",
+                "status": "string"
+              }
+            ],
+            "message": "تم جلب الواجبات بنجاح"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/notifications",
+          "description": "جلب الإشعارات",
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "data": [
+              {
+                "id": "string",
+                "title": "string",
+                "subtitle": "string",
+                "timestamp": "datetime",
+                "isRead": "boolean"
+              }
+            ],
+            "message": "تم جلب الإشعارات بنجاح"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/notifications/{notificationId}/read",
+          "description": "تحديد الإشعار كمقروء",
+          "path_params": {
+            "notificationId": "string"
+          },
+          "response_success": {
+            "success": true,
+            "statuscode": 200,
+            "message": "تم تحديث حالة الإشعار بنجاح"
+          }
+        }
+      ]
+    },
+    "settings": {
+      "description": "ميزة الإعدادات",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/settings/logout",
+          "description": "تسجيل الخروج من الإعدادات",
+          "request_body": {
+            "user_id": "string"
+          },
+          "response_success": {
+            "success": true,
+            "message": "تم تسجيل الخروج بنجاح",
+            "user_id": "string"
+          }
+        }
+      ]
+    }
+  },
+  "common_responses": {
+    "server_error": {
+      "success": false,
+      "statuscode": 500,
+      "message": "خطأ في الخادم - يرجى المحاولة مرة أخرى"
+    },
+    "network_timeout": {
+      "success": false,
+      "statuscode": 408,
+      "message": "انتهت مهلة الاتصال، يرجى التحقق من اتصال الإنترنت"
+    },
+    "unauthorized": {
+      "success": false,
+      "statuscode": 401,
+      "message": "غير مصرح لك بالوصول لهذا المورد"
+    },
+    "not_found": {
+      "success": false,
+      "statuscode": 404,
+      "message": "المورد المطلوب غير موجود"
+    },
+    "validation_error": {
+      "success": false,
+      "statuscode": 400,
+      "message": "بيانات غير صحيحة"
+    }
+  },
+  "data_formats": {
+    "date_format": "YYYY-MM-DD",
+    "datetime_format": "ISO 8601",
+    "time_format": "HH:mm:ss"
+  }
+} 

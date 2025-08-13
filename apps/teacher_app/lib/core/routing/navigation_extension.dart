@@ -57,6 +57,16 @@ extension NavigationExtension on BuildContext {
     Navigator.pushNamed(this, AppRoutes.newAssignment);
   }
 
+  // Navigate to about app page
+  void goToAboutApp() {
+    Navigator.pushNamed(this, AppRoutes.aboutApp);
+  }
+
+  // Navigate to help FAQ page
+  void goToHelpFaq() {
+    Navigator.pushNamed(this, AppRoutes.helpFaq);
+  }
+
   void pushReplacementAllNamed(String routeName, {Object? arguments}) {
     Navigator.of(this).pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }

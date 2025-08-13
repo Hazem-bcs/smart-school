@@ -15,25 +15,40 @@ class SettingsRepositoryImpl implements SettingsRepository {
   });
 
   @override
-  Future<Either<Failure, LogoutEntity>> logout(String userId) async {
-    // Get logout result from remote data source
-    final logoutResult = await remoteDataSource.logout(userId);
-    
-    return logoutResult.fold(
-      (failure) => Left(failure),
-      (logoutModel) async {
-        // If logout is successful, clear local user data
-        if (logoutModel.success) {
-          try {
-            await localDataSource.clearUserId();
-          } catch (e) {
-            // Even if clearing local data fails, we still return success
-            // because the server logout was successful
+  Future<Either<Failure, LogoutEntity>> logout() async {
+    try {
+      
+      final userId = await localDataSource.getUserId();
+      
+      if (userId == null || userId.isEmpty) {
+        await localDataSource.clearUserId();
+        return Right(const LogoutEntity(
+          success: true,
+          message: 'تم تسجيل الخروج بنجاح',
+        ));
+      }
+      
+      // Get logout result from remote data source
+      final logoutResult = await remoteDataSource.logout(userId);
+      
+      return logoutResult.fold(
+        (failure) => Left(failure),
+        (logoutModel) async {
+          // If logout is successful, clear local user data
+          if (logoutModel.success) {
+            try {
+              await localDataSource.clearUserId();
+            } catch (e) {
+              // Even if clearing local data fails, we still return success
+              // because the server logout was successful
+            }
           }
-        }
-        
-        return Right(logoutModel);
-      },
-    );
+          
+          return Right(logoutModel);
+        },
+      );
+    } catch (e) {
+      return Left(ServerFailure(message: 'حدث خطأ أثناء تسجيل الخروج: ${e.toString()}'));
+    }
   }
 } 

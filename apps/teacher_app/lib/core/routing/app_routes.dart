@@ -7,7 +7,7 @@ import 'package:teacher_app/features/new_assignment/presentation/blocs/new_assig
 import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_assignment_page.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
-import 'package:teacher_app/features/settings/presentation/ui/pages/settings_page.dart';
+import 'package:teacher_app/features/settings/presentation/pages/settings_page.dart';
 import '../../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../../features/home/presentation/ui/pages/home_page.dart';

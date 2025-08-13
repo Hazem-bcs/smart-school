@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Parent Portal Login</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --brand-blue: #3b82f6;--brand-orange: #f97316;--neutral-background: #f1f5f9;--neutral-input: #e2e8f0;--neutral-text-primary: #1e293b;--neutral-text-secondary: #64748b;}
+      body {
+        font-family: "Work Sans", sans-serif;
+        background-color: var(--neutral-background);
+      }
+      .login-card {
+        @apply bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+<div class="flex flex-col items-center justify-center p-6 w-full h-full">
+<main class="w-full max-w-md">
+<div class="text-center mb-10">
+<svg class="w-16 h-16 mx-auto mb-4 text-[var(--brand-blue)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222 4 2.222V20M8 12.5l4 2.222 4-2.222M12 3v7.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<h1 class="text-3xl font-bold text-[var(--neutral-text-primary)]">Welcome Back</h1>
+<p class="text-base text-[var(--neutral-text-secondary)] mt-2">Log in to your parent portal</p>
+</div>
+<form class="space-y-6">
+<div>
+<label class="sr-only" for="email">Email</label>
+<input class="form-input w-full px-4 py-3 rounded-lg bg-[var(--neutral-input)] text-[var(--neutral-text-primary)] border-transparent focus:border-[var(--brand-blue)] focus:ring-0 transition duration-300" id="email" placeholder="Email address" type="email"/>
+</div>
+<div>
+<label class="sr-only" for="password">Password</label>
+<input class="form-input w-full px-4 py-3 rounded-lg bg-[var(--neutral-input)] text-[var(--neutral-text-primary)] border-transparent focus:border-[var(--brand-blue)] focus:ring-0 transition duration-300" id="password" placeholder="Password" type="password"/>
+</div>
+<div>
+<button class="w-full bg-[var(--brand-blue)] text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--brand-blue)] transition duration-300 shadow-md" type="submit">
+              Log In
+            </button>
+</div>
+</form>
+<div class="mt-8 text-center">
+<a class="text-sm font-medium text-[var(--brand-blue)] hover:text-blue-600" href="#">
+            Forgot password?
+          </a>
+</div>
+</main>
+<footer class="mt-16 text-center">
+<p class="text-sm text-[var(--neutral-text-secondary)]">
+          Don't have an account?
+          <a class="font-semibold text-[var(--brand-orange)] hover:text-orange-500" href="#">
+            Sign Up
+          </a>
+</p>
+</footer>
+</div>
+
+</body></html>

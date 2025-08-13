@@ -8,7 +8,7 @@ class LogoutUseCase {
   
   LogoutUseCase(this.repository);
 
-  Future<Either<Failure, LogoutEntity>> call(String userId) {
-    return repository.logout(userId);
+  Future<Either<Failure, LogoutEntity>> call() {
+    return repository.logout();
   }
 } 

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Select a Student</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --brand-blue: #3B82F6;--brand-orange: #F97316;--neutral-white: #FFFFFF;
+            --neutral-bg: #F3F4F6;--neutral-100: #E5E7EB;
+            --neutral-500: #6B7280;
+            --neutral-800: #1F2937;
+            --neutral-900: #111827;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--neutral-bg);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased">
+<div class="flex flex-col h-screen bg-[var(--neutral-bg)]">
+<main class="flex-grow overflow-y-auto">
+<header class="sticky top-0 bg-[var(--neutral-bg)]/80 backdrop-blur-sm z-10">
+<div class="flex items-center p-4 justify-center">
+<h1 class="text-[var(--neutral-900)] text-lg font-bold text-center flex-1">Select a Student</h1>
+</div>
+</header>
+<div class="p-4 space-y-4">
+<a class="block bg-[var(--neutral-white)] rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4" href="#">
+<div class="flex items-center gap-4">
+<img alt="Ethan Carter's photo" class="h-16 w-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmLu6A0nxx4ZyjoT6B42pNRjR1n3-WKryiOGDVw_4UwgEsg4DfEJfdVIioGfIaAv32zAVpwU1o6VDpphCSVSlcWydNnAqDmpY4MhaVLWLD7SPVSzSOQLrYrHViTkQx30KfLcTF6DdJbFW89E1ZgxpwiojBh_TBkrLeL-iQtXqBAhE5BM8XHH5QcUxJ4VYB37fG_diWSeYhTKc96f2Oa7GBU1ZGOGlNkDKKslvTXuZ_FoURpx3-5az-V35owjbDwk3gKlcW-RcwfVkQ"/>
+<div class="flex-1">
+<h2 class="text-[var(--neutral-900)] text-lg font-bold">Ethan Carter</h2>
+<p class="text-[var(--neutral-500)] text-sm">Grade 5</p>
+</div>
+<div class="text-[var(--brand-orange)]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+<a class="block bg-[var(--neutral-white)] rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4" href="#">
+<div class="flex items-center gap-4">
+<img alt="Sophia Carter's photo" class="h-16 w-16 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkOHEthRjqp4vFu5BflMY6jHyXhdxmZLit3IjY3LNzxgZIQpLevwkT2_ZkbqrR2uwsfeNOQ4yf83AQH11xKP2DvUY9Bu52Nu5GrDelNj2aDtCkW59kGIYZqa6EFt_fOugdkB8_qi_BPTIGUrxh1BQLfE3MU8H7jKdGYTdjRNB23_IWEqDhn2KjR8oE4hxjdOZSKbeItxchPBnGdKx8XeD2t1HHeRk__CfggKN88y8sJjszMiKG1udmLWNAWIkzjle6wSp3-V-IjKt0"/>
+<div class="flex-1">
+<h2 class="text-[var(--neutral-900)] text-lg font-bold">Sophia Carter</h2>
+<p class="text-[var(--neutral-500)] text-sm">Grade 2</p>
+</div>
+<div class="text-[var(--brand-orange)]">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</a>
+</div>
+</main>
+</div>
+</body></html>

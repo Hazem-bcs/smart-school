@@ -1,19 +1,20 @@
 import 'package:core/theme/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:teacher_app/core/responsive/responsive_helper.dart';
 import 'package:teacher_app/core/responsive/responsive_widgets.dart';
 import 'package:teacher_app/core/widgets/shared_bottom_navigation.dart';
-import '../../blocs/settings_bloc.dart';
-import '../../blocs/settings_event.dart';
-import '../../blocs/settings_state.dart';
+import 'package:teacher_app/core/routing/navigation_extension.dart';
+import 'package:teacher_app/core/routing/app_routes.dart';
+import '../blocs/settings_bloc.dart';
+import '../blocs/settings_event.dart';
+import '../blocs/settings_state.dart';
 import '../widgets/settings_app_bar.dart';
 import '../widgets/settings_loading_state.dart';
 import '../widgets/settings_error_state.dart';
-import '../../widgets/profile_card.dart';
-import '../../widgets/settings_section.dart';
+import '../widgets/profile_card.dart';
+import '../widgets/settings_section.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -26,7 +27,6 @@ class _SettingsPageState extends State<SettingsPage>
     with TickerProviderStateMixin {
   bool _notificationsEnabled = true;
   bool _isEnglish = true;
-  String? _userId;
 
   late AnimationController _pageAnimationController;
   late AnimationController _cardAnimationController;
@@ -38,7 +38,6 @@ class _SettingsPageState extends State<SettingsPage>
   void initState() {
     super.initState();
     _initializeAnimations();
-    _loadUserId();
   }
 
   void _initializeAnimations() {
@@ -80,13 +79,6 @@ class _SettingsPageState extends State<SettingsPage>
     _cardAnimationController.forward();
   }
 
-  Future<void> _loadUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userId = prefs.getString('user_id');
-    });
-  }
-
   @override
   void dispose() {
     _pageAnimationController.dispose();
@@ -108,7 +100,9 @@ class _SettingsPageState extends State<SettingsPage>
             _showSuccessMessage(context, state.logoutResult.message ?? 'تم تسجيل الخروج بنجاح');
             // Navigate to login after successful logout
             Future.delayed(const Duration(seconds: 2), () {
-              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              if (context.mounted) {
+                context.pushReplacementAllNamed(AppRoutes.login);
+              }
             });
           } else if (state is LogoutFailure) {
             _showErrorMessage(context, state.message);
@@ -139,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage>
                           isDark: isDark,
                           scaleAnimation: _scaleAnimation,
                           onEditProfile: () {
-                            // Navigate to edit profile
+                            context.goToEditProfile();
                           },
                         ),
                         SettingsSection(
@@ -216,7 +210,7 @@ class _SettingsPageState extends State<SettingsPage>
                   ),
                 ),
               ),
-              onTap: () => Navigator.pushNamed(context, '/help-faq'),
+              onTap: () => context.goToHelpFaq(),
               theme: theme,
               isDark: isDark,
             ),
@@ -248,7 +242,7 @@ class _SettingsPageState extends State<SettingsPage>
                   ),
                 ),
               ),
-              onTap: () => Navigator.pushNamed(context, '/about-app'),
+              onTap: () => context.goToAboutApp(),
               theme: theme,
               isDark: isDark,
             ),
@@ -522,11 +516,7 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   void _performLogout() {
-    if (_userId != null) {
-      context.read<SettingsBloc>().add(LogoutRequested(userId: _userId!));
-    } else {
-      _showErrorMessage(context, 'لم يتم العثور على معرف المستخدم');
-    }
+    context.read<SettingsBloc>().add(LogoutRequested());
   }
 
   void _showSuccessMessage(BuildContext context, String message) {

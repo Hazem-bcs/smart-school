@@ -1,15 +1,15 @@
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import 'package:teacher_app/features/auth/domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../data_sources/auth_remote_data_source.dart';
-import '../data_sources/auth_local_data_source.dart';
 
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
-  final AuthLocalDataSource localDataSource;
+  final LocalDataSource localDataSource;
   final SharedPreferences prefs;
 
   AuthRepositoryImpl({

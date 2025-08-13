@@ -20,3 +20,101 @@ build/
 .gradle/
 .vscode/
 .vscode-test/
+
+# ========================================
+# GIT FILES - ملفات Git
+# ========================================
+# تجاهل ملف .gitignore نفسه
+.gitignore
+
+# ========================================
+# CURSOR AI FILES - لا تنرفع إلى GitHub
+# ========================================
+# ملف قواعد Cursor
+.cursorrules
+
+# مجلد القوالب (اختياري - يمكن إزالته إذا أردت مشاركة القوالب)
+templates/
+
+# ملفات إعدادات Cursor
+.cursor/
+
+# ملفات مؤقتة لـ Cursor
+.cursor-cache/
+.cursor-temp/
+
+# ملفات التكوين الخاصة بـ Cursor
+cursor.config
+.cursorrc
+
+# ========================================
+# DEVELOPMENT FILES - ملفات التطوير
+# ========================================
+# ملفات البيئة المحلية
+.env
+.env.local
+.env.development
+.env.production
+
+# ملفات المفاتيح والبيانات الحساسة
+*.key
+*.pem
+*.p12
+*.keystore
+google-services.json
+GoogleService-Info.plist
+
+# ملفات السجلات
+*.log
+logs/
+
+# ملفات مؤقتة
+*.tmp
+*.temp
+temp/
+tmp/
+
+# ملفات النسخ الاحتياطي
+*.bak
+*.backup
+backup/
+
+# ========================================
+# IDE SPECIFIC - ملفات خاصة بـ IDE
+# ========================================
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/extensions.json
+
+# Android Studio
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/jarRepositories.xml
+
+# ========================================
+# OS SPECIFIC - ملفات خاصة بنظام التشغيل
+# ========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*

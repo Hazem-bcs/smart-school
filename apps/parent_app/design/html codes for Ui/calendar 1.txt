@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calendar Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --calm-blue: #e0e9f4;
+            --dark-gray: #4a5568;
+            --medium-gray: #a0aec0;
+            --light-gray: #f7fafc;
+            --accent-orange: #f59e0b;
+            --white: #ffffff;
+            --black: #1a202c;
+            --success-green: #22c55e;
+            --danger-red: #ef4444;
+        }
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--light-gray);
+        }
+        .header {
+            @apply bg-[var(--white)] border-b border-[var(--calm-blue)];
+        }
+        .tab-button {
+            @apply flex-1 py-4 px-1 text-center bg-white border-b-2 font-medium text-sm;
+        }
+        .tab-button.active {
+            @apply text-[var(--accent-orange)] border-[var(--accent-orange)];
+        }
+        .tab-button:not(.active) {
+            @apply text-[var(--medium-gray)] border-transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-50">
+<div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
+<header class="header sticky top-0 z-10">
+<div class="mx-auto flex max-w-7xl items-center justify-center p-4">
+<h1 class="text-lg font-bold text-[var(--black)]">Calendar</h1>
+</div>
+</header>
+<main class="flex-1">
+<div class="border-b border-gray-200 bg-white">
+<div class="flex" id="tab-container">
+<button class="tab-button active" id="schedule-tab">Schedule</button>
+<button class="tab-button" id="attendance-tab">Attendance</button>
+</div>
+</div>
+<div class="p-4">
+<div id="schedule-content">
+<div class="space-y-4">
+<div class="bg-white rounded-xl shadow-sm p-4">
+<div class="flex items-center justify-between pb-4">
+<button class="p-2 rounded-full hover:bg-gray-100">
+<svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<h2 class="text-md font-semibold text-gray-800">August 2024</h2>
+<button class="p-2 rounded-full hover:bg-gray-100">
+<svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-7 text-center text-sm">
+<div class="font-semibold text-gray-500 py-2">S</div>
+<div class="font-semibold text-gray-500 py-2">M</div>
+<div class="font-semibold text-gray-500 py-2">T</div>
+<div class="font-semibold text-gray-500 py-2">W</div>
+<div class="font-semibold text-gray-500 py-2">T</div>
+<div class="font-semibold text-gray-500 py-2">F</div>
+<div class="font-semibold text-gray-500 py-2">S</div>
+<div class="text-gray-400 py-2">28</div>
+<div class="text-gray-400 py-2">29</div>
+<div class="text-gray-400 py-2">30</div>
+<div class="text-gray-400 py-2">31</div>
+<div class="text-gray-800 py-2">1</div>
+<div class="text-gray-800 py-2">2</div>
+<div class="text-gray-800 py-2">3</div>
+<div class="text-gray-800 py-2">4</div>
+<div class="text-gray-800 py-2">5</div>
+<div class="text-gray-800 py-2">6</div>
+<div class="text-gray-800 py-2">7</div>
+<div class="text-gray-800 py-2">8</div>
+<div class="text-gray-800 py-2">9</div>
+<div class="text-gray-800 py-2">10</div>
+<div class="text-gray-800 py-2">11</div>
+<div class="relative py-2"><span class="text-white bg-orange-500 rounded-full w-8 h-8 flex items-center justify-center mx-auto">12</span></div>
+<div class="text-gray-800 py-2">13</div>
+<div class="text-gray-800 py-2">14</div>
+<div class="text-gray-800 py-2">15</div>
+<div class="text-gray-800 py-2">16</div>
+<div class="text-gray-800 py-2">17</div>
+<div class="text-gray-800 py-2">18</div>
+<div class="relative py-2"><span class="text-gray-800">19</span><div class="absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 bg-blue-500 rounded-full"></div></div>
+<div class="text-gray-800 py-2">20</div>
+<div class="text-gray-800 py-2">21</div>
+<div class="text-gray-800 py-2">22</div>
+<div class="text-gray-800 py-2">23</div>
+<div class="text-gray-800 py-2">24</div>
+<div class="text-gray-800 py-2">25</div>
+<div class="text-gray-800 py-2">26</div>
+<div class="text-gray-800 py-2">27</div>
+<div class="text-gray-800 py-2">28</div>
+<div class="text-gray-800 py-2">29</div>
+<div class="text-gray-800 py-2">30</div>
+<div class="text-gray-800 py-2">31</div>
+</div>
+</div>
+<h3 class="text-lg font-bold text-[var(--black)] mt-6 mb-3">Monday, August 12</h3>
+<div class="space-y-3">
+<div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100">
+<div class="bg-orange-100 text-orange-500 p-3 rounded-full">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<p class="font-semibold text-gray-800">First Day of School</p>
+<p class="text-sm text-gray-500">All day</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100">
+<div class="bg-blue-100 text-blue-600 p-3 rounded-full">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v11.494m-5.747-8.994l11.494 5.494M12 21a9 9 0 110-18 9 9 0 010 18z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<p class="font-semibold text-gray-800">Math Exam</p>
+<p class="text-sm text-gray-500">10:00 AM - 11:30 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hidden" id="attendance-content">
+<div class="space-y-4">
+<div class="flex justify-between items-center p-4 bg-white rounded-xl border border-gray-100">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 p-3 rounded-full">
+<svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<p class="font-semibold text-[var(--dark-gray)]">Arrival Time</p>
+<p class="text-sm text-[var(--medium-gray)]">08:05 AM</p>
+</div>
+</div>
+<span class="text-xs font-medium text-[var(--danger-red)] bg-red-100 px-2 py-1 rounded-full">5 min late</span>
+</div>
+<div class="flex justify-between items-center p-4 bg-white rounded-xl border border-gray-100">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 p-3 rounded-full">
+<svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<p class="font-semibold text-[var(--dark-gray)]">Total Present</p>
+<p class="text-sm text-[var(--medium-gray)]">10 days</p>
+</div>
+</div>
+<span class="text-xs font-medium text-[var(--success-green)] bg-green-100 px-2 py-1 rounded-full">On Track</span>
+</div>
+<div class="flex justify-between items-center p-4 bg-white rounded-xl border border-gray-100">
+<div class="flex items-center gap-4">
+<div class="bg-gray-100 p-3 rounded-full">
+<svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<p class="font-semibold text-[var(--dark-gray)]">Total Absent</p>
+<p class="text-sm text-[var(--medium-gray)]">1 day</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        const scheduleTab = document.getElementById('schedule-tab');
+        const attendanceTab = document.getElementById('attendance-tab');
+        const scheduleContent = document.getElementById('schedule-content');
+        const attendanceContent = document.getElementById('attendance-content');
+        scheduleTab.addEventListener('click', () => {
+            scheduleTab.classList.add('active');
+            attendanceTab.classList.remove('active');
+            scheduleContent.classList.remove('hidden');
+            attendanceContent.classList.add('hidden');
+        });
+        attendanceTab.addEventListener('click', () => {
+            attendanceTab.classList.add('active');
+            scheduleTab.classList.remove('active');
+            attendanceContent.classList.remove('hidden');
+            scheduleContent.classList.add('hidden');
+        });
+    </script>
+
+</body></html>
