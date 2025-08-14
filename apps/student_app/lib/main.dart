@@ -5,7 +5,6 @@ import 'package:smart_school/features/atendance/presentation/blocs/attendance_bl
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
-import 'package:smart_school/features/new_assignment/presentation/pages/new_assignment_page.dart';
 import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
 import 'package:smart_school/features/schedule/presentation/pages/schedule_page.dart';
 import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
@@ -16,6 +15,7 @@ import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
 import 'features/atendance/presentation/pages/attendance_page.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
+import 'features/new_assignment/presentation/pages/assignments_list_page.dart';
 import 'features/notification/presintation/pages/notification_page.dart';
 import 'injection_container.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
@@ -107,7 +107,7 @@ class MyApp extends StatelessWidget {
               '/notificationPage': (context) => NotificationPage(),
               '/settings': (context) => SettingsScreen(),
               '/schedule': (context) => SchedulePage(),
-              '/assignments': (context) => NewAssignmentPage(),
+              '/assignments': (context) => AssignmentsListPage(),
             },
           );
         },

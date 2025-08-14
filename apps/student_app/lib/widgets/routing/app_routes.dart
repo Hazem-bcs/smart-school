@@ -6,8 +6,6 @@ import '../../features/authentication/presentation/blocs/auth_bloc.dart';
 import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/splash_page.dart';
 import '../../../injection_container.dart' as di;
-import '../../features/new_assignment/presentation/blocs/new_assignment_bloc.dart';
-import '../../features/new_assignment/presentation/pages/new_assignment_page.dart';
 
 class AppRoutes {
   // Route names
