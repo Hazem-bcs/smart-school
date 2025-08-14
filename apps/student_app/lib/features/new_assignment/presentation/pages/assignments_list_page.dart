@@ -1,5 +1,3 @@
-// lib/presentation/pages/assignments_list_page.dart
-
 import 'package:flutter/material.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/usecases/get_assignments_usecase.dart';
@@ -7,7 +5,7 @@ import '../../data/repositories_impl/assignment_repository_impl.dart';
 import '../../data/data_sources/assignment_remote_data_source.dart';
 import '../widgets/assignment_card.dart';
 
-// enum لتحديد حالة الفلترة
+
 enum AssignmentFilter { all, graded, ungraded }
 
 class AssignmentsListPage extends StatefulWidget {

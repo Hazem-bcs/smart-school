@@ -15,6 +15,8 @@ import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
 import 'features/atendance/presentation/pages/attendance_page.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
+import 'features/new_assignment/domain/entities/assignment_entity.dart';
+import 'features/new_assignment/presentation/pages/assignment_details_page.dart';
 import 'features/new_assignment/presentation/pages/assignments_list_page.dart';
 import 'features/notification/presintation/pages/notification_page.dart';
 import 'injection_container.dart' as di;
@@ -108,6 +110,12 @@ class MyApp extends StatelessWidget {
               '/settings': (context) => SettingsScreen(),
               '/schedule': (context) => SchedulePage(),
               '/assignments': (context) => AssignmentsListPage(),
+              '/assignment_details': (context) {
+                final assignment =
+                    ModalRoute.of(context)!.settings.arguments
+                        as AssignmentEntity;
+                return AssignmentDetailsPage(assignment: assignment);
+              },
             },
           );
         },
