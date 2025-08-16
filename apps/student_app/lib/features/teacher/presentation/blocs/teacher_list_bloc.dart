@@ -16,6 +16,7 @@ class TeacherListBloc extends Bloc<TeacherListEvent, TeacherListState> {
   Future<void> _onGetTeacherList(GetTeacherList event, Emitter<TeacherListState> emit) async {
     emit(TeacherListLoading());
     final result = await teacherListUseCase(event.studentId);
+    print('i am in bloc now');
     result.fold(
       (failure) => emit(TeacherListError(message: failure.message)),
       (teacherList) => emit(TeacherListLoaded(teacherList: teacherList)),

@@ -9,6 +9,7 @@ import 'data/data_sources/auth_remote_data_source.dart';
 import 'domain/auth_repository.dart';
 import 'domain/usecases/cheakauthstatus_usecase.dart';
 import 'domain/usecases/login_usecase.dart';
+import 'domain/usecases/logout_usecase.dart';
 
 Future<void> setupAuthDependencies(GetIt getIt) async {
   // --------------------------  D A T A S O U R C E S   -----------------------------------
@@ -30,5 +31,5 @@ Future<void> setupAuthDependencies(GetIt getIt) async {
   // --------------------------  U S E C A S E S   -----------------------------------
   getIt.registerFactory(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerFactory(() => CheckAuthStatusUseCase(getIt<AuthRepository>()));
-
+  getIt.registerFactory(() => LogoutUseCase(getIt<AuthRepository>()));
 }

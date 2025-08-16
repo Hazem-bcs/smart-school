@@ -2,6 +2,7 @@ import 'package:auth/domain/auth_repository.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:smart_school/features/atendance/presentation/blocs/attendance_bloc.dart';
+import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
@@ -92,7 +93,7 @@ class MyApp extends StatelessWidget {
             locale: context.locale,
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
-            home: const HomePage(),
+            home: SplashPage(),
             routes: {
               '/onBoarding': (context) => OnBoardingPage(),
               '/login': (context) => LoginPage(),

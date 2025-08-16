@@ -29,6 +29,7 @@ class _TeachersPageState extends State<TeachersPage> {
             return const Center(child: AppLoadingWidget());
           }
           if (state is TeacherListError) {
+            print('hi from teacher page');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

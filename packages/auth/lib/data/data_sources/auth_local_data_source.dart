@@ -1,13 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 abstract class AuthLocalDataSource {
   Future<void> cacheId(int token);
   Future<int?> getId();
+  Future<void> clearId();
   // on Boarding
   Future<bool> hasSeenOnboarding();
   Future<void> cacheOnboardingStatus();
-
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
@@ -23,6 +22,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<int?> getId() async {
     return prefs.getInt('user_id');
+  }
+
+  @override
+  Future<void> clearId() async {
+    await prefs.remove('user_id');
   }
 
   @override

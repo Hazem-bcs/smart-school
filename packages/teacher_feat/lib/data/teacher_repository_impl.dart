@@ -32,6 +32,7 @@ class TeacherRepositoryImpl extends TeacherRepository {
   Future<Either<Failure, List<TeacherEntity>>> getTeacherList() async {
     if (await networkInfo.isConnected) {
       final int studentId = await localDataSource.getId() ?? 0;
+      print('studentId: $studentId');
       final result = await remoteDataSource.getTeacherList(studentId);
       return result.fold(
               (failure) => left(failure),
@@ -40,6 +41,7 @@ class TeacherRepositoryImpl extends TeacherRepository {
           }
       );
     } else {
+            print('here i am in repository');
       return Left(ConnectionFailure(message: 'Connection Error'));
     }
   }

@@ -25,5 +25,12 @@ final class LoginFailure extends AuthState {
   final String message;
 
   LoginFailure({required this.message});
+}
 
+final class LogoutSuccess extends AuthState {}
+
+final class LogoutFailure extends AuthState {
+  final String message;
+
+  LogoutFailure({required this.message});
 }

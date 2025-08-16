@@ -1,11 +1,12 @@
 import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
+import 'package:auth/domain/usecases/logout_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../features/authentication/presentation/blocs/auth_bloc.dart';
-import '../../features/authentication/presentation/pages/login_page.dart';
-import '../../features/authentication/presentation/pages/splash_page.dart';
-import '../../../injection_container.dart' as di;
+import '../features/authentication/presentation/blocs/auth_bloc.dart';
+import '../features/authentication/presentation/pages/login_page.dart';
+import '../features/authentication/presentation/pages/splash_page.dart';
+import '../../injection_container.dart' as di;
 
 class AppRoutes {
   // Route names
@@ -44,7 +45,7 @@ class AppRoutes {
                     (_) => AuthBloc(
                       checkAuthStatusUseCase:
                           di.getIt<CheckAuthStatusUseCase>(),
-                      loginUseCase: di.getIt<LoginUseCase>(),
+                      loginUseCase: di.getIt<LoginUseCase>(), logoutUseCase: di.getIt<LogoutUseCase>(),
                       // logoutUseCase: di.getIt<LogoutUseCase>(),
                     ),
                 child: const LoginPage(),

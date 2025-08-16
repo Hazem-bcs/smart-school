@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/packages/homework/melos_homework.iml" filepath="$PROJECT_DIR$/packages/homework/melos_homework.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/notification/melos_notification.iml" filepath="$PROJECT_DIR$/packages/notification/melos_notification.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/parent_app/melos_parent_app.iml" filepath="$PROJECT_DIR$/apps/parent_app/melos_parent_app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/packages/password/melos_password.iml" filepath="$PROJECT_DIR$/packages/password/melos_password.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/profile/melos_profile.iml" filepath="$PROJECT_DIR$/packages/profile/melos_profile.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/resource/melos_resource.iml" filepath="$PROJECT_DIR$/packages/resource/melos_resource.iml" />
       <module fileurl="file://$PROJECT_DIR$/apps/student_app/melos_smart_school.iml" filepath="$PROJECT_DIR$/apps/student_app/melos_smart_school.iml" />

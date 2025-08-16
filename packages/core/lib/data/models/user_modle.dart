@@ -23,9 +23,26 @@ class UserModel{
       id: json['id'] as int?,
       name: json['name'] as String?,
       email: json['email'] as String,
-      password: json['password'] as String,
+      password: json['password'] as String? ?? '',
       profilePhotoUrl: json['profile_photo_url'] as String?,
-      token: json['token'] as String?, // 'token' is added to user object in PHP login
+      token: json['token'] as String?,
+    );
+  }
+
+  // Factory method for Laravel API response
+  factory UserModel.fromLaravelResponse(Map<String, dynamic> response) {
+    final data = response['data'] as Map<String, dynamic>?;
+    if (data == null) {
+      throw Exception('Invalid response format');
+    }
+    
+    return UserModel(
+      id: data['id'] as int?,
+      name: data['name'] as String?,
+      email: data['email'] as String,
+      password: '', // لا نستقبل كلمة المرور من السيرفر
+      profilePhotoUrl: null, // يمكن إضافته لاحقاً
+      token: null, // يمكن إضافته لاحقاً
     );
   }
 

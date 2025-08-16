@@ -18,7 +18,7 @@ class ZoomMeetingsCardWidget extends StatelessWidget {
         SnackBar(
           content: Text('Could not launch Zoom meeting: ${meeting.zoomLink}'),
           backgroundColor: Colors.red,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(15)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           duration: const Duration(seconds: 3),
         ),
       );

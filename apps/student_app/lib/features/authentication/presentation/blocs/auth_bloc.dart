@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
+import 'package:auth/domain/usecases/logout_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -13,12 +14,17 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
   final LoginUseCase loginUseCase;
+  final LogoutUseCase logoutUseCase;
 
-  AuthBloc({required this.checkAuthStatusUseCase,required this.loginUseCase}) : super(AuthInitial()) {
+  AuthBloc({
+    required this.checkAuthStatusUseCase,
+    required this.loginUseCase,
+    required this.logoutUseCase,
+  }) : super(AuthInitial()) {
     on<CheckAuthenticationStatusEvent>(_onCheckAuthenticationStatus);
     on<LoginEvent>(_onLogin);
+    on<LogoutEvent>(_onLogout);
   }
-
 
   // this for splash screen
   Future<void> _onCheckAuthenticationStatus(CheckAuthenticationStatusEvent event, Emitter<AuthState> emit) async {
@@ -52,6 +58,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       },
           (success) {
         emit(Authenticated());
+      },
+    );
+  }
+
+  Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
+    emit(AuthChecking());
+
+    final result = await logoutUseCase();
+
+    result.fold(
+      (failure) {
+        emit(LogoutFailure(message: failure.message));
+      },
+      (_) {
+        emit(LogoutSuccess());
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
+import 'package:auth/domain/usecases/logout_usecase.dart';
 import 'package:auth/injection_container.dart' as auth_di;
 import 'package:core/injection_container.dart' as core_di;
 import 'package:dues/domain/usecases/get_my_dues.dart';
@@ -85,6 +86,7 @@ Future<void> setupDependencies() async {
     () => AuthBloc(
       checkAuthStatusUseCase: getIt<CheckAuthStatusUseCase>(),
       loginUseCase: getIt<LoginUseCase>(),
+      logoutUseCase: getIt<LogoutUseCase>(),
     ),
   );
   getIt.registerFactory(

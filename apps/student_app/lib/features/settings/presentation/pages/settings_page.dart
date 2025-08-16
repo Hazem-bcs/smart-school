@@ -5,12 +5,11 @@ import 'package:core/theme/index.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_state.dart';
 import 'package:core/blocs/theme/theme_event.dart';
-import 'package:smart_school/widgets/routing/navigation_extension.dart';
+import 'package:smart_school/routing/navigation_extension.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
-import '../blocs/settings_bloc.dart';
-import '../blocs/settings_event.dart';
+import '../../../authentication/presentation/blocs/auth_bloc.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/settings_section.dart';
 
@@ -89,59 +88,79 @@ class _SettingsScreenState extends State<SettingsScreen>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: _buildAppBar(theme),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: ResponsiveContent(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  ProfileCard(
-                    theme: theme,
-                    isDark: isDark,
-                    scaleAnimation: _scaleAnimation,
-                    onEditProfile: () {
-                      Navigator.pushNamed(context, '/profilePage');
-                      // context.goToEditProfile();
-                    },
-                  ),
-                  SettingsSection(
-                    theme: theme,
-                    isDark: isDark,
-                    notificationsEnabled: _notificationsEnabled,
-                    onNotificationsChanged: (value) {
-                      setState(() {
-                        _notificationsEnabled = value;
-                      });
-                    },
-                    isEnglish: _isEnglish,
-                    onLanguageToggle: _toggleLanguage,
-                    onThemeToggle: () {
-                      context.read<ThemeBloc>().add(ToggleTheme());
-                    },
-                  ),
-                  _buildSupportSection(theme, isDark),
-                  SizedBox(
-                    height: ResponsiveHelper.getSpacing(
-                      context,
-                      mobile: 80,
-                      tablet: 100,
-                      desktop: 120,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is LogoutSuccess) {
+          // التوجيه إلى صفحة تسجيل الدخول
+          Navigator.pushNamedAndRemoveUntil(
+            context, 
+            '/login', 
+            (route) => false,
+          );
+        } else if (state is LogoutFailure) {
+          // عرض رسالة خطأ
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: _buildAppBar(theme),
+        body: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: ResponsiveContent(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    ProfileCard(
+                      theme: theme,
+                      isDark: isDark,
+                      scaleAnimation: _scaleAnimation,
+                      onEditProfile: () {
+                        Navigator.pushNamed(context, '/profilePage');
+                        // context.goToEditProfile();
+                      },
                     ),
-                  ),
-                ],
+                    SettingsSection(
+                      theme: theme,
+                      isDark: isDark,
+                      notificationsEnabled: _notificationsEnabled,
+                      onNotificationsChanged: (value) {
+                        setState(() {
+                          _notificationsEnabled = value;
+                        });
+                      },
+                      isEnglish: _isEnglish,
+                      onLanguageToggle: _toggleLanguage,
+                      onThemeToggle: () {
+                        context.read<ThemeBloc>().add(ToggleTheme());
+                      },
+                    ),
+                    _buildSupportSection(theme, isDark),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(
+                        context,
+                        mobile: 80,
+                        tablet: 100,
+                        desktop: 120,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: SharedBottomNavigation(
-        currentIndex: 3, onTap: (int index) {  }, // Settings index
+        bottomNavigationBar: SharedBottomNavigation(
+          currentIndex: 3, onTap: (int index) {  }, // Settings index
+        ),
       ),
     );
   }
@@ -604,7 +623,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   // 1. إغلاق مربع الحوار أولاً
                   Navigator.pop(context);
                   // 2. إرسال حدث تسجيل الخروج إلى الـ BLoC
-                  context.read<SettingsBloc>().add(const LogoutButtonPressed());
+                  context.read<AuthBloc>().add(LogoutEvent());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
@@ -639,24 +658,4 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  void _onNavItemTap(int index) {
-    switch (index) {
-      case 0: // Dashboard
-        context.goToHome(className: 'Default Class');
-        break;
-      // case 1: // Assignments
-      //   Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(builder: (context) => const AssignmentsPage()),
-      //   );
-      //   break;
-      // case 2: // Schedule
-      //   Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(builder: (context) => const SchedulePage()),
-      //   );
-      //   break;
-      case 3: // Settings
-        // Already on Settings page
-        break;
-    }
-  }
 }

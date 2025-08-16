@@ -462,14 +462,6 @@ xml
 3.2
 file:///C:/Users/ASUS/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.5.0/
 file:///C:/Users/ASUS/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.5.0/lib/
-core
-3.7
-file:///C:/Users/ASUS/Desktop/smart_school/packages/core/
-file:///C:/Users/ASUS/Desktop/smart_school/packages/core/lib/
-password
-3.0
-file:///C:/Users/ASUS/Desktop/smart_school/packages/password/
-file:///C:/Users/ASUS/Desktop/smart_school/packages/password/lib/
 sky_engine
 3.7
 file:///C:/dev/flutter/bin/cache/pkg/sky_engine/
@@ -490,4 +482,12 @@ flutter_web_plugins
 3.7
 file:///C:/dev/flutter/packages/flutter_web_plugins/
 file:///C:/dev/flutter/packages/flutter_web_plugins/lib/
+core
+3.7
+file:///c:/Users/ASUS/Desktop/smart_school/packages/core/
+file:///c:/Users/ASUS/Desktop/smart_school/packages/core/lib/
+password
+3.0
+file:///c:/Users/ASUS/Desktop/smart_school/packages/password/
+file:///c:/Users/ASUS/Desktop/smart_school/packages/password/lib/
 2

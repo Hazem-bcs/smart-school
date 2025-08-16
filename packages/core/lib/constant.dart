@@ -1,6 +1,6 @@
 class Constants {
-  static const String baseUrl = 'https://api.example.com'; // عدل الرابط حسب بيئة مشروعك
-  static String loginEndpoint = '/api/auth/login';
+  static const String baseUrl = 'http://10.17.49.164:8000'; // Laravel backend URL
+  static String loginEndpoint = '/api/login';
   static String getHomeWorkListEndpoint = '/auth/login';
   static String getSubjectEndpoint = '/auth/login';
   static String getSubjectListEndpoint = '/auth/login';

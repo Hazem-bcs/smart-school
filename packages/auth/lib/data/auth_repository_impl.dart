@@ -52,6 +52,27 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> logout() async {
+    final userId = await localDataSource.getId();
+    try {
+      // محاولة تسجيل الخروج من السيرفر
+      final remoteResult = await remoteDataSource.logout(userId);
+      
+      // مسح البيانات المحلية بغض النظر عن نتيجة السيرفر
+      await localDataSource.clearId();
+      
+      return remoteResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    } catch (e) {
+      // في حالة حدوث خطأ، نمسح البيانات المحلية على أي حال
+      await localDataSource.clearId();
+      return Left(UnknownFailure(message: 'Logout failed: ${e.toString()}'));
+    }
+  }
+
+  @override
   Future<bool> hasSeenOnboarding() async {
     return await localDataSource.hasSeenOnboarding();
   }
