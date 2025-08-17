@@ -1,30 +1,84 @@
+import 'package:equatable/equatable.dart';
+
 enum SubmissionStatus {
   notSubmitted,
+  submitted,
   graded,
 }
 
-class AssignmentEntity {
+ class AssignmentEntity extends Equatable {
+  final String assignmentId;
   final String title;
   final String description;
   final String classId;
   final DateTime dueDate;
   final int points;
-  final String assignmentId;
-  final List<String> teacherAttachments;
-  final int? grade;
   final SubmissionStatus submissionStatus;
+  final int? grade;
+  final String? teacherNote; // ✅ NEW: Field for teacher's note
   final DateTime createdAt;
+  final List<String> teacherAttachments;
+  final String? teacherImageAttachment;
 
-  AssignmentEntity({
+  const AssignmentEntity({
+    required this.assignmentId,
     required this.title,
     required this.description,
     required this.classId,
     required this.dueDate,
     required this.points,
-    required this.assignmentId,
-    required this.teacherAttachments,
-    this.grade,
     this.submissionStatus = SubmissionStatus.notSubmitted,
+    this.grade,
+    this.teacherNote, // ✅ NEW: Add to constructor
     required this.createdAt,
+    this.teacherAttachments = const [],
+    this.teacherImageAttachment,
   });
+
+  // Method to create a copy of the object with some changed properties
+  AssignmentEntity copyWith({
+    String? assignmentId,
+    String? title,
+    String? description,
+    String? classId,
+    DateTime? dueDate,
+    int? points,
+    SubmissionStatus? submissionStatus,
+    int? grade,
+    String? teacherNote,
+    DateTime? createdAt,
+    List<String>? teacherAttachments,
+    String? teacherImageAttachment,
+  }) {
+    return AssignmentEntity(
+      assignmentId: assignmentId ?? this.assignmentId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      classId: classId ?? this.classId,
+      dueDate: dueDate ?? this.dueDate,
+      points: points ?? this.points,
+      submissionStatus: submissionStatus ?? this.submissionStatus,
+      grade: grade ?? this.grade,
+      teacherNote: teacherNote ?? this.teacherNote,
+      createdAt: createdAt ?? this.createdAt,
+      teacherAttachments: teacherAttachments ?? this.teacherAttachments,
+      teacherImageAttachment: teacherImageAttachment ?? this.teacherImageAttachment,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    assignmentId,
+    title,
+    description,
+    classId,
+    dueDate,
+    points,
+    submissionStatus,
+    grade,
+    teacherNote, // ✅ NEW: Add to props
+    createdAt,
+    teacherAttachments,
+    teacherImageAttachment,
+  ];
 }

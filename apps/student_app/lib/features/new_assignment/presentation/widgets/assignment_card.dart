@@ -1,4 +1,3 @@
-// lib/presentation/widgets/assignment_card.dart
 import 'package:flutter/material.dart';
 import '../../domain/entities/assignment_entity.dart';
 
@@ -14,16 +13,7 @@ class AssignmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // تحديد لون الشارة الجانبية بناءً على حالة المهمة
-    Color statusColor = Colors.transparent;
-    if (assignment.submissionStatus == SubmissionStatus.graded) {
-      statusColor = Colors.green;
-    } else {
-      // كل ما هو غير "graded" يعتبر "notSubmitted" (أي "ungraded")
-      statusColor = Colors.blue; // لون لـ "غير مصححة"
-    }
-
-    // تحديد إذا كانت المهمة جديدة (خلال 48 ساعة من الإنشاء)
+    Color statusColor = _getStatusColor();
     final isNew = DateTime.now().difference(assignment.createdAt).inHours <= 48;
 
     return GestureDetector(
@@ -34,7 +24,6 @@ class AssignmentCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Row(
           children: [
-            // الشارة الجانبية للحالة
             Container(
               width: 6,
               height: 80,
@@ -54,7 +43,6 @@ class AssignmentCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        // عنوان المهمة
                         Expanded(
                           child: Text(
                             assignment.title,
@@ -65,7 +53,6 @@ class AssignmentCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        // إيموجي المهمة الجديدة
                         if (isNew)
                           const Padding(
                             padding: EdgeInsets.only(left: 8.0),
@@ -74,7 +61,6 @@ class AssignmentCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    // حالة المهمة أو العلامة
                     Text(
                       _getStatusText(),
                       style: TextStyle(
@@ -83,7 +69,6 @@ class AssignmentCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // تاريخ التسليم
                     Text(
                       'Due: ${_formatDate(assignment.dueDate)}',
                       style: const TextStyle(color: Colors.grey),
@@ -101,9 +86,21 @@ class AssignmentCard extends StatelessWidget {
   String _getStatusText() {
     switch (assignment.submissionStatus) {
       case SubmissionStatus.notSubmitted:
-        return 'Not Graded';
+        return 'Not Submitted';
+      case SubmissionStatus.submitted:
+        return 'Submitted';
       case SubmissionStatus.graded:
         return 'Graded: ${assignment.grade}/${assignment.points}';
+    }
+  }
+
+  Color _getStatusColor() {
+    if (assignment.submissionStatus == SubmissionStatus.graded) {
+      return Colors.green;
+    } else if (assignment.submissionStatus == SubmissionStatus.submitted) {
+      return Colors.blue;
+    } else {
+      return Colors.red;
     }
   }
 

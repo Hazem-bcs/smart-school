@@ -1,46 +1,55 @@
 import '../../domain/entities/assignment_entity.dart';
 
 class AssignmentModel extends AssignmentEntity {
-  AssignmentModel({
+  const AssignmentModel({
+    required super.assignmentId,
     required super.title,
     required super.description,
     required super.classId,
     required super.dueDate,
     required super.points,
-    required super.assignmentId,
-    required super.teacherAttachments,
-    super.grade,
     super.submissionStatus,
+    super.grade,
+    super.teacherNote,
     required super.createdAt,
+    super.teacherAttachments,
+    super.teacherImageAttachment,
   });
 
   factory AssignmentModel.fromJson(Map<String, dynamic> json) {
     return AssignmentModel(
-      title: json['title'],
-      description: json['description'],
-      classId: json['classId'],
-      dueDate: DateTime.parse(json['dueDate']),
-      points: json['points'],
-      assignmentId: json['assignmentId'],
-      teacherAttachments: List<String>.from(json['teacherAttachments']),
-      grade: json['grade'],
-      submissionStatus: SubmissionStatus.values[json['submissionStatus']],
-      createdAt: DateTime.parse(json['createdAt']),
+      assignmentId: json['assignmentId'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      classId: json['classId'] as String,
+      dueDate: DateTime.parse(json['dueDate'] as String),
+      points: json['points'] as int,
+      submissionStatus: SubmissionStatus.values[json['submissionStatus'] as int],
+      grade: json['grade'] as int?,
+      teacherNote: json['teacherNote'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      teacherAttachments: (json['teacherAttachments'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+          [],
+      teacherImageAttachment: json['teacherImageAttachment'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'assignmentId': assignmentId,
       'title': title,
       'description': description,
       'classId': classId,
       'dueDate': dueDate.toIso8601String(),
       'points': points,
-      'assignmentId': assignmentId,
-      'teacherAttachments': teacherAttachments,
-      'grade': grade,
       'submissionStatus': submissionStatus.index,
+      'grade': grade,
+      'teacherNote': teacherNote,
       'createdAt': createdAt.toIso8601String(),
+      'teacherAttachments': teacherAttachments,
+      'teacherImageAttachment': teacherImageAttachment,
     };
   }
 }
