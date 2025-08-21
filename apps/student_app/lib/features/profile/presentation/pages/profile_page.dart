@@ -1,3 +1,4 @@
+import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_strings.dart';
 import 'package:core/theme/constants/colors.dart';
 import 'package:smart_school/features/profile/presentation/pages/edit_profile_page.dart';
@@ -47,19 +48,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           const SizedBox(height: 20),
                           // Profile Picture
                           AppAvatarWidget(
-                            imageUrl : state.userEntity.profilePhotoUrl ??
-                            "assets/images/img.png"      ,
+                            imageUrl:
+                                state.userEntity.profilePhotoUrl ??
+                                "assets/images/img.png",
                             radius: 70,
                           ),
                           const SizedBox(height: 15),
                           // User Name
                           Text(
-                            "${state.userEntity.name}\nlevel" ,
+                            "${state.userEntity.name}\nlevel",
                             style: Theme.of(
                               context,
                             ).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: primaryColor,
+                              color: AppColors.primary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -77,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             context,
                             icon: Icons.phone,
                             title: 'Phone',
-                            subtitle: state.userEntity.email ,
+                            subtitle: state.userEntity.email,
                           ),
                           const SizedBox(height: 15),
                           _buildInfoCard(
@@ -104,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             label: const Text('Edit Profile'),
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: primaryColor,
+                              backgroundColor: AppColors.primary,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30,
                                 vertical: 12,
@@ -138,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.all(18.0),
         child: Row(
           children: [
-            Icon(icon, size: 28, color: primaryColor),
+            Icon(icon, size: 28, color: AppColors.primary),
             const SizedBox(width: 20),
             Expanded(
               child: Column(

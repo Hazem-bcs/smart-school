@@ -1,4 +1,5 @@
 import 'package:core/domain/entities/user_entity.dart';
+import 'package:core/theme/constants/app_colors.dart';
 import '../../../../widgets/app_exports.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -19,13 +20,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final XFile? pickedFilGallery = await _picker.pickImage(
+    final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
     );
 
-    if (pickedFilGallery != null) {
+    if (pickedFile != null) {
       setState(() {
-        _pickedImageFile = File(pickedFilGallery.path);
+        _pickedImageFile = File(pickedFile.path);
       });
     }
   }
@@ -57,7 +58,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: ListView(
             children: [
               Center(
-                child:AppAvatarWidget(imageUrl:  "assets/images/user_3.png",radius: 60,),
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage:
+                          _pickedImageFile != null
+                              ? FileImage(_pickedImageFile!) as ImageProvider
+                              : AssetImage("assets/images/user_3.png"),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: _pickImage,
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.white,
+                          child: Icon(Icons.camera_alt, color: primaryColor),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -109,7 +132,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: primaryColor,
+                  backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
