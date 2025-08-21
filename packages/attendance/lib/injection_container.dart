@@ -6,6 +6,8 @@ import 'data/data_sources/attendance_remote_data_source.dart';
 import 'domain/attendance_repository.dart';
 import 'domain/usecases/get_monthly_attendance_use_case.dart';
 import 'domain/usecases/get_attendance_details_use_case.dart';
+import 'presentation/blocs/attendance_bloc.dart';
+import 'presentation/blocs/attendance_details_bloc.dart';
 
 Future<void> setupAttendanceDependencies(GetIt getIt) async {
   // Data sources
@@ -27,5 +29,17 @@ Future<void> setupAttendanceDependencies(GetIt getIt) async {
   );
   getIt.registerLazySingleton(
     () => GetAttendanceDetailsUseCase(getIt<AttendanceRepository>()),
+  );
+
+  // BLoCs
+  getIt.registerFactory(
+    () => AttendanceBloc(
+      getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => AttendanceDetailsBloc(
+      getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
+    ),
   );
 } 

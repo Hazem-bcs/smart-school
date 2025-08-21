@@ -8,8 +8,4 @@ class LoadMonthlyAttendance extends AttendanceEvent {
   LoadMonthlyAttendance(this.year);
 }
 
-class LoadAttendanceDetails extends AttendanceEvent {
-  final int year;
-  final int month;
-  LoadAttendanceDetails(this.year, this.month);
-}
+

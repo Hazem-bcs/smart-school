@@ -98,6 +98,23 @@
   "lbl_lost_internet" :  "فقدت الاتصال بالانترنت",
   "lbl_profile_picture" : "إضافة صورة للحساب",
   "something_went_wrong": "حدث خطأ ما",
-  "lbl_has_internet" :  "استعدت الاتصال بالانترنت"
-
+  "lbl_has_internet" :  "استعدت الاتصال بالانترنت",
+  
+  "attendance_details": "تفاصيل الحضور",
+  "attendance_overview": "نظرة عامة على الحضور",
+  "attendance_rate": "معدل الحضور",
+  "attendance_percentage": "نسبة الحضور",
+  "total_days": "إجمالي الأيام",
+  "daily_attendance": "الحضور اليومي",
+  "no_data": "لا توجد بيانات",
+  "loading_attendance_details": "جاري تحميل تفاصيل الحضور...",
+  "error_loading_details": "خطأ في تحميل التفاصيل",
+  "retry": "إعادة المحاولة",
+  "total_present": "إجمالي الحضور",
+  "total_absent": "إجمالي الغياب",
+  "attendance_summary": "ملخص الحضور",
+  "loading_attendance": "جاري تحميل الحضور...",
+  "error_loading_data": "خطأ في تحميل البيانات",
+  "no_attendance_data": "لا توجد بيانات حضور",
+  "tap_to_load_attendance": "اضغط لتحميل الحضور"
 }

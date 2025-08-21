@@ -98,5 +98,23 @@
   "lbl_passwords_must_matched" : "Passwords does not match",
   "lbl_check_internet" :  "Please check your internet connection",
   "lbl_lost_internet" :  "you lost the internet connection",
-  "lbl_has_internet" :  "you are connected to the internet"
+  "lbl_has_internet" :  "you are connected to the internet",
+  
+  "attendance_details": "Attendance Details",
+  "attendance_overview": "Attendance Overview",
+  "attendance_rate": "Attendance Rate",
+  "attendance_percentage": "Attendance Percentage",
+  "total_days": "Total Days",
+  "daily_attendance": "Daily Attendance",
+  "no_data": "No Data",
+  "loading_attendance_details": "Loading attendance details...",
+  "error_loading_details": "Error loading details",
+  "retry": "Retry",
+  "total_present": "Total Present",
+  "total_absent": "Total Absent",
+  "attendance_summary": "Attendance Summary",
+  "loading_attendance": "Loading attendance...",
+  "error_loading_data": "Error loading data",
+  "no_attendance_data": "No attendance data",
+  "tap_to_load_attendance": "Tap to load attendance"
 }

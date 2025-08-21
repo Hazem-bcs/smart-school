@@ -9,7 +9,7 @@ abstract class AttendanceRemoteDataSource {
 class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
   final DioClient dioClient;
 
-  AttendanceRemoteDataSourceImpl({required this.dioClient});
+  const AttendanceRemoteDataSourceImpl({required this.dioClient});
 
   @override
   Future<List<MonthlyAttendanceModel>> getMonthlyAttendance(int year) async {
@@ -24,14 +24,13 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
       await Future.delayed(const Duration(milliseconds: 500));
 
       return [
-
-         MonthlyAttendanceModel(monthName: 'January', attendanceCount: 15, absenceCount: 16, monthNumber: 1),
-         MonthlyAttendanceModel(monthName: 'February', attendanceCount: 20, absenceCount: 8, monthNumber: 2),
-         MonthlyAttendanceModel(monthName: 'March', attendanceCount: 22, absenceCount: 9, monthNumber: 3),
-         MonthlyAttendanceModel(monthName: 'April', attendanceCount: 24, absenceCount: 6, monthNumber: 4),
-         MonthlyAttendanceModel(monthName: 'May', attendanceCount: 25, absenceCount: 6, monthNumber: 5),
-         MonthlyAttendanceModel(monthName: 'June', attendanceCount: 25, absenceCount: 5, monthNumber: 6),
-         MonthlyAttendanceModel(monthName: 'July', attendanceCount: 26, absenceCount: 5, monthNumber: 7),
+        const MonthlyAttendanceModel(monthName: 'January', attendanceCount: 15, absenceCount: 16, monthNumber: 1),
+        const MonthlyAttendanceModel(monthName: 'February', attendanceCount: 20, absenceCount: 8, monthNumber: 2),
+        const MonthlyAttendanceModel(monthName: 'March', attendanceCount: 22, absenceCount: 9, monthNumber: 3),
+        const MonthlyAttendanceModel(monthName: 'April', attendanceCount: 24, absenceCount: 6, monthNumber: 4),
+        const MonthlyAttendanceModel(monthName: 'May', attendanceCount: 25, absenceCount: 6, monthNumber: 5),
+        const MonthlyAttendanceModel(monthName: 'June', attendanceCount: 25, absenceCount: 5, monthNumber: 6),
+        const MonthlyAttendanceModel(monthName: 'July', attendanceCount: 26, absenceCount: 5, monthNumber: 7),
       ];
     } catch (e) {
       throw Exception('Failed to load monthly attendance: $e');
@@ -47,13 +46,13 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
 
       // Mock data for now
       await Future.delayed(const Duration(milliseconds: 500));
-      return AttendanceModel(
+      return const AttendanceModel(
         year: 2025,
-        month: month,
+        month: 1,
         attendanceCount: 25,
-        absenceCount: 5,
-        presentDays: [1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 29, 30],
-        absentDays: [6, 8, 13, 20, 27],
+        absenceCount: 3,
+        presentDays: [1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 29, 30],
+        absentDays: [5, 13, 27],
       );
     } catch (e) {
       throw Exception('Failed to load attendance details: $e');

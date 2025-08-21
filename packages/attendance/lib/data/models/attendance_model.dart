@@ -2,7 +2,7 @@ import 'dart:convert';
 import '../../domain/entities/attendance_entity.dart';
 
 class AttendanceModel extends AttendanceEntity {
-  AttendanceModel({
+  const AttendanceModel({
     required super.year,
     required super.month,
     required super.attendanceCount,
@@ -82,7 +82,7 @@ class AttendanceModel extends AttendanceEntity {
 }
 
 class MonthlyAttendanceModel extends MonthlyAttendanceEntity {
-  MonthlyAttendanceModel({
+  const MonthlyAttendanceModel({
     required super.monthName,
     required super.attendanceCount,
     required super.absenceCount,

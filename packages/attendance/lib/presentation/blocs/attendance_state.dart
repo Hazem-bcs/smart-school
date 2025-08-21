@@ -12,10 +12,7 @@ class MonthlyAttendanceLoaded extends AttendanceState {
   MonthlyAttendanceLoaded(this.monthlyAttendance);
 }
 
-class AttendanceDetailsLoaded extends AttendanceState {
-  final AttendanceEntity attendanceDetails;
-  AttendanceDetailsLoaded(this.attendanceDetails);
-}
+
 
 class AttendanceError extends AttendanceState {
   final String message;

@@ -1,7 +1,9 @@
+import 'package:attendance/presentation/blocs/attendance_bloc.dart';
+import 'package:attendance/presentation/blocs/attendance_details_bloc.dart';
+import 'package:attendance/presentation/pages/attendance_page.dart';
 import 'package:auth/domain/auth_repository.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:smart_school/features/atendance/presentation/blocs/attendance_bloc.dart';
 import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
@@ -14,7 +16,6 @@ import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
-import 'features/atendance/presentation/pages/attendance_page.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
 import 'features/new_assignment/domain/entities/assignment_entity.dart';
 import 'features/new_assignment/presentation/pages/assignment_details_page.dart';
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ResourceBloc>()),
         BlocProvider(create: (context) => di.getIt<ChatBloc>()),
         BlocProvider(create: (context) => di.getIt<AttendanceBloc>()),
+        BlocProvider(create: (context) => di.getIt<AttendanceDetailsBloc>()),
         BlocProvider(create: (context) => di.getIt<ZoomMeetingsBloc>()),
       ],
       child: Sizer(

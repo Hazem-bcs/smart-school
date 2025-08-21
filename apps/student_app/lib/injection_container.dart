@@ -25,8 +25,6 @@ import 'package:teacher_feat/domain/use_cases/get_teacher_by_id_use_case.dart';
 import 'package:teacher_feat/domain/use_cases/get_teacher_list_use_case.dart';
 import 'package:teacher_feat/injection_container.dart' as teacher_di;
 import 'package:attendance/injection_container.dart' as attendance_di;
-import 'package:attendance/domain/usecases/get_monthly_attendance_use_case.dart';
-import 'package:attendance/domain/usecases/get_attendance_details_use_case.dart';
 
 import 'features/ai_tutor/data/datasources/ai_tutor_remote_datasource.dart';
 import 'features/ai_tutor/data/repositories/ai_tutor_repository_impl.dart';
@@ -44,7 +42,6 @@ import 'features/subject/presentation/blocs/subject/subject_bloc.dart';
 import 'features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
-import 'features/atendance/presentation/blocs/attendance_bloc.dart';
 import 'features/zoom/data/datasources/zoom_meetings_remote_data_source.dart';
 import 'features/zoom/data/repositories/zoom_meetings_repository_impl.dart';
 import 'package:dio/dio.dart';
@@ -123,12 +120,7 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(
     () => ChatBloc(getGeminiResponse: getIt<SendChatMessageUseCase>()),
   );
-  getIt.registerFactory(
-    () => AttendanceBloc(
-      getMonthlyAttendanceUseCase: getIt<GetMonthlyAttendanceUseCase>(),
-      getAttendanceDetailsUseCase: getIt<GetAttendanceDetailsUseCase>(),
-    ),
-  );
+  // Attendance Bloc is now registered in the attendance package
   getIt.registerFactory(
     () => TeacherListBloc(teacherListUseCase: getIt<GetTeacherListUseCase>()),
   );

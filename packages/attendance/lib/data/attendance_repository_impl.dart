@@ -9,7 +9,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
   final AttendanceRemoteDataSource remoteDataSource;
   final NetworkInfo networkInfo;
 
-  AttendanceRepositoryImpl({
+  const AttendanceRepositoryImpl({
     required this.remoteDataSource,
     required this.networkInfo,
   });

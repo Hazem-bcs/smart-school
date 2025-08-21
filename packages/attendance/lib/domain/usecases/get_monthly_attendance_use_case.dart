@@ -6,7 +6,7 @@ import '../entities/attendance_entity.dart';
 class GetMonthlyAttendanceUseCase {
   final AttendanceRepository repository;
 
-  GetMonthlyAttendanceUseCase(this.repository);
+  const GetMonthlyAttendanceUseCase(this.repository);
 
   Future<Either<Failure, List<MonthlyAttendanceEntity>>> call(int year) {
     return repository.getMonthlyAttendance(year);

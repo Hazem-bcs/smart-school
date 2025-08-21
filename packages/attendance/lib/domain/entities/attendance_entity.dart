@@ -1,4 +1,6 @@
-class AttendanceEntity {
+import 'package:equatable/equatable.dart';
+
+class AttendanceEntity extends Equatable {
   final int year;
   final int month;
   final int attendanceCount;
@@ -6,7 +8,7 @@ class AttendanceEntity {
   final List<int> presentDays;
   final List<int> absentDays;
 
-  AttendanceEntity({
+  const AttendanceEntity({
     required this.year,
     required this.month,
     required this.attendanceCount,
@@ -14,18 +16,36 @@ class AttendanceEntity {
     required this.presentDays,
     required this.absentDays,
   });
+
+  @override
+  List<Object?> get props => [
+        year,
+        month,
+        attendanceCount,
+        absenceCount,
+        presentDays,
+        absentDays,
+      ];
 }
 
-class MonthlyAttendanceEntity {
+class MonthlyAttendanceEntity extends Equatable {
   final String monthName;
   final int attendanceCount;
   final int absenceCount;
   final int monthNumber;
 
-  MonthlyAttendanceEntity({
+  const MonthlyAttendanceEntity({
     required this.monthName,
     required this.attendanceCount,
     required this.absenceCount,
     required this.monthNumber,
   });
+
+  @override
+  List<Object?> get props => [
+        monthName,
+        attendanceCount,
+        absenceCount,
+        monthNumber,
+      ];
 } 
