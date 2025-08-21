@@ -4,6 +4,5 @@ part of 'teacher_list_bloc.dart';
 sealed class TeacherListEvent {}
 
 class GetTeacherList extends TeacherListEvent {
-  final int studentId;
-  GetTeacherList({required this.studentId});
+  GetTeacherList();
 } 

@@ -10,7 +10,7 @@ class GetTeacherListUseCase {
 
   GetTeacherListUseCase(this.repository);
 
-  Future<Either<Failure,List<TeacherEntity>>> call(int studentId) async {
+  Future<Either<Failure,List<TeacherEntity>>> call() async {
     return await repository.getTeacherList();
   }
 }

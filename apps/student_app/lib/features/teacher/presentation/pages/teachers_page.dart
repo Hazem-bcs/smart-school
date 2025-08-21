@@ -15,7 +15,7 @@ class _TeachersPageState extends State<TeachersPage> {
   @override
   void initState() {
     super.initState();
-    context.read<TeacherListBloc>().add(GetTeacherList(studentId: 1));
+    context.read<TeacherListBloc>().add(GetTeacherList());
   }
 
   @override
@@ -43,7 +43,7 @@ class _TeachersPageState extends State<TeachersPage> {
                   ElevatedButton(
                     onPressed: () {
                       context.read<TeacherListBloc>().add(
-                        GetTeacherList(studentId: 1),
+                        GetTeacherList(),
                       );
                     },
                     style: ElevatedButton.styleFrom(

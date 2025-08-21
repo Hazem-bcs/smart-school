@@ -1,5 +1,5 @@
 class Constants {
-  static const String baseUrl = 'http://10.2.0.2:8000'; // Laravel backend URL
+  static const String baseUrl = 'http://192.168.1.102:8000'; // Laravel backend URL
 
   static String loginEndpoint = '/api/login';
   static String logoutEndpoint = '/api/logout';
@@ -7,7 +7,7 @@ class Constants {
   static String getHomeWorkListEndpoint = '/auth/login';
   static String getSubjectEndpoint = '/auth/login';
   static String getSubjectListEndpoint = '/auth/login';
-  static String getTeacherById = '/auth/login';
+  static String getTeacherById = '/api/show_teacher';
   static String getTeacherList = '/api/show_teacher_section';
   static String getProfileData = '/auth/login';
 }
