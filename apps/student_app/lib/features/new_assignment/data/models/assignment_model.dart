@@ -12,7 +12,7 @@ class AssignmentModel extends AssignmentEntity {
     super.grade,
     super.teacherNote,
     required super.createdAt,
-    super.teacherAttachments,
+
     super.teacherImageAttachment,
   });
 
@@ -24,14 +24,11 @@ class AssignmentModel extends AssignmentEntity {
       classId: json['classId'] as String,
       dueDate: DateTime.parse(json['dueDate'] as String),
       points: json['points'] as int,
-      submissionStatus: SubmissionStatus.values[json['submissionStatus'] as int],
+      submissionStatus:
+          SubmissionStatus.values[json['submissionStatus'] as int],
       grade: json['grade'] as int?,
       teacherNote: json['teacherNote'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      teacherAttachments: (json['teacherAttachments'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-          [],
       teacherImageAttachment: json['teacherImageAttachment'] as String?,
     );
   }
@@ -48,7 +45,7 @@ class AssignmentModel extends AssignmentEntity {
       'grade': grade,
       'teacherNote': teacherNote,
       'createdAt': createdAt.toIso8601String(),
-      'teacherAttachments': teacherAttachments,
+
       'teacherImageAttachment': teacherImageAttachment,
     };
   }

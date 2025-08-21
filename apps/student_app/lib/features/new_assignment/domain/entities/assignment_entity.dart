@@ -1,12 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-enum SubmissionStatus {
-  notSubmitted,
-  submitted,
-  graded,
-}
+enum SubmissionStatus { notSubmitted, submitted, graded }
 
- class AssignmentEntity extends Equatable {
+class AssignmentEntity extends Equatable {
   final String assignmentId;
   final String title;
   final String description;
@@ -15,9 +11,9 @@ enum SubmissionStatus {
   final int points;
   final SubmissionStatus submissionStatus;
   final int? grade;
-  final String? teacherNote; // ✅ NEW: Field for teacher's note
+  final String? teacherNote;
   final DateTime createdAt;
-  final List<String> teacherAttachments;
+
   final String? teacherImageAttachment;
 
   const AssignmentEntity({
@@ -29,9 +25,9 @@ enum SubmissionStatus {
     required this.points,
     this.submissionStatus = SubmissionStatus.notSubmitted,
     this.grade,
-    this.teacherNote, // ✅ NEW: Add to constructor
+    this.teacherNote,
     required this.createdAt,
-    this.teacherAttachments = const [],
+
     this.teacherImageAttachment,
   });
 
@@ -47,7 +43,6 @@ enum SubmissionStatus {
     int? grade,
     String? teacherNote,
     DateTime? createdAt,
-    List<String>? teacherAttachments,
     String? teacherImageAttachment,
   }) {
     return AssignmentEntity(
@@ -61,8 +56,8 @@ enum SubmissionStatus {
       grade: grade ?? this.grade,
       teacherNote: teacherNote ?? this.teacherNote,
       createdAt: createdAt ?? this.createdAt,
-      teacherAttachments: teacherAttachments ?? this.teacherAttachments,
-      teacherImageAttachment: teacherImageAttachment ?? this.teacherImageAttachment,
+      teacherImageAttachment:
+          teacherImageAttachment ?? this.teacherImageAttachment,
     );
   }
 
@@ -76,9 +71,9 @@ enum SubmissionStatus {
     points,
     submissionStatus,
     grade,
-    teacherNote, // ✅ NEW: Add to props
+    teacherNote,
     createdAt,
-    teacherAttachments,
+
     teacherImageAttachment,
   ];
 }

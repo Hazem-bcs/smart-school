@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -5,6 +6,7 @@ import '../../domain/entities/assignment_entity.dart';
 
 class AssignmentDetailsPage extends StatefulWidget {
   final AssignmentEntity assignment;
+
   const AssignmentDetailsPage({super.key, required this.assignment});
 
   @override
@@ -12,7 +14,8 @@ class AssignmentDetailsPage extends StatefulWidget {
 }
 
 class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
-  final TextEditingController _submissionTextController = TextEditingController();
+  final TextEditingController _submissionTextController =
+      TextEditingController();
   File? _selectedImage;
 
   @override
@@ -34,17 +37,13 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
   void _submitAssignment() {
     // TODO: Implement actual submission logic (e.g., to a server)
     final submissionText = _submissionTextController.text;
-
-    // Simulate successful submission and close the page
     Navigator.pop(context, true); // Close the page and return a result
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.assignment.title),
-      ),
+      appBar: AppBar(title: Text(widget.assignment.title)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -87,17 +86,13 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
               Icons.scoreboard,
             ),
             const SizedBox(height: 16),
-            // ✅ قسم الصورة المرفقة من الأستاذ
             if (widget.assignment.teacherImageAttachment != null)
               _buildTeacherImageSection(),
-            // ✅ قسم المرفقات من الأستاذ
-            if (widget.assignment.teacherAttachments.isNotEmpty)
-              _buildAttachmentsSection(),
             const SizedBox(height: 24),
-            // ✅ عرض الواجهة بناءً على حالة المهمة
             if (widget.assignment.submissionStatus == SubmissionStatus.graded)
               _buildGradedView(context)
-            else if (widget.assignment.submissionStatus == SubmissionStatus.submitted)
+            else if (widget.assignment.submissionStatus ==
+                SubmissionStatus.submitted)
               _buildSubmittedView()
             else
               _buildSubmissionView(context),
@@ -107,7 +102,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  // ✅ بناء قسم الصورة المرفقة من الأستاذ
   Widget _buildTeacherImageSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +134,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  // ✅ بناء واجهة حالة "تم التصحيح"
   Widget _buildGradedView(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,8 +153,8 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
           ),
         ),
         const SizedBox(height: 16),
-        // ✅ عرض ملاحظة الأستاذ
-        if (widget.assignment.teacherNote != null && widget.assignment.teacherNote!.isNotEmpty)
+        if (widget.assignment.teacherNote != null &&
+            widget.assignment.teacherNote!.isNotEmpty)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -188,7 +181,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  // ✅ بناء واجهة حالة "تم التسليم"
   Widget _buildSubmittedView() {
     return Center(
       child: Column(
@@ -209,7 +201,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  // ✅ بناء واجهة حالة "لم يتم التسليم"
   Widget _buildSubmissionView(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +243,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  // Helper methods
   Widget _buildInfoRow(String label, String value, IconData icon) {
     return Row(
       children: [
@@ -263,39 +253,13 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
     );
   }
 
-  Widget _buildAttachmentsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Attachments:',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4),
-        ...widget.assignment.teacherAttachments.map(
-              (attachment) => _buildAttachmentItem(attachment),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildAttachmentItem(String fileName) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          const Icon(Icons.attachment, size: 20),
-          const SizedBox(width: 8),
-          Text(fileName),
-        ],
-      ),
-    );
-  }
 
   String _getStatusText() {
     if (widget.assignment.submissionStatus == SubmissionStatus.graded) {
       return 'Graded';
-    } else if (widget.assignment.submissionStatus == SubmissionStatus.submitted) {
+    } else if (widget.assignment.submissionStatus ==
+        SubmissionStatus.submitted) {
       return 'Submitted';
     } else if (DateTime.now().isAfter(widget.assignment.dueDate)) {
       return 'Late';
@@ -305,9 +269,11 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage> {
   }
 
   Color _getStatusColor() {
+
     if (widget.assignment.submissionStatus == SubmissionStatus.graded) {
       return Colors.green;
-    } else if (widget.assignment.submissionStatus == SubmissionStatus.submitted) {
+    } else if (widget.assignment.submissionStatus ==
+        SubmissionStatus.submitted) {
       return Colors.blue;
     } else if (DateTime.now().isAfter(widget.assignment.dueDate)) {
       return Colors.red;

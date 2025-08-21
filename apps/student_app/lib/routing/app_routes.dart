@@ -52,96 +52,6 @@ class AppRoutes {
               ),
           settings: settings,
         );
-
-      // case home:
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) => HomeBloc(
-      //         getClassesUseCase: di.getIt<GetHomeClassesUseCase>(),
-      //         getAssignmentsUseCase: di.getIt<GetAssignmentsUseCase>(),
-      //         getNotificationsUseCase: di.getIt<GetNotificationsUseCase>(),
-      //       ),
-      //       child: const HomePage(),
-      //     ),
-      //     settings: settings,
-      //   );
-
-      // case editProfile:
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) => ProfileBloc(
-      //         getProfileUseCase: di.getIt<GetProfileUseCase>(),
-      //         updateProfileUseCase: di.getIt<UpdateProfileUseCase>(),
-      //       ),
-      //       child: const EditProfilePage(),
-      //     ),
-      //     settings: settings,
-      //   );
-      //
-      // case AppRoutes.settings:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const SettingsScreen(),
-      //     settings: settings,
-      //   );
-      //
-      // case changePassword:
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) => di.getIt<PasswordBloc>(),
-      //       child: const ChangePasswordPage(),
-      //     ),
-      //     settings: settings,
-      //   );
-      //
-      // case aboutApp:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const AboutAppPage(),
-      //     settings: settings,
-      //   );
-      //
-      // case helpFaq:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const HelpFaqPage(),
-      //     settings: settings,
-      //   );
-      //
-      //   case assignments:
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) => di.getIt<AssignmentBloc>(),
-      //       child: const AssignmentsPage(),
-      //     ),
-      //     settings: settings,
-      //   );
-      //
-      // case newAssignment:
-      //   return MaterialPageRoute(
-      //     builder:
-      //         (_) => BlocProvider(
-      //           create: (_) {
-      //             return di.getIt<NewAssignmentBloc>();
-      //           },
-      //           child: const NewAssignmentPage(),
-      //         ),
-      //     settings: settings,
-      //   );
-      //
-      //   case schedule:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const SchedulePage(),
-      //     settings: settings,
-      //   );
-      //
-      // case assignmentSubmission:
-      //   final assignmentId = settings.arguments as String;
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) => di.getIt<SubmissionBloc>(),
-      //       child: AssignmentSubmissionScreen(assignmentId: assignmentId),
-      //     ),
-      //     settings: settings,
-      //   );
-      //
       default:
         return MaterialPageRoute(
           builder:
@@ -154,3 +64,4 @@ class AppRoutes {
     }
   }
 }
+

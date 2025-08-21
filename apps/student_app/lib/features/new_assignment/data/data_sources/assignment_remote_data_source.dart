@@ -22,7 +22,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         submissionStatus: SubmissionStatus.graded,
         grade: 22,
         createdAt: DateTime.now().subtract(const Duration(days: 5)),
-        teacherAttachments: [],
       ),
       // 2. مهمة جديدة لم يتم تسليمها (New & Ungraded)
       AssignmentModel(
@@ -37,7 +36,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         grade: null,
         createdAt: DateTime.now().subtract(const Duration(hours: 1)),
         // تم إنشاؤها قبل ساعة
-        teacherAttachments: ['project_guidelines.pdf'],
       ),
       AssignmentModel(
         assignmentId: '3',
@@ -53,9 +51,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         teacherNote:
             'Excellent work! The analysis section was particularly well-done.',
         createdAt: DateTime.now().subtract(const Duration(days: 10)),
-        teacherAttachments: [],
-        teacherImageAttachment:
-            'https://example.com/lab_diagram.png', // مثال على صورة مرفقة
       ),
       AssignmentModel(
         assignmentId: '2',
@@ -69,7 +64,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         grade: null,
         teacherNote: null,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
-        teacherAttachments: [],
         teacherImageAttachment: null,
       ),
       AssignmentModel(
@@ -84,8 +78,8 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         grade: null,
         teacherNote: null,
         createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-        teacherAttachments: ['math_problems.pdf'],
-        teacherImageAttachment: null,
+        // teacherImageAttachment: 'https://cdn.pixabay.com/photo/2015/07/15/07/20/math-845876_1280.jpg', // ✅ تم إضافة رابط صورة هنا
+        teacherImageAttachment: 'assets/images/img.png', // ✅ تم إضافة رابط صورة هنا
       ),
       // 3. مهمة عادية غير مصححة (Ungraded)
       AssignmentModel(
@@ -99,7 +93,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         // حالة "غير مصححة"
         grade: null,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
-        teacherAttachments: [],
       ),
       // 4. مهمة فات موعدها وغير مصححة (Ungraded & Late)
       AssignmentModel(
@@ -113,7 +106,6 @@ class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
         // حالة "غير مصححة"
         grade: null,
         createdAt: DateTime.now().subtract(const Duration(days: 4)),
-        teacherAttachments: ['art_examples.jpg', 'portfolio_checklist.docx'],
       ),
     ];
   }
