@@ -1,4 +1,3 @@
-import 'dart:convert';
 import '../../domain/entities/attendance_entity.dart';
 
 class AttendanceModel extends AttendanceEntity {
@@ -11,64 +10,17 @@ class AttendanceModel extends AttendanceEntity {
     required super.absentDays,
   });
 
-  AttendanceModel copyWith({
-    int? year,
-    int? month,
-    int? attendanceCount,
-    int? absenceCount,
-    List<int>? presentDays,
-    List<int>? absentDays,
-  }) {
+  factory AttendanceModel.fromJson(Map<String, dynamic> json) {
     return AttendanceModel(
-      year: year ?? this.year,
-      month: month ?? this.month,
-      attendanceCount: attendanceCount ?? this.attendanceCount,
-      absenceCount: absenceCount ?? this.absenceCount,
-      presentDays: presentDays ?? this.presentDays,
-      absentDays: absentDays ?? this.absentDays,
+      year: json['year'] as int,
+      month: json['month'] as int,
+      attendanceCount: json['attendanceCount'] as int,
+      absenceCount: json['absenceCount'] as int,
+      presentDays: List<int>.from(json['presentDays'] as List),
+      absentDays: List<int>.from(json['absentDays'] as List),
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'year': year,
-      'month': month,
-      'attendanceCount': attendanceCount,
-      'absenceCount': absenceCount,
-      'presentDays': presentDays,
-      'absentDays': absentDays,
-    };
-  }
-
-  factory AttendanceModel.fromMap(Map<String, dynamic> map) {
-    return AttendanceModel(
-      year: map['year'] as int,
-      month: map['month'] as int,
-      attendanceCount: map['attendanceCount'] as int,
-      absenceCount: map['absenceCount'] as int,
-      presentDays: List<int>.from(map['presentDays'] as List),
-      absentDays: List<int>.from(map['absentDays'] as List),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory AttendanceModel.fromJson(String source) =>
-      AttendanceModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  // Convert Model to Entity
-  AttendanceEntity toEntity() {
-    return AttendanceEntity(
-      year: year,
-      month: month,
-      attendanceCount: attendanceCount,
-      absenceCount: absenceCount,
-      presentDays: presentDays,
-      absentDays: absentDays,
-    );
-  }
-
-  // Create Model from Entity
   factory AttendanceModel.fromEntity(AttendanceEntity entity) {
     return AttendanceModel(
       year: entity.year,
@@ -77,6 +29,17 @@ class AttendanceModel extends AttendanceEntity {
       absenceCount: entity.absenceCount,
       presentDays: entity.presentDays,
       absentDays: entity.absentDays,
+    );
+  }
+
+  AttendanceEntity toEntity() {
+    return AttendanceEntity(
+      year: year,
+      month: month,
+      attendanceCount: attendanceCount,
+      absenceCount: absenceCount,
+      presentDays: presentDays,
+      absentDays: absentDays,
     );
   }
 }
@@ -89,44 +52,15 @@ class MonthlyAttendanceModel extends MonthlyAttendanceEntity {
     required super.monthNumber,
   });
 
-  MonthlyAttendanceModel copyWith({
-    String? monthName,
-    int? attendanceCount,
-    int? absenceCount,
-    int? monthNumber,
-  }) {
+  factory MonthlyAttendanceModel.fromJson(Map<String, dynamic> json) {
     return MonthlyAttendanceModel(
-      monthName: monthName ?? this.monthName,
-      attendanceCount: attendanceCount ?? this.attendanceCount,
-      absenceCount: absenceCount ?? this.absenceCount,
-      monthNumber: monthNumber ?? this.monthNumber,
+      monthName: json['monthName'] as String,
+      attendanceCount: json['attendanceCount'] as int,
+      absenceCount: json['absenceCount'] as int,
+      monthNumber: json['monthNumber'] as int,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'monthName': monthName,
-      'attendanceCount': attendanceCount,
-      'absenceCount': absenceCount,
-      'monthNumber': monthNumber,
-    };
-  }
-
-  factory MonthlyAttendanceModel.fromMap(Map<String, dynamic> map) {
-    return MonthlyAttendanceModel(
-      monthName: map['monthName'] as String,
-      attendanceCount: map['attendanceCount'] as int,
-      absenceCount: map['absenceCount'] as int,
-      monthNumber: map['monthNumber'] as int,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory MonthlyAttendanceModel.fromJson(String source) =>
-      MonthlyAttendanceModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  // Convert Model to Entity
   MonthlyAttendanceEntity toEntity() {
     return MonthlyAttendanceEntity(
       monthName: monthName,
@@ -136,7 +70,6 @@ class MonthlyAttendanceModel extends MonthlyAttendanceEntity {
     );
   }
 
-  // Create Model from Entity
   factory MonthlyAttendanceModel.fromEntity(MonthlyAttendanceEntity entity) {
     return MonthlyAttendanceModel(
       monthName: entity.monthName,
@@ -145,4 +78,4 @@ class MonthlyAttendanceModel extends MonthlyAttendanceEntity {
       monthNumber: entity.monthNumber,
     );
   }
-} 
+}

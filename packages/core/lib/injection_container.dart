@@ -10,7 +10,7 @@ import 'package:core/constant.dart';
 Future<void> setupCoreDependencies(GetIt getIt) async {
   // SERVICES
   getIt.registerSingleton<DioClient>(DioClient(baseUrl: Constants.baseUrl));
-  getIt.registerSingleton<NetworkInfo>(NetworkInfoImpl(Connectivity()));
+  getIt.registerSingleton<NetworkInfo>(NetworkInfoImpl(connectivity: Connectivity()));
 
   // EXTERNAL
   final prefs = await SharedPreferences.getInstance();

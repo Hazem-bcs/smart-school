@@ -3,13 +3,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
-import 'package:core/blocs/theme/theme_state.dart';
 import 'package:core/blocs/theme/theme_event.dart';
-import 'package:smart_school/routing/navigation_extension.dart';
+import 'package:smart_school/features/settings/presentation/widgets/setting_app_bar.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
 import '../../../authentication/presentation/blocs/auth_bloc.dart';
+import '../blocs/settings_bloc.dart';
+import '../blocs/settings_event.dart';
+import '../blocs/settings_state.dart';
 import '../widgets/profile_card.dart';
 import '../widgets/settings_section.dart';
 
@@ -31,10 +33,18 @@ class _SettingsScreenState extends State<SettingsScreen>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
 
+  // Controllers for name, email, and image
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
+    // اطلب بيانات المستخدم عند فتح الصفحة
+    context.read<SettingsBloc>().add(const GetProfileEvent());
+    _nameController = TextEditingController();
+    _emailController = TextEditingController();
   }
 
   void _initializeAnimations() {
@@ -80,224 +90,265 @@ class _SettingsScreenState extends State<SettingsScreen>
   void dispose() {
     _pageAnimationController.dispose();
     _cardAnimationController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
+
+  void _toggleLanguage() {
+    setState(() {
+      _isEnglish = !_isEnglish;
+    });
+
+    if (_isEnglish) {
+      context.setLocale(const Locale('en'));
+    } else {
+      context.setLocale(const Locale('ar'));
+    }
+  }
+
+  void _showLogoutDialog() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) => LogoutDialog(
+        theme: theme,
+        isDark: isDark,
+        onConfirm: () {
+          Navigator.pop(context);
+          context.read<AuthBloc>().add(LogoutEvent());
+        },
+      ),
+    );
+  }
+
+  void _authListener(BuildContext context, AuthState state) {
+    if (state is LogoutSuccess) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/login',
+        (route) => false,
+      );
+    } else if (state is LogoutFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocListener<AuthBloc, AuthState>(
+      listener: _authListener,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: const SettingsAppBar(),
+        body: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, state) {
+            if (state is GetProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is GetProfileFailure) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            } else if (state is GetProfileSuccess) {
+              // Fill the controllers with the values from the bloc
+              _nameController.text = state.user.name ?? '';
+              _emailController.text = state.user.email;
+
+              return SettingsBody(
+                fadeAnimation: _fadeAnimation,
+                slideAnimation: _slideAnimation,
+                scaleAnimation: _scaleAnimation,
+                cardAnimationController: _cardAnimationController,
+                notificationsEnabled: _notificationsEnabled,
+                isEnglish: _isEnglish,
+                user: state.user,
+                nameController: _nameController,
+                emailController: _emailController,
+                onNotificationsChanged: (value) {
+                  setState(() {
+                    _notificationsEnabled = value;
+                  });
+                },
+                onLanguageToggle: _toggleLanguage,
+                onThemeToggle: () {
+                  context.read<ThemeBloc>().add(ToggleTheme());
+                },
+                onEditProfile: () {
+                  Navigator.pushNamed(context, '/profilePage');
+                },
+                onShowLogoutDialog: _showLogoutDialog,
+              );
+            }
+            // الحالة الافتراضية (مثلاً عند أول تحميل)
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+        bottomNavigationBar: const SettingsBottomNavigationBar(),
+      ),
+    );
+  }
+}
+
+// ----------------- Widgets Refactored -----------------
+
+class SettingsBody extends StatelessWidget {
+  final Animation<double> fadeAnimation;
+  final Animation<Offset> slideAnimation;
+  final Animation<double> scaleAnimation;
+  final AnimationController cardAnimationController;
+  final bool notificationsEnabled;
+  final bool isEnglish;
+  final ValueChanged<bool> onNotificationsChanged;
+  final VoidCallback onLanguageToggle;
+  final VoidCallback onThemeToggle;
+  final VoidCallback onEditProfile;
+  final VoidCallback onShowLogoutDialog;
+  final user; // UserEntity
+
+  // Add controllers for name, email, and image
+  final TextEditingController nameController;
+  final TextEditingController emailController;
+
+  const SettingsBody({
+    super.key,
+    required this.fadeAnimation,
+    required this.slideAnimation,
+    required this.scaleAnimation,
+    required this.cardAnimationController,
+    required this.notificationsEnabled,
+    required this.isEnglish,
+    required this.onNotificationsChanged,
+    required this.onLanguageToggle,
+    required this.onThemeToggle,
+    required this.onEditProfile,
+    required this.onShowLogoutDialog,
+    required this.user,
+    required this.nameController,
+    required this.emailController,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is LogoutSuccess) {
-          // التوجيه إلى صفحة تسجيل الدخول
-          Navigator.pushNamedAndRemoveUntil(
-            context, 
-            '/login', 
-            (route) => false,
-          );
-        } else if (state is LogoutFailure) {
-          // عرض رسالة خطأ
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: _buildAppBar(theme),
-        body: FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: ResponsiveContent(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    ProfileCard(
-                      theme: theme,
-                      isDark: isDark,
-                      scaleAnimation: _scaleAnimation,
-                      onEditProfile: () {
-                        Navigator.pushNamed(context, '/profilePage');
-                        // context.goToEditProfile();
-                      },
-                    ),
-                    SettingsSection(
-                      theme: theme,
-                      isDark: isDark,
-                      notificationsEnabled: _notificationsEnabled,
-                      onNotificationsChanged: (value) {
-                        setState(() {
-                          _notificationsEnabled = value;
-                        });
-                      },
-                      isEnglish: _isEnglish,
-                      onLanguageToggle: _toggleLanguage,
-                      onThemeToggle: () {
-                        context.read<ThemeBloc>().add(ToggleTheme());
-                      },
-                    ),
-                    _buildSupportSection(theme, isDark),
-                    SizedBox(
-                      height: ResponsiveHelper.getSpacing(
-                        context,
-                        mobile: 80,
-                        tablet: 100,
-                        desktop: 120,
-                      ),
-                    ),
-                  ],
+    return FadeTransition(
+      opacity: fadeAnimation,
+      child: SlideTransition(
+        position: slideAnimation,
+        child: ResponsiveContent(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                ProfileCard(
+                  theme: theme,
+                  isDark: isDark,
+                  scaleAnimation: scaleAnimation,
+                  onEditProfile: onEditProfile,
+                  name: nameController.text,
+                  email: emailController.text,
                 ),
-              ),
+                SettingsSection(
+                  theme: theme,
+                  isDark: isDark,
+                  notificationsEnabled: notificationsEnabled,
+                  onNotificationsChanged: onNotificationsChanged,
+                  isEnglish: isEnglish,
+                  onLanguageToggle: onLanguageToggle,
+                  onThemeToggle: onThemeToggle,
+                ),
+                SupportSection(
+                  cardAnimationController: cardAnimationController,
+                  scaleAnimation: scaleAnimation,
+                  onShowLogoutDialog: onShowLogoutDialog,
+                ),
+                const BottomSpacing(),
+              ],
             ),
           ),
         ),
-        bottomNavigationBar: SharedBottomNavigation(
-          currentIndex: 3, onTap: (int index) {  }, // Settings index
-        ),
       ),
     );
   }
+}
 
-  PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    return AppBar(
-      title: Text(
-        'Settings',
-        style: theme.textTheme.headlineSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      automaticallyImplyLeading: false,
-      backgroundColor: theme.appBarTheme.backgroundColor,
-      elevation: 0,
-      centerTitle: true,
-    );
-  }
+class SupportSection extends StatelessWidget {
+  final AnimationController cardAnimationController;
+  final Animation<double> scaleAnimation;
+  final VoidCallback onShowLogoutDialog;
 
-  Widget _buildSupportSection(ThemeData theme, bool isDark) {
+  const SupportSection({
+    super.key,
+    required this.cardAnimationController,
+    required this.scaleAnimation,
+    required this.onShowLogoutDialog,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('Support & About', theme),
-        _buildSettingsCard(
-          [
-            _buildAnimatedSettingTile(
+        SectionTitle(title: 'Support & About'),
+        SettingsCard(
+          children: [
+            AnimatedSettingTile(
+              cardAnimationController: cardAnimationController,
               icon: Icons.help_outline,
               title: 'Help & FAQ',
               subtitle: 'Get help and find answers',
-              trailing: Container(
-                padding: EdgeInsets.all(
-                  ResponsiveHelper.getSpacing(
-                    context,
-                    mobile: 8,
-                    tablet: 10,
-                    desktop: 12,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      isDark ? AppColors.darkCardBackground : AppColors.gray100,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: theme.iconTheme.color,
-                  size: ResponsiveHelper.getIconSize(
-                    context,
-                    mobile: 14,
-                    tablet: 16,
-                    desktop: 18,
-                  ),
-                ),
-              ),
+              trailing: TrailingIcon(isDestructive: false),
               onTap: () => Navigator.pushNamed(context, '/help-faq'),
-              theme: theme,
-              isDark: isDark,
+              isDestructive: false,
             ),
-            _buildAnimatedSettingTile(
+            AnimatedSettingTile(
+              cardAnimationController: cardAnimationController,
               icon: Icons.info_outline,
               title: 'About App',
               subtitle: 'Version 1.0.0',
-              trailing: Container(
-                padding: EdgeInsets.all(
-                  ResponsiveHelper.getSpacing(
-                    context,
-                    mobile: 8,
-                    tablet: 10,
-                    desktop: 12,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      isDark ? AppColors.darkCardBackground : AppColors.gray100,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: theme.iconTheme.color,
-                  size: ResponsiveHelper.getIconSize(
-                    context,
-                    mobile: 14,
-                    tablet: 16,
-                    desktop: 18,
-                  ),
-                ),
-              ),
+              trailing: TrailingIcon(isDestructive: false),
               onTap: () => Navigator.pushNamed(context, '/about-app'),
-              theme: theme,
-              isDark: isDark,
+              isDestructive: false,
             ),
-            _buildAnimatedSettingTile(
+            AnimatedSettingTile(
+              cardAnimationController: cardAnimationController,
               icon: Icons.logout,
               title: 'Logout',
               subtitle: 'Sign out of your account',
-              trailing: Container(
-                padding: EdgeInsets.all(
-                  ResponsiveHelper.getSpacing(
-                    context,
-                    mobile: 8,
-                    tablet: 10,
-                    desktop: 12,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      isDark
-                          ? AppColors.darkDestructive.withOpacity(0.2)
-                          : AppColors.error.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  color: isDark ? AppColors.darkDestructive : AppColors.error,
-                  size: ResponsiveHelper.getIconSize(
-                    context,
-                    mobile: 14,
-                    tablet: 16,
-                    desktop: 18,
-                  ),
-                ),
-              ),
-              onTap: _showLogoutDialog,
+              trailing: TrailingIcon(isDestructive: true),
+              onTap: onShowLogoutDialog,
               isDestructive: true,
-              theme: theme,
-              isDark: isDark,
             ),
           ],
-          theme,
-          isDark,
         ),
       ],
     );
   }
+}
 
-  Widget _buildSectionTitle(String title, ThemeData theme) {
+class SectionTitle extends StatelessWidget {
+  final String title;
+  const SectionTitle({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.getSpacing(
@@ -321,12 +372,16 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
     );
   }
+}
 
-  Widget _buildSettingsCard(
-    List<Widget> children,
-    ThemeData theme,
-    bool isDark,
-  ) {
+class SettingsCard extends StatelessWidget {
+  final List<Widget> children;
+  const SettingsCard({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.getSpacing(context),
@@ -345,22 +400,38 @@ class _SettingsScreenState extends State<SettingsScreen>
       child: Column(children: children),
     );
   }
+}
 
-  Widget _buildAnimatedSettingTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    Widget? trailing,
-    VoidCallback? onTap,
-    bool isDestructive = false,
-    required ThemeData theme,
-    required bool isDark,
-  }) {
+class AnimatedSettingTile extends StatelessWidget {
+  final AnimationController cardAnimationController;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool isDestructive;
+
+  const AnimatedSettingTile({
+    super.key,
+    required this.cardAnimationController,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.trailing,
+    this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return AnimatedBuilder(
-      animation: _cardAnimationController,
+      animation: cardAnimationController,
       builder: (context, child) {
         return Transform.scale(
-          scale: 0.9 + (0.1 * _cardAnimationController.value),
+          scale: 0.9 + (0.1 * cardAnimationController.value),
           child: Container(
             margin: EdgeInsets.all(
               ResponsiveHelper.getSpacing(
@@ -379,54 +450,19 @@ class _SettingsScreenState extends State<SettingsScreen>
               ),
             ),
             child: ListTile(
-              leading: Container(
-                padding: EdgeInsets.all(
-                  ResponsiveHelper.getSpacing(
-                    context,
-                    mobile: 8,
-                    tablet: 10,
-                    desktop: 12,
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color:
-                      isDestructive
-                          ? (isDark
-                              ? AppColors.darkDestructive.withOpacity(0.2)
-                              : AppColors.error.withOpacity(0.1))
-                          : (isDark
-                              ? AppColors.darkAccentBlue.withOpacity(0.2)
-                              : AppColors.info.withOpacity(0.1)),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  icon,
-                  color:
-                      isDestructive
-                          ? (isDark
-                              ? AppColors.darkDestructive
-                              : AppColors.error)
-                          : (isDark
-                              ? AppColors.darkAccentBlue
-                              : AppColors.info),
-                  size: ResponsiveHelper.getIconSize(
-                    context,
-                    mobile: 20,
-                    tablet: 22,
-                    desktop: 24,
-                  ),
-                ),
+              leading: TileLeading(
+                icon: icon,
+                isDestructive: isDestructive,
               ),
               title: Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color:
-                      isDestructive
-                          ? (isDark
-                              ? AppColors.darkDestructive
-                              : AppColors.error)
-                          : theme.textTheme.titleMedium?.color,
+                  color: isDestructive
+                      ? (isDark
+                          ? AppColors.darkDestructive
+                          : AppColors.error)
+                      : theme.textTheme.titleMedium?.color,
                 ),
               ),
               subtitle: Text(
@@ -457,205 +493,205 @@ class _SettingsScreenState extends State<SettingsScreen>
       },
     );
   }
+}
 
-  Widget _buildThemeToggleTile(ThemeData theme, bool isDark) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        bool isDarkMode = false;
+class TileLeading extends StatelessWidget {
+  final IconData icon;
+  final bool isDestructive;
+  const TileLeading({
+    super.key,
+    required this.icon,
+    this.isDestructive = false,
+  });
 
-        if (state is ThemeLoaded) {
-          isDarkMode = state.isDarkMode;
-        } else {
-          isDarkMode = context.isDarkMode;
-        }
-
-        return _buildAnimatedSettingTile(
-          icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
-          title: 'Dark Mode',
-          subtitle: isDarkMode ? 'Enabled' : 'Disabled',
-          trailing: _buildAnimatedSwitch(
-            isDarkMode,
-            (value) {
-              context.read<ThemeBloc>().add(ToggleTheme());
-            },
-            theme,
-            isDark,
-          ),
-          theme: theme,
-          isDark: isDark,
-        );
-      },
-    );
-  }
-
-  Widget _buildAnimatedSwitch(
-    bool value,
-    ValueChanged<bool> onChanged,
-    ThemeData theme,
-    bool isDark,
-  ) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: ResponsiveHelper.getIconSize(
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      padding: EdgeInsets.all(
+        ResponsiveHelper.getSpacing(
           context,
-          mobile: 50,
-          tablet: 55,
-          desktop: 60,
+          mobile: 8,
+          tablet: 10,
+          desktop: 12,
         ),
-        height: ResponsiveHelper.getIconSize(
+      ),
+      decoration: BoxDecoration(
+        color: isDestructive
+            ? (isDark
+                ? AppColors.darkDestructive.withOpacity(0.2)
+                : AppColors.error.withOpacity(0.1))
+            : (isDark
+                ? AppColors.darkAccentBlue.withOpacity(0.2)
+                : AppColors.info.withOpacity(0.1)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(
+        icon,
+        color: isDestructive
+            ? (isDark ? AppColors.darkDestructive : AppColors.error)
+            : (isDark ? AppColors.darkAccentBlue : AppColors.info),
+        size: ResponsiveHelper.getIconSize(
           context,
-          mobile: 28,
-          tablet: 30,
-          desktop: 32,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color:
-              value
-                  ? (isDark ? AppColors.darkSuccess : AppColors.success)
-                  : (isDark ? AppColors.darkDivider : AppColors.gray300),
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              left:
-                  value
-                      ? ResponsiveHelper.getIconSize(
-                        context,
-                        mobile: 22,
-                        tablet: 25,
-                        desktop: 28,
-                      )
-                      : 2,
-              top: 2,
-              child: Container(
-                width: ResponsiveHelper.getIconSize(
-                  context,
-                  mobile: 24,
-                  tablet: 26,
-                  desktop: 28,
-                ),
-                height: ResponsiveHelper.getIconSize(
-                  context,
-                  mobile: 24,
-                  tablet: 26,
-                  desktop: 28,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+          mobile: 20,
+          tablet: 22,
+          desktop: 24,
         ),
       ),
     );
   }
+}
 
-  void _showLogoutDialog() {
+class TrailingIcon extends StatelessWidget {
+  final bool isDestructive;
+  const TrailingIcon({super.key, this.isDestructive = false});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor:
-                isDark
-                    ? AppColors.darkCardBackground
-                    : theme.dialogTheme.backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color:
-                        isDark
-                            ? AppColors.darkDestructive.withOpacity(0.2)
-                            : AppColors.error.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.logout,
-                    color: isDark ? AppColors.darkDestructive : AppColors.error,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Logout',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            content: Text(
-              'Are you sure you want to logout?',
-              style: theme.textTheme.bodyMedium,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Cancel',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // 1. إغلاق مربع الحوار أولاً
-                  Navigator.pop(context);
-                  // 2. إرسال حدث تسجيل الخروج إلى الـ BLoC
-                  context.read<AuthBloc>().add(LogoutEvent());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      isDark ? AppColors.darkDestructive : AppColors.error,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(
-                  'Logout',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    return Container(
+      padding: EdgeInsets.all(
+        ResponsiveHelper.getSpacing(
+          context,
+          mobile: 8,
+          tablet: 10,
+          desktop: 12,
+        ),
+      ),
+      decoration: BoxDecoration(
+        color: isDestructive
+            ? (isDark
+                ? AppColors.darkDestructive.withOpacity(0.2)
+                : AppColors.error.withOpacity(0.1))
+            : (isDark
+                ? AppColors.darkCardBackground
+                : AppColors.gray100),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(
+        Icons.arrow_forward_ios,
+        color: isDestructive
+            ? (isDark ? AppColors.darkDestructive : AppColors.error)
+            : theme.iconTheme.color,
+        size: ResponsiveHelper.getIconSize(
+          context,
+          mobile: 14,
+          tablet: 16,
+          desktop: 18,
+        ),
+      ),
     );
   }
+}
 
-  void _toggleLanguage() {
-    setState(() {
-      _isEnglish = !_isEnglish;
-    });
+class BottomSpacing extends StatelessWidget {
+  const BottomSpacing({super.key});
 
-    if (_isEnglish) {
-      context.setLocale(const Locale('en'));
-    } else {
-      context.setLocale(const Locale('ar'));
-    }
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: ResponsiveHelper.getSpacing(
+        context,
+        mobile: 80,
+        tablet: 100,
+        desktop: 120,
+      ),
+    );
   }
+}
 
+class SettingsBottomNavigationBar extends StatelessWidget {
+  const SettingsBottomNavigationBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SharedBottomNavigation(
+      currentIndex: 3,
+      onTap: (int index) {},
+    );
+  }
+}
+
+class LogoutDialog extends StatelessWidget {
+  final ThemeData theme;
+  final bool isDark;
+  final VoidCallback onConfirm;
+
+  const LogoutDialog({
+    super.key,
+    required this.theme,
+    required this.isDark,
+    required this.onConfirm,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: isDark
+          ? AppColors.darkCardBackground
+          : theme.dialogTheme.backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.darkDestructive.withOpacity(0.2)
+                  : AppColors.error.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.logout,
+              color: isDark ? AppColors.darkDestructive : AppColors.error,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            'Logout',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        'Are you sure you want to logout?',
+        style: theme.textTheme.bodyMedium,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            'Cancel',
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: onConfirm,
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                isDark ? AppColors.darkDestructive : AppColors.error,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: Text(
+            'Logout',
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

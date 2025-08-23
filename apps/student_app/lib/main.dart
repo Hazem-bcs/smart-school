@@ -9,7 +9,9 @@ import 'package:smart_school/features/home/presentation/pages/home_page.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
 import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
+import 'package:smart_school/features/schedule/presentation/blocs/schedule_bloc.dart';
 import 'package:smart_school/features/schedule/presentation/pages/schedule_page.dart';
+import 'package:smart_school/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.dart';
@@ -86,6 +88,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<AttendanceBloc>()),
         BlocProvider(create: (context) => di.getIt<AttendanceDetailsBloc>()),
         BlocProvider(create: (context) => di.getIt<ZoomMeetingsBloc>()),
+        BlocProvider(create: (context) => di.getIt<ScheduleBloc>()),
+        BlocProvider(create: (context) => di.getIt<SettingsBloc>()),
       ],
       child: Sizer(
         builder: (context, orientation, screenType) {

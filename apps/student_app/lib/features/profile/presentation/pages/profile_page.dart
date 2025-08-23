@@ -1,6 +1,4 @@
 import 'package:core/theme/constants/app_colors.dart';
-import 'package:core/theme/constants/app_strings.dart';
-import 'package:core/theme/constants/colors.dart';
 import 'package:smart_school/features/profile/presentation/pages/edit_profile_page.dart';
 
 import '../../../../widgets/app_exports.dart';
@@ -16,8 +14,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
+
     context.read<ProfileBloc>().add(GetProfileDataEvent());
     super.initState();
+        print('object');
   }
 
   @override

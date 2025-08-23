@@ -1,7 +1,6 @@
 import 'package:core/domain/entities/user_entity.dart';
 
-class UserModel{
-
+class UserModel {
   final int? id;
   final String email;
   final String password;
@@ -18,26 +17,46 @@ class UserModel{
     required this.token,
   });
 
-  // Factory method for Laravel API response
+
   factory UserModel.fromLaravelResponse(Map<String, dynamic> response) {
-    final data = response['data'] as Map<String, dynamic>?;
+    final dynamic data = response['data'];
+
     if (data == null) {
-      throw Exception('Invalid response format');
+      throw Exception('Invalid response format: data is null');
     }
-    
-    return UserModel(
-      id: data['id'] as int?,
-      name: data['name'] as String?,
-      email: data['email'] as String,
-      password: '', // لا نستقبل كلمة المرور من السيرفر
-      profilePhotoUrl: null, // يمكن إضافته لاحقاً
-      token: null, // يمكن إضافته لاحقاً
-    );
+
+    if (data is List) {
+      if (data.isEmpty) {
+        throw Exception('لا يوجد بيانات مستخدم في الاستجابة');
+      }
+      final userData = data.first as Map<String, dynamic>;
+      return UserModel(
+        id: userData['id'] as int?,
+        name: userData['name'] as String?,
+        email: userData['email'] as String? ?? '',
+        password: '', 
+        profilePhotoUrl: null,
+        token: null, 
+      );
+    }
+
+    if (data is Map<String, dynamic>) {
+      return UserModel(
+        id: data['id'] as int?,
+        name: data['name'] as String?,
+        email: data['email'] as String? ?? '',
+        password: '',
+        profilePhotoUrl: null,
+        token: null, 
+      );
+    }
+
+    throw Exception('Invalid response format: data is not a Map or List');
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id' : id,
+      'id': id,
       'name': name,
       'email': email,
       'profile_photo_url': profilePhotoUrl,
@@ -55,5 +74,4 @@ class UserModel{
       token: token,
     );
   }
-
 }

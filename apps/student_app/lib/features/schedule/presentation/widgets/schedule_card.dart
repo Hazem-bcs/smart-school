@@ -63,9 +63,7 @@ class ScheduleCard extends StatelessWidget {
       ),
       child: Icon(
         icon,
-        color: isDark 
-            ? const Color(0xFF4A90E2)
-            : const Color(0xFF4A90E2),
+        color: const Color(0xFF4A90E2),
         size: 24,
       ),
     );
@@ -100,15 +98,15 @@ class ScheduleCard extends StatelessWidget {
     switch (status) {
       case ScheduleStatus.upcoming:
         statusIcon = Icons.schedule;
-        statusColor = isDark ? const Color(0xFF4A90E2) : const Color(0xFF4A90E2);
+        statusColor = const Color(0xFF4A90E2);
         break;
       case ScheduleStatus.ongoing:
         statusIcon = Icons.play_circle_outline;
-        statusColor = isDark ? const Color(0xFF4CAF50) : const Color(0xFF4CAF50);
+        statusColor = const Color(0xFF4CAF50);
         break;
       case ScheduleStatus.completed:
         statusIcon = Icons.check_circle_outline;
-        statusColor = isDark ? const Color(0xFF4CAF50) : const Color(0xFF4CAF50);
+        statusColor = const Color(0xFF4CAF50);
         break;
     }
     

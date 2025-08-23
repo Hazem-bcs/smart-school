@@ -7,6 +7,9 @@ class GetScheduleForDateUseCase {
   GetScheduleForDateUseCase(this.repository);
 
   Future<List<ScheduleEntity>> call(DateTime date) async {
-    return await repository.getScheduleForDate(date);
+    print('🔍 GetScheduleForDateUseCase: Calling repository for date: $date');
+    final result = await repository.getScheduleForDate(date);
+    print('🔍 GetScheduleForDateUseCase: Received ${result.length} entities from repository');
+    return result;
   }
 } 

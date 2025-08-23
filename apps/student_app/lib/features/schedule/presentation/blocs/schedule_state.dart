@@ -25,33 +25,6 @@ class ScheduleLoaded extends ScheduleState {
   List<Object?> get props => [schedules, selectedDate];
 }
 
-class ScheduleCreated extends ScheduleState {
-  final ScheduleEntity schedule;
-
-  const ScheduleCreated(this.schedule);
-
-  @override
-  List<Object?> get props => [schedule];
-}
-
-class ScheduleUpdated extends ScheduleState {
-  final ScheduleEntity schedule;
-
-  const ScheduleUpdated(this.schedule);
-
-  @override
-  List<Object?> get props => [schedule];
-}
-
-class ScheduleDeleted extends ScheduleState {
-  final String scheduleId;
-
-  const ScheduleDeleted(this.scheduleId);
-
-  @override
-  List<Object?> get props => [scheduleId];
-}
-
 class ScheduleError extends ScheduleState {
   final String message;
 

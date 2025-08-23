@@ -18,17 +18,12 @@ class ProfileRepositoryImpl extends ProfileRepository {
 
   @override
   Future<Either<Failure, UserEntity>> getUserProfile() async {
-   if (await networkInfo.isConnected) {
-     final studentId = await localDataSource.getId();
+   final studentId = await localDataSource.getId();
      final result = await remoteDataSource.getProfileData(studentId ?? 0);
      return result.fold(
            (failure) => Left(failure),
            (userModel) => Right(userModel.toEntity()),
      );
-   }
-   else {
-     return Left(ConnectionFailure(message: 'ConnectionFailure'));
-   }
 
   }
 }

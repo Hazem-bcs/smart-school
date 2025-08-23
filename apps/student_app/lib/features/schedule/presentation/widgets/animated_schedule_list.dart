@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../domain/entities/schedule_entity.dart';
+import '../blocs/schedule_bloc.dart';
+import '../blocs/schedule_state.dart';
 import 'schedule_card.dart';
 
 class AnimatedScheduleList extends StatefulWidget {
@@ -38,9 +42,49 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
   }
 
   void _initializeAnimations() {
-    final scheduleItems = _getScheduleItems();
+    // Initialize with a default number, will be updated when data is available
+    final initialCount = 1; // Changed from 3 to 1 to avoid issues
     _animationControllers = List.generate(
-      scheduleItems.length,
+      initialCount,
+      (index) => AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: this,
+      ),
+    );
+
+    _fadeAnimations = _animationControllers.map((controller) {
+      return Tween<double>(
+        begin: 0.0,
+        end: 1.0,
+      ).animate(CurvedAnimation(
+        parent: controller,
+        curve: Curves.easeInOut,
+      ));
+    }).toList();
+
+    _slideAnimations = _animationControllers.map((controller) {
+      return Tween<Offset>(
+        begin: const Offset(0, 0.3),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(
+        parent: controller,
+        curve: Curves.easeOutCubic,
+      ));
+    }).toList();
+  }
+
+  void _updateAnimations(int count) {
+    // Dispose old controllers
+    for (final controller in _animationControllers) {
+      controller.dispose();
+    }
+
+    // Ensure we have at least 1 controller
+    final actualCount = count > 0 ? count : 1;
+    
+    // Create new controllers
+    _animationControllers = List.generate(
+      actualCount,
       (index) => AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
@@ -67,6 +111,7 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
       ));
     }).toList();
 
+    // Start animations immediately after creating them
     _startStaggeredAnimation();
   }
 
@@ -90,249 +135,215 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
 
   @override
   Widget build(BuildContext context) {
-    final scheduleItems = _getScheduleItems();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Date header
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.getSpacing(context),
-            vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-          ),
-          child: Text(
-            _getDateString(),
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF0E141B),
-            ),
-          ),
-        ),
-        // Schedule list
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.getSpacing(context),
-              vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-            ),
-            child: scheduleItems.isEmpty 
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.event_busy,
-                          size: 64,
-                          color: isDark ? Colors.white54 : Colors.grey[400],
-                        ),
-                        SizedBox(height: ResponsiveHelper.getSpacing(context)),
-                        Text(
-                          'لا توجد دروس لهذا اليوم',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: isDark ? Colors.white54 : Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: scheduleItems.length,
-                    itemBuilder: (context, index) {
-                      final item = scheduleItems[index];
-                      return AnimatedBuilder(
-                        animation: _animationControllers[index],
-                        builder: (context, child) {
-                          return FadeTransition(
-                            opacity: _fadeAnimations[index],
-                            child: SlideTransition(
-                              position: _slideAnimations[index],
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
-                                ),
-                                child: ScheduleCard(
-                                  id: item['id'] as String,
-                                  icon: item['icon'] as IconData,
-                                  title: item['title'] as String,
-                                  subtitle: item['subtitle'] as String,
-                                  status: item['status'] as ScheduleStatus,
-                                  onTap: () => _onScheduleItemTap(item),
+    return BlocBuilder<ScheduleBloc, ScheduleState>(
+      builder: (context, state) {
+        print('🔍 AnimatedScheduleList: Current state: ${state.runtimeType}');
+        
+        if (state is ScheduleLoaded) {
+          print('🔍 AnimatedScheduleList: Loaded ${state.schedules.length} schedules');
+          print('🔍 AnimatedScheduleList: Schedules: ${state.schedules.map((s) => s.title).toList()}');
+          
+          // Update animations when data changes
+          if (_animationControllers.length != state.schedules.length) {
+            print('🔍 AnimatedScheduleList: Updating animations from ${_animationControllers.length} to ${state.schedules.length}');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _updateAnimations(state.schedules.length);
+            });
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Date header
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context),
+                  vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+                ),
+                child: Text(
+                  _getDateString(),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : const Color(0xFF0E141B),
+                  ),
+                ),
+              ),
+              // Schedule list
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.getSpacing(context),
+                    vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+                  ),
+                  child: state.schedules.isEmpty 
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.event_busy,
+                                size: 64,
+                                color: isDark ? Colors.white54 : Colors.grey[400],
+                              ),
+                              SizedBox(height: ResponsiveHelper.getSpacing(context)),
+                              Text(
+                                'لا توجد دروس لهذا اليوم',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: isDark ? Colors.white54 : Colors.grey[600],
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: state.schedules.length,
+                          itemBuilder: (context, index) {
+                            // Safety check
+                            if (index >= state.schedules.length || index >= _animationControllers.length) {
+                              return const SizedBox.shrink();
+                            }
+                            
+                            final schedule = state.schedules[index];
+                            return AnimatedBuilder(
+                              animation: _animationControllers[index],
+                              builder: (context, child) {
+                                return FadeTransition(
+                                  opacity: _fadeAnimations[index],
+                                  child: SlideTransition(
+                                    position: _slideAnimations[index],
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
+                                      ),
+                                      child: ScheduleCard(
+                                        id: schedule.id,
+                                        icon: _getIconForSubject(schedule.subject),
+                                        title: schedule.title,
+                                        subtitle: _formatTimeRange(schedule.startTime, schedule.endTime),
+                                        status: schedule.status,
+                                        onTap: () => _onScheduleItemTap(schedule),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ),
+            ],
+          );
+        } else if (state is ScheduleLoading) {
+          print('🔍 AnimatedScheduleList: Loading state');
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ScheduleError) {
+          print('🔍 AnimatedScheduleList: Error state: ${state.message}');
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[400],
+                ),
+                SizedBox(height: ResponsiveHelper.getSpacing(context)),
+                Text(
+                  'حدث خطأ في تحميل الجدول',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.red[600],
                   ),
-          ),
-        ),
-      ],
+                ),
+                Text(
+                  state.message,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.red[400],
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          print('🔍 AnimatedScheduleList: Initial state');
+          return const Center(child: Text('جاري تحميل الجدول...'));
+        }
+      },
     );
   }
 
-  List<Map<String, dynamic>> _getScheduleItems() {
-    // Sample schedule data based on selected date
-    final selectedDate = widget.selectedDate;
-    final dayOfWeek = selectedDate.weekday;
-    final _ = selectedDate.day;
-    
-    // Different schedules for different days
-    switch (dayOfWeek) {
-      case 1: // Monday
-        return [
-          {
-            'id': 'math101',
-            'icon': Icons.book,
-            'title': 'الرياضيات',
-            'subtitle': '9:00 AM - 10:00 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'sci202',
-            'icon': Icons.science,
-            'title': 'العلوم',
-            'subtitle': '10:30 AM - 11:30 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'eng404',
-            'icon': Icons.edit,
-            'title': 'اللغة الإنجليزية',
-            'subtitle': '2:30 PM - 3:30 PM',
-            'status': ScheduleStatus.completed,
-          },
-        ];
-      case 2: // Tuesday
-        return [
-          {
-            'id': 'his303',
-            'icon': Icons.history_edu,
-            'title': 'التاريخ',
-            'subtitle': '9:00 AM - 10:00 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'geo505',
-            'icon': Icons.public,
-            'title': 'الجغرافيا',
-            'subtitle': '11:00 AM - 12:00 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'art606',
-            'icon': Icons.palette,
-            'title': 'الفنون',
-            'subtitle': '2:00 PM - 3:00 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-        ];
-      case 3: // Wednesday
-        return [
-          {
-            'id': 'math101',
-            'icon': Icons.book,
-            'title': 'الرياضيات',
-            'subtitle': '8:30 AM - 9:30 AM',
-            'status': ScheduleStatus.completed,
-          },
-          {
-            'id': 'phy707',
-            'icon': Icons.science,
-            'title': 'الفيزياء',
-            'subtitle': '10:00 AM - 11:00 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'chem808',
-            'icon': Icons.science,
-            'title': 'الكيمياء',
-            'subtitle': '1:30 PM - 2:30 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-        ];
-      case 4: // Thursday
-        return [
-          {
-            'id': 'bio909',
-            'icon': Icons.science,
-            'title': 'الأحياء',
-            'subtitle': '9:00 AM - 10:00 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'lit101',
-            'icon': Icons.book,
-            'title': 'الأدب',
-            'subtitle': '11:00 AM - 12:00 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'comp111',
-            'icon': Icons.computer,
-            'title': 'الحاسوب',
-            'subtitle': '2:00 PM - 3:00 PM',
-            'status': ScheduleStatus.completed,
-          },
-        ];
-      case 5: // Friday
-        return [
-          {
-            'id': 'rel112',
-            'icon': Icons.book,
-            'title': 'التربية الإسلامية',
-            'subtitle': '8:00 AM - 9:00 AM',
-            'status': ScheduleStatus.completed,
-          },
-          {
-            'id': 'sport113',
-            'icon': Icons.sports_soccer,
-            'title': 'التربية البدنية',
-            'subtitle': '10:00 AM - 11:00 AM',
-            'status': ScheduleStatus.upcoming,
-          },
-          {
-            'id': 'music114',
-            'icon': Icons.music_note,
-            'title': 'الموسيقى',
-            'subtitle': '1:00 PM - 2:00 PM',
-            'status': ScheduleStatus.upcoming,
-          },
-        ];
-      default: // Weekend (Saturday/Sunday)
-        return [
-          {
-            'id': 'weekend',
-            'icon': Icons.weekend,
-            'title': 'عطلة نهاية الأسبوع',
-            'subtitle': 'لا توجد دروس اليوم',
-            'status': ScheduleStatus.completed,
-          },
-        ];
+  IconData _getIconForSubject(String subject) {
+    switch (subject.toLowerCase()) {
+      case 'mathematics':
+      case 'الرياضيات':
+        return Icons.functions;
+      case 'physics':
+      case 'الفيزياء':
+        return Icons.science;
+      case 'chemistry':
+      case 'الكيمياء':
+        return Icons.science;
+      case 'biology':
+      case 'الأحياء':
+        return Icons.science;
+      case 'english':
+      case 'اللغة الإنجليزية':
+        return Icons.language;
+      case 'arabic':
+      case 'اللغة العربية':
+        return Icons.edit;
+      case 'history':
+      case 'التاريخ':
+        return Icons.history_edu;
+      case 'geography':
+      case 'الجغرافيا':
+        return Icons.public;
+      case 'art':
+      case 'الفنون':
+        return Icons.palette;
+      case 'computer':
+      case 'الحاسوب':
+        return Icons.computer;
+      case 'sports':
+      case 'التربية البدنية':
+        return Icons.sports_soccer;
+      case 'music':
+      case 'الموسيقى':
+        return Icons.music_note;
+      case 'religion':
+      case 'التربية الإسلامية':
+        return Icons.book;
+      default:
+        return Icons.book;
     }
   }
 
+  String _formatTimeRange(DateTime startTime, DateTime endTime) {
+    final startFormat = DateFormat('h:mm a');
+    final endFormat = DateFormat('h:mm a');
+    return '${startFormat.format(startTime)} - ${endFormat.format(endTime)}';
+  }
+
   String _getDateString() {
-    final selectedDate = widget.selectedDate;
     const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     const months = [
       'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
       'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
     ];
     
-    final dayName = days[selectedDate.weekday - 1];
-    final monthName = months[selectedDate.month - 1];
-    final dayNumber = selectedDate.day;
-    final year = selectedDate.year;
+    final dayName = days[widget.selectedDate.weekday - 1];
+    final monthName = months[widget.selectedDate.month - 1];
+    final dayNumber = widget.selectedDate.day;
+    final year = widget.selectedDate.year;
     
     return '$dayName، $dayNumber $monthName $year';
   }
 
-  void _onScheduleItemTap(Map<String, dynamic> item) {
+  void _onScheduleItemTap(ScheduleEntity schedule) {
     // TODO: Navigate to schedule item details
-    print('Schedule item tapped: ${item['title']}');
+    print('Schedule item tapped: ${schedule.title}');
   }
 } 

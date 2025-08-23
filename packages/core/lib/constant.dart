@@ -9,5 +9,5 @@ class Constants {
   static String getSubjectListEndpoint = '/auth/login';
   static String getTeacherById = '/api/show_teacher';
   static String getTeacherList = '/api/show_teacher_section';
-  static String getProfileData = '/auth/login';
+  static String getStudentProfiel = '/api/show_student_profile';
 }

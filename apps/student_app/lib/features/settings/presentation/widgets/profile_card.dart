@@ -8,6 +8,8 @@ class ProfileCard extends StatelessWidget {
   final bool isDark;
   final Animation<double> scaleAnimation;
   final VoidCallback onEditProfile;
+  final String name;
+  final String email;
 
   const ProfileCard({
     Key? key,
@@ -15,6 +17,8 @@ class ProfileCard extends StatelessWidget {
     required this.isDark,
     required this.scaleAnimation,
     required this.onEditProfile,
+    required this.name,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -28,7 +32,7 @@ class ProfileCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: isDark 
+            colors: isDark
                 ? [AppColors.darkGradientStart, AppColors.darkGradientEnd]
                 : [AppColors.primary, AppColors.secondary],
           ),
@@ -62,7 +66,7 @@ class ProfileCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Student Name',
+                    name,
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 18, tablet: 20, desktop: 22),
                       fontWeight: FontWeight.w600,
@@ -71,7 +75,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
                   Text(
-                    'student@school.com',
+                    email,
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
                       color: Colors.white.withOpacity(0.8),
@@ -100,4 +104,4 @@ class ProfileCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

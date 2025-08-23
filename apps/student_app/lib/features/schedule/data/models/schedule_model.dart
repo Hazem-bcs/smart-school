@@ -32,22 +32,6 @@ class ScheduleModel extends ScheduleEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'startTime': startTime.toIso8601String(),
-      'endTime': endTime.toIso8601String(),
-      'className': className,
-      'subject': subject,
-      'teacherId': teacherId,
-      'location': location,
-      'type': type.toString().split('.').last,
-      'status': status.toString().split('.').last,
-    };
-  }
-
   static ScheduleType _parseScheduleType(String type) {
     switch (type) {
       case 'class':

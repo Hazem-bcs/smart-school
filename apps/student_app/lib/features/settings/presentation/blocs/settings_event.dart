@@ -1,25 +1,3 @@
-// part of 'settings_bloc.dart';
-//
-// abstract class SettingsEvent extends Equatable {
-//   const SettingsEvent();
-//
-//   @override
-//   List<Object?> get props => [];
-// }
-//
-// class ToggleDarkMode extends SettingsEvent {}
-//
-// class ToggleGeneralNotifications extends SettingsEvent {}
-//
-// class ToggleClassNotifications extends SettingsEvent {}
-//
-// class ToggleVibration extends SettingsEvent {}
-//
-// class LogoutRequested extends SettingsEvent {}
-
-
-
-// lib/features/settings/presentation/bloc/settings_event.dart
 
 import 'package:equatable/equatable.dart';
 
@@ -37,3 +15,6 @@ class LogoutButtonPressed extends SettingsEvent { // يبقى الاسم كما 
   List<Object> get props => [];
 }
 
+class GetProfileEvent extends SettingsEvent {
+  const GetProfileEvent();
+}
