@@ -7,6 +7,16 @@ class UserModel {
   final String? token;
   final String? name;
   final String? profilePhotoUrl;
+  final String? gender;
+  final String? nationality;
+  final String? dateBirth;
+  final String? grade;
+  final String? classroom;
+  final String? section;
+  final String? fatherName;
+  final String? motherName;
+  final String? address;
+  final String? phone;
 
   const UserModel({
     required this.id,
@@ -15,6 +25,16 @@ class UserModel {
     required this.password,
     required this.profilePhotoUrl,
     required this.token,
+    this.gender,
+    this.nationality,
+    this.dateBirth,
+    this.grade,
+    this.classroom,
+    this.section,
+    this.fatherName,
+    this.motherName,
+    this.address,
+    this.phone,
   });
 
 
@@ -36,7 +56,17 @@ class UserModel {
         email: userData['email'] as String? ?? '',
         password: '', 
         profilePhotoUrl: null,
-        token: null, 
+        token: null,
+        gender: userData['gender'] as String?,
+        nationality: userData['nationality'] as String?,
+        dateBirth: userData['date_birth'] as String?,
+        grade: userData['grade'] as String?,
+        classroom: userData['classroom'] as String?,
+        section: userData['section'] as String?,
+        fatherName: userData['father_name'] as String?,
+        motherName: userData['mother_name'] as String?,
+        address: userData['address'] as String?,
+        phone: userData['phone'] as String?,
       );
     }
 
@@ -47,7 +77,17 @@ class UserModel {
         email: data['email'] as String? ?? '',
         password: '',
         profilePhotoUrl: null,
-        token: null, 
+        token: null,
+        gender: data['gender'] as String?,
+        nationality: data['nationality'] as String?,
+        dateBirth: data['date_birth'] as String?,
+        grade: data['grade'] as String?,
+        classroom: data['classroom'] as String?,
+        section: data['section'] as String?,
+        fatherName: data['father_name'] as String?,
+        motherName: data['mother_name'] as String?,
+        address: data['address'] as String?,
+        phone: data['phone'] as String?,
       );
     }
 
@@ -61,6 +101,16 @@ class UserModel {
       'email': email,
       'profile_photo_url': profilePhotoUrl,
       'token': token,
+      'gender': gender,
+      'nationality': nationality,
+      'date_birth': dateBirth,
+      'grade': grade,
+      'classroom': classroom,
+      'section': section,
+      'father_name': fatherName,
+      'mother_name': motherName,
+      'address': address,
+      'phone': phone,
     };
   }
 
@@ -72,6 +122,16 @@ class UserModel {
       email: email,
       profilePhotoUrl: profilePhotoUrl,
       token: token,
+      gender: gender,
+      nationality: nationality,
+      dateBirth: dateBirth,
+      grade: grade,
+      classroom: classroom,
+      section: section,
+      fatherName: fatherName,
+      motherName: motherName,
+      address: address,
+      phone: phone,
     );
   }
 }

@@ -6,6 +6,16 @@ class UserEntity {
   final String? token;
   final String? name;
   final String? profilePhotoUrl;
+  final String? gender;
+  final String? nationality;
+  final String? dateBirth;
+  final String? grade;
+  final String? classroom;
+  final String? section;
+  final String? fatherName;
+  final String? motherName;
+  final String? address;
+  final String? phone;
 
   const UserEntity({
     required this.id,
@@ -14,5 +24,15 @@ class UserEntity {
     this.token,
     this.name,
     this.profilePhotoUrl,
+    this.gender,
+    this.nationality,
+    this.dateBirth,
+    this.grade,
+    this.classroom,
+    this.section,
+    this.fatherName,
+    this.motherName,
+    this.address,
+    this.phone,
   });
 }

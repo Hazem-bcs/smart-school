@@ -34,10 +34,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           try {
             print('[ProfileRemoteDataSourceImpl] Raw response data: ${res.data}');
             if (res.data is List) {
-              print('[ProfileRemoteDataSourceImpl] Invalid response format: got List instead of Map');
-              return Left(UnknownFailure(
-                  message:
-                      'Invalid response format: expected Map<String, dynamic> but got List<dynamic>'));
+              print('[ProfileRemoteDataSourceImpl] Response is a List, processing first item');
+              // Handle List response by wrapping it in a Map with 'data' key
+              final wrappedData = {'data': res.data};
+              final user = UserModel.fromLaravelResponse(wrappedData);
+              print('[ProfileRemoteDataSourceImpl] Parsed UserModel: $user');
+              return Right(user);
             }
             final user = UserModel.fromLaravelResponse(res.data);
             print('[ProfileRemoteDataSourceImpl] Parsed UserModel: $user');

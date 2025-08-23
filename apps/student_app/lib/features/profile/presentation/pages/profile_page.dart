@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/constants/app_colors.dart';
-import 'package:smart_school/features/profile/presentation/pages/edit_profile_page.dart';
-
-import '../../../../widgets/app_exports.dart';
+import 'package:core/theme/constants/app_strings.dart';
 import '../bolcs/profile_bloc.dart';
+import '../widgets/profile_header_widget.dart';
+import '../widgets/profile_info_widget.dart';
+import '../widgets/profile_actions_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,10 +17,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
-
-    context.read<ProfileBloc>().add(GetProfileDataEvent());
     super.initState();
-        print('object');
+    context.read<ProfileBloc>().add(GetProfileDataEvent());
   }
 
   @override
@@ -26,146 +27,198 @@ class _ProfilePageState extends State<ProfilePage> {
       listener: (context, state) {
         if (state is ProfileErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.redAccent,
-            ),
+            ProfileErrorSnackBar(message: state.message),
           );
         }
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBarWidget(title: AppStrings.profile),
-          body:
-              state is GetDataLoadingState
-                  ? const Center(child: CircularProgressIndicator())
-                  : state is ProfileDataLoadedState
-                  ? SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          // Profile Picture
-                          AppAvatarWidget(
-                            imageUrl:
-                                state.userEntity.profilePhotoUrl ??
-                                "assets/images/img.png",
-                            radius: 70,
-                          ),
-                          const SizedBox(height: 15),
-                          // User Name
-                          Text(
-                            "${state.userEntity.name}\nlevel",
-                            style: Theme.of(
-                              context,
-                            ).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 30),
-
-                          // Information Cards
-                          _buildInfoCard(
-                            context,
-                            icon: Icons.email,
-                            title: 'Email',
-                            subtitle: state.userEntity.email,
-                          ),
-                          const SizedBox(height: 15),
-                          _buildInfoCard(
-                            context,
-                            icon: Icons.phone,
-                            title: 'Phone',
-                            subtitle: state.userEntity.email,
-                          ),
-                          const SizedBox(height: 15),
-                          _buildInfoCard(
-                            context,
-                            icon: Icons.location_on,
-                            title: 'Address',
-                            subtitle:
-                                state.userEntity.name ??
-                                'N/A', // Assuming an address field
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => EditProfilePage(
-                                        currentUser: state.userEntity,
-                                      ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.edit),
-                            label: const Text('Edit Profile'),
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: AppColors.primary,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                  : Container(), // Or a custom error widget
+          backgroundColor: Colors.grey[50],
+          appBar: const ProfileAppBar(),
+          body: ProfileBody(state: state),
         );
       },
     );
   }
+}
 
-  Widget _buildInfoCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Row(
-          children: [
-            Icon(icon, size: 28, color: AppColors.primary),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: Colors.black87),
-                  ),
-                ],
-              ),
+
+// todo: here if we can refactor the code by separate the widgets into different files
+/// ---------------------- Widgets ----------------------
+
+class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const ProfileAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(
+        AppStrings.profile,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: AppColors.primary,
+      elevation: 0,
+      centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: () {
+            context.read<ProfileBloc>().add(GetProfileDataEvent());
+          },
+          icon: const Icon(
+            Icons.refresh,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class ProfileBody extends StatelessWidget {
+  final ProfileState state;
+  const ProfileBody({super.key, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    if (state is GetDataLoadingState) {
+      return const ProfileLoadingWidget();
+    }
+
+    if (state is ProfileDataLoadedState) {
+      final userEntity = (state as ProfileDataLoadedState).userEntity;
+      return ProfileLoadedWidget(userEntity: userEntity);
+    }
+
+    if (state is ProfileErrorState) {
+      final message = (state as ProfileErrorState).message;
+      return ProfileErrorWidget(message: message);
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class ProfileLoadingWidget extends StatelessWidget {
+  const ProfileLoadingWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: AppColors.primary,
+          ),
+          SizedBox(height: 16),
+          Text(
+            'جاري تحميل البيانات...',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileLoadedWidget extends StatelessWidget {
+  final dynamic userEntity;
+  const ProfileLoadedWidget({super.key, required this.userEntity});
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<ProfileBloc>().add(GetProfileDataEvent());
+      },
+      color: AppColors.primary,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            ProfileHeaderWidget(user: userEntity),
+            ProfileInfoWidget(user: userEntity),
+            ProfileActionsWidget(user: userEntity),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
+}
+
+class ProfileErrorWidget extends StatelessWidget {
+  final String message;
+  const ProfileErrorWidget({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 80,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'حدث خطأ في تحميل البيانات',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              context.read<ProfileBloc>().add(GetProfileDataEvent());
+            },
+            icon: const Icon(Icons.refresh),
+            label: const Text('إعادة المحاولة'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileErrorSnackBar extends SnackBar {
+  ProfileErrorSnackBar({super.key, required String message})
+      : super(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        );
 }
