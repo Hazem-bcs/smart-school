@@ -95,7 +95,8 @@ class MyApp extends StatelessWidget {
             locale: context.locale,
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
-            home: SplashPage(),
+             home: SplashPage(),
+            // home: HomePage(),
             routes: {
               '/onBoarding': (context) => OnBoardingPage(),
               '/login': (context) => LoginPage(),
