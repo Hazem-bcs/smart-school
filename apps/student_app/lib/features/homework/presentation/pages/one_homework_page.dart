@@ -45,7 +45,10 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  },
                 child: const Text('accept'),
               ),
             ],

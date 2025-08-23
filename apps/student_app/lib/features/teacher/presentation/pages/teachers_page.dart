@@ -77,7 +77,7 @@ class _TeachersPageState extends State<TeachersPage> {
                   child: TeacherProfileCard(
                     imageUrl: teacher.imageUrl,
                     name: teacher.name,
-                    subject: "uu",
+                    subject: "Math",
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(

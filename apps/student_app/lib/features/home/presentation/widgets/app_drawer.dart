@@ -21,11 +21,10 @@ class AppDrawerWidget extends StatelessWidget {
           SizedBox(height: 40),
           DrawerItem(
             onTap: () {
-              Navigator.of(context).pushNamed('/teacherPage');
+              Navigator.of(context).pushNamed(    '/notificationPage');
             },
-            imageUrl: "assets/svg/profile.svg",
-            title: AppStrings.teachers,
-            icon: Icons.person,
+            title: AppStrings.notification,
+            imageUrl: "assets/svg/notices.svg",
           ),
           DrawerItem(
             onTap: () {
@@ -35,6 +34,22 @@ class AppDrawerWidget extends StatelessWidget {
             title: AppStrings.homeWork,
             icon: Icons.home_work,
           ),
+          DrawerItem(
+            onTap: () {
+              Navigator.of(context).pushNamed(   '/resourcesPage');
+            },
+            title: AppStrings.resources,
+            imageUrl: "assets/svg/media.svg",
+          ),
+          DrawerItem(
+            onTap: () {
+              Navigator.of(context).pushNamed('/teacherPage');
+            },
+            imageUrl: "assets/svg/profile.svg",
+            title: AppStrings.teachers,
+            icon: Icons.person,
+          ),
+
           DrawerItem(
             onTap: () {
               Navigator.of(context).pushNamed('/duesPage');
@@ -51,18 +66,6 @@ class AppDrawerWidget extends StatelessWidget {
             },
             title: AppStrings.attendance,
             imageUrl:"assets/svg/attendance.svg",
-          ), DrawerItem(
-            onTap: () {
-              Navigator.of(context).pushNamed(   '/resourcesPage');
-            },
-            title: AppStrings.resources,
-            imageUrl: "assets/svg/media.svg",
-          ), DrawerItem(
-            onTap: () {
-              Navigator.of(context).pushNamed(    '/notificationPage');
-            },
-            title: AppStrings.notification,
-            imageUrl: "assets/svg/notices.svg",
           ),
         ],
       ),
