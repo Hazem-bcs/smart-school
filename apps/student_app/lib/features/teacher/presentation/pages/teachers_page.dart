@@ -1,3 +1,4 @@
+
 import 'package:smart_school/features/teacher/presentation/pages/teacher_details_page.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
@@ -65,34 +66,29 @@ class _TeachersPageState extends State<TeachersPage> {
             if (teachers.isEmpty) {
               return const Center(child: Text('لا توجد بيانات للمعلمين.'));
             }
-
-
-            return GridView.builder(
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: 0.8,
-              ),
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               itemCount: teachers.length,
               itemBuilder: (context, index) {
                 final TeacherEntity teacher = teachers[index];
 
-                return TeacherProfileCard(
-                  imageUrl: teacher.imageUrl,
-                  name: teacher.name,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder:
-                            (context) => TeacherDetailsPage(
-                              teacherId: teacher.id,
-                              teacher: teacher,
-                            ),
-                      ),
-                    );
-                  },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: TeacherProfileCard(
+                    imageUrl: teacher.imageUrl,
+                    name: teacher.name,
+                    subject: "Math",
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TeacherDetailsPage(
+                            teacherId: teacher.id,
+                            teacher: teacher,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );
@@ -104,5 +100,3 @@ class _TeachersPageState extends State<TeachersPage> {
     );
   }
 }
-
-

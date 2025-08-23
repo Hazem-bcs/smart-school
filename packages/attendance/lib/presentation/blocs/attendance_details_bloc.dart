@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/attendance_entity.dart';
 import '../../domain/usecases/get_attendance_details_use_case.dart';
