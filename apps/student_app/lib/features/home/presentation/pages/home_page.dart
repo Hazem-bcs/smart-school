@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _currentIndex = 0;
 
   void _onItemTapped(int index) {
@@ -46,98 +47,110 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: AppDrawerWidget(),
-      appBar: AppBar(
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed('/tutorChatView');
-            },
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 20.0),
-              child: SvgPicture.asset('assets/svg/chat.svg'),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(
-                context,
-              ).pushNamed('/notificationPage');
-            },
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 20.0),
-              child: Icon(Icons.notifications,color: Colors.white,size: 35,)
-            ),
-          ),
-        ],
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "Smart School",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF7B61FF),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: ResponsiveHelper.getSpacing(
-                context,
-                mobile: 20,
-                tablet: 100,
-                desktop: 120,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+          // If the drawer is open, close it and prevent the app from closing.
+          Navigator.of(context).pop();
+          return false;
+        }
+        // Otherwise, allow the default back button behavior.
+        return true;
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: AppDrawerWidget(),
+        appBar: AppBar(
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed('/tutorChatView');
+              },
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 20.0),
+                child: SvgPicture.asset('assets/svg/chat.svg'),
               ),
             ),
-            PromoSlider(),
-            BlocBuilder<NotificationBloc, NotificationState>(
-              builder: (context, state) {
-                if (state is NotificationInitial ||
-                    state is NotificationLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is NotificationListLoadedState) {
-                  final unreadNotifications =
-                      state.notificationList
-                          .where((notification) => !notification.isRead)
-                          .toList();
-                  if (unreadNotifications.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Text(
-                          'لا توجد إشعارات جديدة',
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(
+                  context,
+                ).pushNamed('/notificationPage');
+              },
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(end: 20.0),
+                child: Icon(Icons.notifications,color: Colors.white,size: 35,)
+              ),
+            ),
+          ],
+          iconTheme: IconThemeData(color: Colors.white),
+          title: Text(
+            "Smart School",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          backgroundColor: const Color(0xFF7B61FF),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: ResponsiveHelper.getSpacing(
+                  context,
+                  mobile: 20,
+                  tablet: 100,
+                  desktop: 120,
+                ),
+              ),
+              PromoSlider(),
+              BlocBuilder<NotificationBloc, NotificationState>(
+                builder: (context, state) {
+                  if (state is NotificationInitial ||
+                      state is NotificationLoadingState) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is NotificationListLoadedState) {
+                    final unreadNotifications =
+                        state.notificationList
+                            .where((notification) => !notification.isRead)
+                            .toList();
+                    if (unreadNotifications.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Text(
+                            'لا توجد إشعارات جديدة',
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
                         ),
-                      ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: unreadNotifications.length,
+                      itemBuilder: (context, index) {
+                        final notification = unreadNotifications[index];
+                        return NotificationCard(
+                          notification: notification,
+                          onTap: () => _markAsRead(notification),
+                        );
+                      },
                     );
                   }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: unreadNotifications.length,
-                    itemBuilder: (context, index) {
-                      final notification = unreadNotifications[index];
-                      return NotificationCard(
-                        notification: notification,
-                        onTap: () => _markAsRead(notification),
-                      );
-                    },
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            ZoomMeetingsButton(),
-          ],
+                  return const SizedBox.shrink();
+                },
+              ),
+              ZoomMeetingsButton(),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: SharedBottomNavigation(
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
+        bottomNavigationBar: SharedBottomNavigation(
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
