@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smart_school/widgets/responsive/responsive_helper.dart';
 import 'package:smart_school/widgets/responsive/responsive_widgets.dart';
 import 'package:smart_school/routing/navigation_extension.dart';
