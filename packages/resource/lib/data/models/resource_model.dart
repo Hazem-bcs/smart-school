@@ -21,12 +21,12 @@ class ResourceModel {
 
   factory ResourceModel.fromJson(Map<String, dynamic> json) {
     return ResourceModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      url: json['url'],
-      teacherId: json['teacherId'],
-      createdAt: json['createdAt'],
+      id: json['id'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      url: json['url'] as String,
+      teacherId: json['teacherId'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
 

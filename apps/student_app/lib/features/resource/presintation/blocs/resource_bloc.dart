@@ -14,11 +14,18 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
   }
 
   Future<void> _onGetResourceDataListEvent(GetResourceDataListEvent event , Emitter<ResourceState> emit) async {
+    print('[ResourceBloc] GetResourceDataListEvent triggered');
     emit(GetResourceDataLoadingState());
     final result = await getResourceListUseCase();
     result.fold(
-      (failure) => emit(ResourceErrorState(message: failure.message)),
-      (resourceList) => emit(ResourceDataListLoadedState(resourceList: resourceList)),
+      (failure) {
+        print('[ResourceBloc] Failed to load resources: ${failure.message}');
+        emit(ResourceErrorState(message: failure.message));
+      },
+      (resourceList) {
+        print('[ResourceBloc] Loaded resources: ${resourceList.length} items');
+        emit(ResourceDataListLoadedState(resourceList: resourceList));
+      },
     );
   }
 }
