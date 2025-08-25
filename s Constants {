@@ -1,0 +1,76 @@
+[33me5ace40[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m rm
+[33ma144791[m r
+[33mb4c2a83[m feat fix resources
+[33m7ea5ee2[m redesign drawer
+[33m76dfa61[m fix assignment feature
+[33m4dd4847[m >
+[33m75e40d7[m (feat): redesign profile and edit profile page with integrated to back-end
+[33m41192e9[m a lot of thing
+[33m60fbb04[m fix project(student_app)
+[33m2b65472[m fix teacher list(student_app)
+[33m99ceca9[m Refactoring the Attendance Page into a Separate Feature Package
+[33m58c2fa2[m feat(teacher) in student app integrated back-end with teacher feat
+[33m65f2c82[m redesgin splash page
+[33m058da20[m fix profile(student_app)
+[33m57c8fe7[m fix new_assigments(student_app)
+[33m56e81bd[m Resolved merge conflict in constant.dart
+[33m2b61e95[m edit
+[33m897bdef[m feat: dues integration with back-end
+[33m46a67a4[m feat(auth) : integration back-end with flutter app login and logout
+[33mc9e27ac[m Add assignment details (student_app)
+[33madc490d[m Add assignment list (student_app)
+[33m33faf95[m back
+[33m6514032[m Add PoromoSlidrWidget
+[33m40b3ba7[m fixed the backend data fetching and edit ui (student app_subject)
+[33m3fe3fbf[m fixed the backend data fetching and edit ui (student app_teachers)
+[33mb54783a[m finish ZoomMeetings(student_app) integrated with back_end
+[33m6e777af[m Add zoom feature to student app
+[33mf2570f7[m merge
+[33m7ec7153[m merge
+[33mba7ec5c[m feat: integrate settinga  meeting with backend API
+[33m2fd51da[m feat: integrate zoom meeting with backend API
+[33m9b27291[m (feat) integrat assignment_submission with back-end
+[33m6dee31d[m (feat) finish profile and assignment integrated with back-end-
+[33m30eddc3[m (feat) finish profile and editProfile integrated with back-end-
+[33ma8d19be[m fix rejected
+[33m3eeab80[m Merge branch 'main' of https://github.com/Hazem-bcs/smart-school
+[33m0fccc47[m (feat): work on profile and editProfile in teacher app
+[33mbdebbdf[m fix attendance
+[33md9f07f7[m fix teacher
+[33m18737c4[m delete post and move bottomNavicationBar to smart_school
+[33mc7fd6fd[m ui schedule
+[33m977fcbb[m fix
+[33m561c95e[m connect settings
+[33ma1eadf0[m fix rejected
+[33mb31d3e9[m fix assignmnet page
+[33mfa15cf0[m aa
+[33m3cc6cf8[m[33m ([m[1;31morigin/cursor/debug-dropdown-button-duplicate-value-error-6e64[m[33m)[m Reset selected class if not in available classes list
+[33m590fe20[m not compleate yet
+[33m158c6bd[m (feat): integrate assignments with back-end in teacher app
+[33ma7ce81f[m refactor theme
+[33m5dca645[m refactor network layer
+[33ma7688dd[m refactor network layer
+[33mda8ff6f[m refactor teacher/lib
+[33m8fc2538[m[33m ([m[1;31morigin/teacher[m[33m)[m refactor some code
+[33m97c7af2[m fix navigation bar
+[33mb09aa84[m fix assignment_submission feature in teacher app
+[33m9d809ab[m finish Ui in teacher app
+[33m04b67a0[m initilize assignmt
+[33m00c35ef[m asd
+[33m8fb4a83[m refactor: حذف صفحة الصفوف وتوجيه المستخدم مباشرة إلى الصفحة الرئيسية بعد تسجيل الدخول
+[33m634a1fb[m build teachr app design
+[33m36f7353[m feat: Add assignment feature and bottom navigation to teacher app
+[33mb5567b3[m  feat: Redesign HomePage with responsive animations & modern UI
+[33m76f1efb[m Configure .gitignore to ignore IDE and generated files and remove them from tracking
+[33m2fc5450[m Resolve merge  changes
+[33m4ee55fd[m teacher app: (feat: password) add password package and intgreated with teacher app
+[33m712b467[m feat(theme): add custom TeacherTheme and integrate with app (light/dark, accent, docs)
+[33m8fb404a[m initial teacher app
+[33m96578f8[m feat: integrate auth package with teacher_app and implement splash system
+[33m520b491[m feat: complete teacher and seprated to tow blocs
+[33m21c3f9f[m fix rejected
+[33m7cc4355[m feat: complete attendance backend integration
+[33mff5eb32[m fix teacher and subject
+[33m2ab856d[m notification
+[33m23ba12b[m fix
+[33m9915796[m Restructure project to monorepo layout

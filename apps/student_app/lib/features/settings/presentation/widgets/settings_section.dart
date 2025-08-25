@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:core/theme/index.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:core/blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_event.dart';
+import 'package:core/blocs/theme/theme_state.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 
 class SettingsSection extends StatelessWidget {
@@ -70,14 +74,32 @@ class SettingsSection extends StatelessWidget {
                 trailing: Icon(Icons.arrow_forward_ios, color: theme.iconTheme.color),
                 onTap: onLanguageToggle,
               ),
-              ListTile(
-                leading: Icon(isDark ? Icons.dark_mode : Icons.light_mode, color: theme.iconTheme.color),
-                title: Text('Dark Mode', style: theme.textTheme.titleMedium),
-                subtitle: Text(isDark ? 'Enabled' : 'Disabled'),
-                trailing: Switch(
-                  value: isDark,
-                  onChanged: (_) => onThemeToggle(),
-                ),
+              BlocBuilder<ThemeBloc, ThemeState>(
+                builder: (context, themeState) {
+                  bool isDarkMode = false;
+
+                  if (themeState is ThemeLoaded) {
+                    isDarkMode = themeState.isDarkMode;
+                  } else {
+                    isDarkMode = isDark;
+                  }
+
+                  return ListTile(
+                    leading: Icon(
+                        isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                        color: theme.iconTheme.color
+                    ),
+                    title: Text('Dark Mode', style: theme.textTheme.titleMedium),
+                    subtitle: Text(isDarkMode ? 'Enabled' : 'Disabled'),
+                    trailing: Switch(
+                      value: isDarkMode,
+                      onChanged: (_) {
+                        context.read<ThemeBloc>().add(ToggleTheme());
+                        onThemeToggle();
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -85,4 +107,4 @@ class SettingsSection extends StatelessWidget {
       ],
     );
   }
-} 
+}

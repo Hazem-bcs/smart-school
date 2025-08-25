@@ -1,30 +1,46 @@
-import 'package:core/theme/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notification/domain/entities/notification_entity.dart';
-
-
 
 class NotificationCard extends StatelessWidget {
   final NotificationEntity notification;
   final VoidCallback? onTap;
 
-
-  const NotificationCard({
-    Key? key,
-    required this.notification,
-    this.onTap,
-  }) : super(key: key);
+  const NotificationCard({Key? key, required this.notification, this.onTap})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final cardColor =
+        notification.isRead
+            ? (isDark
+                ? theme.colorScheme.surface.withOpacity(0.5)
+                : theme.cardColor)
+            : (isDark ? theme.cardColor : theme.colorScheme.background);
+
+    final iconColor =
+        notification.isRead
+            ? (isDark ? theme.hintColor : theme.disabledColor)
+            : theme.colorScheme.primary;
+
+    final iconBackgroundColor =
+        notification.isRead
+            ? (isDark ? theme.colorScheme.surface : theme.disabledColor)
+            : theme.colorScheme.primary.withOpacity(0.1);
+
+    final titleColor =
+        notification.isRead
+            ? (isDark ? Colors.grey : theme.textTheme.bodySmall?.color)
+            : theme.textTheme.titleMedium?.color;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: notification.isRead ? 0.5 : 2.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      color: notification.isRead ? Colors.grey[100] : Colors.white,
+      color: cardColor,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.0),
@@ -37,16 +53,12 @@ class NotificationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundColor: notification.isRead
-                        ? theme.disabledColor
-                        : theme.primaryColor.withOpacity(0.1),
+                    backgroundColor: iconBackgroundColor,
                     child: Icon(
                       notification.isRead
                           ? Icons.notifications_none
                           : Icons.notifications_active,
-                      color: notification.isRead
-                          ? theme.hintColor
-                          : primaryColor,
+                      color: iconColor,
                     ),
                   ),
                   const SizedBox(width: 16.0),
@@ -57,12 +69,11 @@ class NotificationCard extends StatelessWidget {
                         Text(
                           notification.title,
                           style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: notification.isRead
-                                ? FontWeight.normal
-                                : FontWeight.bold,
-                            color: notification.isRead
-                                ? theme.textTheme.bodySmall?.color
-                                : theme.textTheme.bodyLarge?.color,
+                            fontWeight:
+                                notification.isRead
+                                    ? FontWeight.normal
+                                    : FontWeight.bold,
+                            color: titleColor,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -71,9 +82,10 @@ class NotificationCard extends StatelessWidget {
                         Text(
                           notification.body,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: notification.isRead
-                                ? theme.hintColor
-                                : theme.textTheme.bodyMedium?.color,
+                            color:
+                                notification.isRead
+                                    ? theme.hintColor
+                                    : theme.textTheme.bodyMedium?.color,
                           ),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -82,8 +94,9 @@ class NotificationCard extends StatelessWidget {
                         Align(
                           alignment: Alignment.bottomLeft,
                           child: Text(
-                            DateFormat('MMM dd, yyyy - hh:mm a')
-                                .format(notification.sentTime),
+                            DateFormat(
+                              'MMM dd, yyyy - hh:mm a',
+                            ).format(notification.sentTime),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.hintColor,
                             ),
@@ -102,12 +115,16 @@ class NotificationCard extends StatelessWidget {
                     notification.imageUrl!,
                     width: double.infinity,
                     fit: BoxFit.fitWidth,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: 150,
-                      width: double.infinity,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.broken_image, color: Colors.grey),
-                    ),
+                    errorBuilder:
+                        (context, error, stackTrace) => Container(
+                          height: 150,
+                          width: double.infinity,
+                          color: isDark ? theme.dividerColor : Colors.grey[200],
+                          child: Icon(
+                            Icons.broken_image,
+                            color: isDark ? theme.hintColor : Colors.grey,
+                          ),
+                        ),
                   ),
                 ),
               ],
