@@ -58,7 +58,6 @@ class _AssignmentCardState extends State<AssignmentCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     Color statusColor = _getStatusColor();
     final isNew = DateTime.now().difference(widget.assignment.createdAt).inHours <= 48;
     final isOverdue = DateTime.now().isAfter(widget.assignment.dueDate) && 

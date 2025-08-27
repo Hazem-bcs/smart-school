@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:teacher_app/features/assignment/domain/entities/assignment.dart';
 import 'dart:async';
-import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
-import '../widgets/assignment_list_tile.dart';
 import '../../../../../core/widgets/shared_bottom_navigation.dart';
-import 'package:core/theme/constants/app_colors.dart';
 import '../../../../../core/routing/navigation_extension.dart';
 import '../widgets/assignments_app_bar.dart';
 import '../widgets/assignments_search_field.dart';

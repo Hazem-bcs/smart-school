@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/network_info.dart';
 import 'package:get_it/get_it.dart';
@@ -37,6 +36,7 @@ import 'package:profile/injection_container.dart' as profile_di;
 import 'package:resource/domain/use_cases/get_resource_list_use_case.dart';
 import 'package:resource/injection_container.dart' as resource_di;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_school/features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'package:smart_school/features/schedule/data/data_sources/schedule_remote_data_source.dart';
 import 'package:smart_school/features/schedule/data/repositories/schedule_repository_impl.dart';
 import 'package:smart_school/features/schedule/domain/repositories/schedule_repository.dart';
@@ -75,6 +75,9 @@ import 'features/ai_tutor/data/datasources/ai_tutor_remote_datasource.dart';
 import 'features/ai_tutor/data/repositories/ai_tutor_repository_impl.dart';
 import 'features/ai_tutor/domain/repositories/repositories.dart';
 import 'features/ai_tutor/domain/use_cases/send_chat_message_use_case.dart';
+
+// Home Feature
+import 'features/home/injection_container.dart' as home_di;
 
 // Presentation Layer - BLoCs
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
@@ -255,4 +258,14 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(
     () => SettingsBloc(getProfile: getIt<GetProfileUseCase>()),
   );
+
+  // ---------------- AI Tutor Feature ----------------
+  getIt.registerFactory(
+    () => ChatBloc(
+      getGeminiResponse: getIt<SendChatMessageUseCase>(),
+    ),
+  );
+
+  // ---------------- Home Feature ----------------
+  await home_di.initHomeFeature();
 }

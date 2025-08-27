@@ -176,7 +176,7 @@ class SubmissionBloc extends Bloc<SubmissionEvent, SubmissionState> {
     
     emit(SubmissionLoading());
     
-    final result = await markAssignmentAsGradedUseCase!(event.assignmentId);
+    final result = await markAssignmentAsGradedUseCase(event.assignmentId);
     result.fold(
       (failure) {
         // في حالة فشل وضع الواجب كمصحح، نعود للحالة الأصلية مع رسالة الخطأ

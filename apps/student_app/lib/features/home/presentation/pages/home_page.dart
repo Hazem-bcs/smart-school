@@ -7,9 +7,13 @@ import 'package:smart_school/widgets/shared_bottom_navigation.dart';
 
 import '../../../notification/presintation/bloc/notification_bloc.dart';
 import '../../../notification/presintation/widgets/notification_card.dart';
-import '../../../zoom/presentation/widgets/zoom_meetings_button.dart';
+import '../bloc/home_bloc.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/promo_slider_widget.dart';
+import '../widgets/stats_card_widget.dart';
+import '../widgets/quick_actions_widget.dart';
+import '../widgets/achievements_widget.dart';
+import '../widgets/progress_chart_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     // تأكد من أن الـ bloc متوفر في الشجرة قبل استخدامه
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<NotificationBloc>().add(GetNotificationListEvent());
+      context.read<HomeBloc>().add(LoadHomeDataEvent());
     });
   }
 
@@ -89,62 +94,181 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
-          backgroundColor: const Color(0xFF7B61FF),
+          backgroundColor: const Color(0xFF4F46E5), // تحديث اللون
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: ResponsiveHelper.getSpacing(
-                  context,
-                  mobile: 20,
-                  tablet: 100,
-                  desktop: 120,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            context.read<HomeBloc>().add(RefreshHomeDataEvent());
+            context.read<NotificationBloc>().add(GetNotificationListEvent());
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // مسافة من الأعلى
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(
+                    context,
+                    mobile: 16,
+                    tablet: 20,
+                    desktop: 24,
+                  ),
                 ),
-              ),
-              PromoSlider(),
-              BlocBuilder<NotificationBloc, NotificationState>(
-                builder: (context, state) {
-                  if (state is NotificationInitial ||
-                      state is NotificationLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is NotificationListLoadedState) {
-                    final unreadNotifications =
-                        state.notificationList
-                            .where((notification) => !notification.isRead)
-                            .toList();
-                    if (unreadNotifications.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Center(
-                          child: Text(
-                            'لا توجد إشعارات جديدة',
-                            style: TextStyle(color: Colors.grey, fontSize: 16),
-                          ),
+                
+                // PromoSlider
+                PromoSlider(),
+                
+                // مسافة بعد الـ Slider
+                const SizedBox(height: 24),
+                
+                // Home Stats and Progress
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeInitial || state is HomeLoading) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else if (state is HomeLoaded) {
+                      return Column(
+                        children: [
+                          // بطاقة الإحصائيات
+                          StatsCardWidget(stats: state.stats),
+                          const SizedBox(height: 20),
+                          
+                          // الرسم البياني
+                          ProgressChartWidget(stats: state.stats),
+                          const SizedBox(height: 20),
+                          
+                          // الإجراءات السريعة
+                          QuickActionsWidget(actions: state.quickActions),
+                          const SizedBox(height: 20),
+                          
+                          // الإنجازات
+                          AchievementsWidget(achievements: state.achievements),
+                          const SizedBox(height: 20),
+                        ],
+                      );
+                    } else if (state is HomeError) {
+                      return Container(
+                        margin: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.red[200]!),
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: Colors.red[400],
+                              size: 48,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'حدث خطأ في تحميل البيانات',
+                              style: TextStyle(
+                                color: Colors.red[700],
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              state.message,
+                              style: TextStyle(
+                                color: Colors.red[600],
+                                fontSize: 14,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                context.read<HomeBloc>().add(LoadHomeDataEvent());
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('إعادة المحاولة'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red[600],
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
+                    return const SizedBox.shrink();
+                  },
+                ),
 
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: unreadNotifications.length,
-                      itemBuilder: (context, index) {
-                        final notification = unreadNotifications[index];
-                        return NotificationCard(
-                          notification: notification,
-                          onTap: () => _markAsRead(notification),
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              ZoomMeetingsButton(),
-            ],
+                // Notifications Section
+                BlocBuilder<NotificationBloc, NotificationState>(
+                  builder: (context, state) {
+                    if (state is NotificationListLoadedState) {
+                      final unreadNotifications =
+                          state.notificationList
+                              .where((notification) => !notification.isRead)
+                              .toList();
+                      if (unreadNotifications.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Container(
+                        margin: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.notifications_active,
+                                  color: const Color(0xFFF59E0B), // تحديث اللون
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'إشعارات جديدة',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: unreadNotifications.length,
+                              itemBuilder: (context, index) {
+                                final notification = unreadNotifications[index];
+                                return NotificationCard(
+                                  notification: notification,
+                                  onTap: () => _markAsRead(notification),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+                
+                // مسافة من الأسفل
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: SharedBottomNavigation(

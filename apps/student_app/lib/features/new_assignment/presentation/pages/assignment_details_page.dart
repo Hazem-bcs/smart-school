@@ -80,7 +80,6 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage>
 
   void _submitAssignment() {
     // TODO: Implement actual submission logic (e.g., to a server)
-    final submissionText = _submissionTextController.text;
     Navigator.pop(context, true); // Close the page and return a result
   }
 
@@ -657,17 +656,16 @@ class AssignmentSubmissionSection extends StatelessWidget {
   final VoidCallback onSubmit;
 
   const AssignmentSubmissionSection({
-    Key? key,
+    super.key,
     required this.assignment,
     required this.submissionTextController,
     required this.selectedImage,
     required this.onPickImage,
     required this.onSubmit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     if (assignment.submissionStatus == SubmissionStatus.graded) {
       return AssignmentGradedView(

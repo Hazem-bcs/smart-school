@@ -8,75 +8,85 @@ abstract class ResourceRemoteDataSource {
   Future<Either<Failure, List<ResourceModel>>> getResourceList(int studentId);
 }
 
-class ResourceRemoteDataSourceImpl extends ResourceRemoteDataSource {
+class ResourceRemoteDataSourceImpl implements ResourceRemoteDataSource {
   final DioClient dioClient;
 
   ResourceRemoteDataSourceImpl({required this.dioClient});
 
+  // قائمة وهمية مؤقتة لحين جاهزية الـ back-end
+  static final List<ResourceModel> _dummyList = [
+    ResourceModel(
+      id: '1',
+      title: 'دليل الرياضيات للصف السادس',
+      description: 'ملف PDF يحتوي على شرح مفصل لدروس الرياضيات.',
+      url: 'https://example.com/resources/math6.pdf',
+      teacherId: '101',
+      targetClasses: ['6A', '6B'],
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    ResourceModel(
+      id: '2',
+      title: 'عرض بوربوينت: الطاقة المتجددة',
+      description: 'عرض تقديمي حول مصادر الطاقة المتجددة.',
+      url: 'https://example.com/resources/renewable-energy.pptx',
+      teacherId: '102',
+      targetClasses: ['7A'],
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    ResourceModel(
+      id: '3',
+      title: 'ورقة عمل علوم',
+      description: 'ورقة عمل تفاعلية لمادة العلوم.',
+      url: 'https://example.com/resources/science-worksheet.docx',
+      teacherId: '103',
+      targetClasses: ['8A', '8B'],
+      createdAt: DateTime.now(),
+    ),
+  ];
+
   @override
   Future<Either<Failure, List<ResourceModel>>> getResourceList(int studentId) async {
-    try {
-      // محاكاة بيانات JSON كما لو كانت قادمة من السيرفر
-      final List<Map<String, dynamic>> mockJsonList = [
-        {
-          "id": "math_res_001",
-          "title": "شرح نظرية فيثاغورس",
-          "description": "فيديو تفاعلي يشرح تطبيقات نظرية فيثاغورس في الحياة العملية",
-          "url": "https://example.com/videos/pythagoras",
-          "teacherId": "teacher_math_202",
-          "createdAt": "2023-10-15T14:30:00.000"
-        },
-        {
-          "id": "phy_res_045",
-          "title": "تجارب نيوتن في الجاذبية",
-          "description": "مقال علمي يشرح تجارب نيوتن الأصلية مع تحليل رياضي",
-          "url": "https://example.com/articles/newton-gravity",
-          "teacherId": "teacher_phy_307",
-          "createdAt": "2023-11-03T09:15:00.000"
-        },
-        {
-          "id": "hist_res_102",
-          "title": "وثائق الحرب العالمية الثانية",
-          "description": "أرشيف كامل لوثائق وصور نادرة من الحرب العالمية الثانية",
-          "url": "https://example.com/docs/ww2-archive",
-          "teacherId": "teacher_hist_115",
-          "createdAt": "2023-09-28T16:45:00.000"
-        },
-        {
-          "id": "gen_res_201",
-          "title": "دليل كتابة الأبحاث العلمية",
-          "description": "دليل شامل لكتابة الأبحاث الأكاديمية باحترافية",
-          "url": "https://example.com/guides/research-writing",
-          "teacherId": "teacher_arabic_422",
-          "createdAt": "2023-12-01T11:20:00.000"
-        },
-        {
-          "id": "prog_res_033",
-          "title": "تعلم Dart من الصفر",
-          "description": "سلسلة فيديوهات لتعلم لغة دارت لطلاب علوم الحاسب",
-          "url": "https://example.com/courses/dart-basics",
-          "teacherId": "teacher_cs_501",
-          "createdAt": "2023-10-22T10:00:00.000"
-        },
-      ];
+    // عند عدم توفر الـ back-end، نعيد القائمة الوهمية مباشرة
+    // يمكن لاحقاً تفعيل الكود الأصلي عند جاهزية الـ API
+    await Future.delayed(const Duration(milliseconds: 500)); // محاكاة التأخير الشبكي
+    return Right(_dummyList);
 
-      final resources = mockJsonList
-          .map<ResourceModel>((json) => ResourceModel.fromJson(json))
-          .toList();
-      _logSuccess('[ResourceRemoteDataSourceImpl] Loaded resources: ${resources.length} items');
-      return Right(resources);
-    } catch (e, stackTrace) {
-      _logError('[ResourceRemoteDataSourceImpl] Error loading resources: $e', stackTrace);
+    // الكود الأصلي (يُستخدم عند جاهزية الـ back-end)
+    /*
+    try {
+      final response = await dioClient.post(
+        '/api/resources/list',
+        data: {
+          'student_id': studentId,
+        },
+      );
+
+      return response.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            final data = response.data;
+            if (data is List) {
+              final resources = data
+                  .map<ResourceModel>((json) => ResourceModel.fromJson(json as Map<String, dynamic>))
+                  .toList();
+              return Right(resources);
+            } else if (data is Map && data['resources'] is List) {
+              final resources = (data['resources'] as List)
+                  .map<ResourceModel>((json) => ResourceModel.fromJson(json as Map<String, dynamic>))
+                  .toList();
+              return Right(resources);
+            } else {
+              return Left(ServerFailure(message: 'تنسيق البيانات غير صحيح من الخادم.'));
+            }
+          } catch (e) {
+            return Left(ServerFailure(message: 'حدث خطأ أثناء معالجة البيانات: ${e.toString()}'));
+          }
+        },
+      );
+    } catch (e) {
       return Left(ServerFailure(message: 'حدث خطأ أثناء تحميل الموارد. الرجاء المحاولة مرة أخرى.'));
     }
-  }
-
-  void _logSuccess(String message) {
-    print('✅ $message');
-  }
-
-  void _logError(String message, StackTrace stackTrace) {
-    print('❌ $message');
-    print('StackTrace: $stackTrace');
+    */
   }
 }

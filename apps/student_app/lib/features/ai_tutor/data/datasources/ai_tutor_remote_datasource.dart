@@ -1,54 +1,77 @@
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:firebase_ai/firebase_ai.dart';
+import 'package:firebase_core/firebase_core.dart'; // تأكد من استيراد هذه المكتبة
 
 abstract class AITutorRemoteDataSource {
   Future<Either<Failure,String>> sendMessageToApi(String message);
 }
 
 class AITutorRemoteDataSourceImpl implements AITutorRemoteDataSource {
-  final GenerativeModel _model;
-  // سنجعل الشات قابلاً لإعادة الإنشاء إذا لزم الأمر
+  final model = FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
+  
   ChatSession? _chat;
 
-  AITutorRemoteDataSourceImpl()
-  // 1. هنا ننشئ الموديل فقط مع مفتاح الـ API
-      : _model = GenerativeModel(
-    model: 'gemini-1.5-flash',
-    // تذكر: لا تكتب المفتاح هنا مباشرة في كود الإنتاج
-    // استخدم متغيرات البيئة (environment variables)
-    apiKey: 'AIzaSyBIjmZDqbNMHuMWO2zznIF2K3CG5F1SSrI',
-  ) {
-    // 2. نقوم ببدء الشات في جسم الكونستركتور
+  AITutorRemoteDataSourceImpl() {
     _startChatSession();
   }
 
   void _startChatSession() {
-    // 3. هذا هو المكان الصحيح لتمرير تعليمات النظام
-    _chat = _model.startChat(
-      history: [
-        Content.model([TextPart("أنت مدرس خصوصي ذكي...")]), // رسالة النظام
-      ],
-    );
+    print("Attempting to start chat session...");
+    try {
+      _chat = model.startChat(
+        history: [
+          Content.model([TextPart("أنت مدرس خصوصي ذكي...")]),
+        ],
+      );
+      print("Chat session started successfully.");
+    } catch (e) {
+      print("Error starting chat session: $e");
+    }
   }
 
   @override
   Future<Either<Failure,String>> sendMessageToApi(String message) async {
-    // التأكد من أن الشات قد بدأ
+    print("Sending message to API: $message");
+
     if (_chat == null) {
-      _startChatSession();
+      print("Chat session is null, attempting to restart.");
+      _startChatSession(); 
+      if (_chat == null) {
+        print("Failed to restart chat session, cannot send message.");
+        return Left(ServerFailure(message: "Chat session not initialized."));
+      }
     }
 
+    final prompt = [Content.text(message)];
+
     try {
-      final response = await _chat!.sendMessage(Content.text(message));
-      final responseText = response.text;
-      print(responseText);
-      if (responseText == null) {
-        return Left(ServerFailure(message: "Received an empty response from the AI."));
+      print("Calling _chat!.sendMessage()...");
+      final response = await _chat!.sendMessage(prompt.first);
+      
+      // اطبع الاستجابة الكاملة لمعرفة ما إذا كانت تحتوي على أي معلومات غير متوقعة
+      print("Full Gemini response object: $response");
+
+      if (response.text != null) {
+        print("Gemini response text: ${response.text}");
+        return Right(response.text!);
+      } else {
+        print("Gemini response text is null. Potential issue.");
+        return Left(ServerFailure(message: "Received empty or null response text from Gemini."));
       }
-      return Right(responseText);
+    } on FirebaseException catch (e) {
+      // التعامل مع أخطاء Firebase بشكل خاص
+      print("Firebase Exception when sending message: ${e.code} - ${e.message}");
+      return Left(ServerFailure(message: "Firebase API error: ${e.message}"));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      // التعامل مع أي أخطاء أخرى، بما في ذلك FormatException
+      print("General Exception when sending message: $e");
+      // هذا هو المكان الذي قد يظهر فيه FormatException
+      if (e.toString().contains("FormatException")) {
+          print("Caught FormatException! This means the data received was not in the expected format.");
+          print("Please check your network connection and API configuration.");
+      }
+      return Left(ServerFailure(message: "Failed to get response from AI: $e")); 
     }
   }
 }
