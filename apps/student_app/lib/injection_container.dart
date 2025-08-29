@@ -1,3 +1,5 @@
+
+import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/network_info.dart';
 import 'package:get_it/get_it.dart';
@@ -67,6 +69,10 @@ import 'package:smart_school/features/schedule/presentation/blocs/schedule_bloc.
 // Zoom Feature
 import 'package:smart_school/features/zoom/domain/usecase/get_all_zoom_meetings_useCase.dart';
 import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.dart';
+import 'features/new_assignment/data/data_sources/assignment_remote_data_source.dart';
+import 'features/new_assignment/data/repositories_impl/assignment_repository_impl.dart';
+import 'features/new_assignment/domain/repositories/assignment_repository.dart';
+import 'features/new_assignment/domain/usecases/get_assignments_usecase.dart' as assignment_prefix;
 import 'features/zoom/data/datasources/zoom_meetings_remote_data_source.dart';
 import 'features/zoom/data/repositories/zoom_meetings_repository_impl.dart';
 
@@ -268,4 +274,9 @@ Future<void> setupDependencies() async {
 
   // ---------------- Home Feature ----------------
   await home_di.initHomeFeature();
+
+
+  // Theme BLoC
+  getIt.registerFactory(() => ThemeBloc());
+
 }

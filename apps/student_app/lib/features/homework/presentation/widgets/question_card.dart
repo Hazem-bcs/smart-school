@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import '../../../../widgets/app_exports.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -17,7 +18,7 @@ class QuestionCard extends StatefulWidget {
     required this.marks,
     required this.correctAnswer,
     this.onAnswered,
-    required this.onAnswerSelected, // This is the one OneHomeworkPage expects
+    required this.onAnswerSelected,
   });
 
   @override
@@ -31,29 +32,27 @@ class _QuestionCardState extends State<QuestionCard> {
   void checkAnswer(String value) {
     setState(() {
       selectedAnswer = value;
-      isChecked = true; // Mark that an answer has been selected and checked
+      isChecked = true;
       final isCorrect = value == widget.correctAnswer;
 
-      // Call the onAnswered callback if it's provided (optional)
       if (widget.onAnswered != null) {
         widget.onAnswered!(isCorrect);
       }
 
-      // ****** THIS IS THE CRUCIAL LINE TO ADD/FIX ******
-      // Call the onAnswerSelected callback to inform the parent (OneHomeworkPage)
-      // about the answer and its correctness, along with the question's marks.
       widget.onAnswerSelected(widget.questionNumber, isCorrect, widget.marks);
-      // **************************************************
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: secondaryColor,
+        color: isDark ? theme.cardColor : theme.colorScheme.secondary,
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -62,10 +61,9 @@ class _QuestionCardState extends State<QuestionCard> {
           children: [
             Text(
               'Question ${widget.questionNumber} (marks: ${widget.marks})',
-              style: const TextStyle(
-                fontSize: 20,
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 8),
@@ -74,7 +72,10 @@ class _QuestionCardState extends State<QuestionCard> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(widget.question),
+              child: Text(
+                widget.question,
+                style: theme.textTheme.bodyLarge,
+              ),
             ),
             const SizedBox(height: 12),
             ...widget.options.map(
@@ -82,14 +83,16 @@ class _QuestionCardState extends State<QuestionCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RadioListTile<String>(
-                    title: Text(option),
+                    title: Text(
+                      option,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                     value: option,
                     groupValue: selectedAnswer,
-                    // Use the checkAnswer method here
                     onChanged: isChecked ? null : (value) => checkAnswer(value!),
                     activeColor: isChecked
                         ? (option == widget.correctAnswer ? Colors.green : Colors.red)
-                        : primaryColor,
+                        : theme.colorScheme.primary,
                   ),
                   if (isChecked && option == selectedAnswer)
                     Padding(

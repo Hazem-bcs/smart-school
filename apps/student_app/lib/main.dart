@@ -3,6 +3,9 @@ import 'package:attendance/presentation/blocs/attendance_details_bloc.dart';
 import 'package:attendance/presentation/pages/attendance_page.dart';
 import 'package:auth/domain/auth_repository.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:core/blocs/theme/theme_bloc.dart';
+import 'package:core/blocs/theme/theme_event.dart';
+import 'package:core/blocs/theme/theme_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
@@ -27,6 +30,8 @@ import 'features/new_assignment/domain/entities/assignment_entity.dart';
 import 'features/new_assignment/presentation/pages/assignment_details_page.dart';
 import 'features/new_assignment/presentation/pages/assignments_list_page.dart';
 import 'features/notification/presintation/pages/notification_page.dart';
+import 'features/settings/presentation/pages/about_app_page.dart';
+import 'features/settings/presentation/pages/help_faq_page.dart';
 import 'injection_container.dart' as di;
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
 import 'features/authentication/presentation/pages/login_page.dart';
@@ -98,41 +103,59 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ZoomMeetingsBloc>()),
         BlocProvider(create: (context) => di.getIt<ScheduleBloc>()),
         BlocProvider(create: (context) => di.getIt<SettingsBloc>()),
+        BlocProvider(create: (context) => ThemeBloc()..add(InitializeTheme())),
         BlocProvider(create: (context) => di.getIt<HomeBloc>()),
       ],
       child: Sizer(
         builder: (context, orientation, screenType) {
-          return MaterialApp(
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-             home: SplashPage(),
-            routes: {
-              '/onBoarding': (context) => OnBoardingPage(),
-              '/login': (context) => LoginPage(),
-              '/home': (context) => HomePage(),
-              '/teacherPage': (context) => TeachersPage(),
-              '/appDrawerWidget': (context) => AppDrawerWidget(),
-              '/homeWorkPage': (context) => HomeworkPage(),
-              '/duesPage': (context) => DuesPage(),
-              '/profilePage': (context) => ProfilePage(),
-              '/subjectsPage': (context) => SubjectsPage(),
-              '/tutorChatView': (context) => TutorChatView(),
-              '/attendancePage': (context) => AttendancePage(),
-              '/resourcesPage': (context) => ResourcesPage(),
-              '/notificationPage': (context) => NotificationPage(),
-              '/settings': (context) => SettingsScreen(),
-              '/schedule': (context) => SchedulePage(),
-              '/assignments': (context) => AssignmentsListPage(),
-              '/assignment_details': (context) {
-                final assignment =
-                    ModalRoute.of(context)!.settings.arguments
-                        as AssignmentEntity;
-                return AssignmentDetailsPage(assignment: assignment);
-              },
-              '/zoom': (context) => ZoomMeetingsListPage(),
+          return BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, themeState) {
+              final theme =
+                  themeState is ThemeLoaded
+                      ? themeState.currentTheme
+                      : ThemeData.light();
+              final themeMode =
+                  themeState is ThemeLoaded
+                      ? themeState.themeMode
+                      : ThemeMode.system;
+              return MaterialApp(
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                debugShowCheckedModeBanner: false,
+                title: 'Flutter Demo',
+                home: SplashPage(),
+                routes: {
+                  '/onBoarding': (context) => OnBoardingPage(),
+                  '/login': (context) => LoginPage(),
+                  '/home': (context) => HomePage(),
+                  '/teacherPage': (context) => TeachersPage(),
+                  '/appDrawerWidget': (context) => AppDrawerWidget(),
+                  '/homeWorkPage': (context) => HomeworkPage(),
+                  '/duesPage': (context) => DuesPage(),
+                  '/profilePage': (context) => ProfilePage(),
+                  '/subjectsPage': (context) => SubjectsPage(),
+                  '/tutorChatView': (context) => TutorChatView(),
+                  '/attendancePage': (context) => AttendancePage(),
+                  '/resourcesPage': (context) => ResourcesPage(),
+                  '/notificationPage': (context) => NotificationPage(),
+                  '/settings': (context) => SettingsScreen(),
+                  '/schedule': (context) => SchedulePage(),
+                  '/assignments': (context) => AssignmentsListPage(),
+                  '/about-app': (context) => AboutAppPage(),
+                  '/help-faq': (context) => HelpFaqPage(),
+                  '/assignment_details': (context) {
+                    final assignment =
+                        ModalRoute.of(context)!.settings.arguments
+                            as AssignmentEntity;
+                    return AssignmentDetailsPage(assignment: assignment);
+                  },
+                  '/zoom': (context) => ZoomMeetingsListPage(),
+                },
+                theme: theme,
+                darkTheme: theme,
+                themeMode: themeMode,
+              );
             },
           );
         },
