@@ -2,6 +2,7 @@ import 'package:homework/domain/entites/homework_entity.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 
 import '../blocs/home_work_bloc/homework_bloc.dart';
+
 class HomeworkPage extends StatefulWidget {
   const HomeworkPage({super.key});
 
@@ -10,7 +11,6 @@ class HomeworkPage extends StatefulWidget {
 }
 
 class _HomeworkPageState extends State<HomeworkPage> {
-
   @override
   void initState() {
     context.read<HomeworkBloc>().add(GetHomeworksEvent());
@@ -20,7 +20,17 @@ class _HomeworkPageState extends State<HomeworkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: AppStrings.homeWork),
+      appBar: AppBarWidget(
+        title: AppStrings.homeWork,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<HomeworkBloc>().add(GetHomeworksEvent());
+            },
+            icon: const Icon(Icons.refresh, color: Colors.white),
+          ),
+        ],
+      ),
       body: BlocBuilder<HomeworkBloc, HomeworkState>(
         builder: (context, state) {
           if (state is HomeworkLoading) {

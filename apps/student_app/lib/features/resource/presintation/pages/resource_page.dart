@@ -23,7 +23,17 @@ class _ResourcesListPageState extends State<ResourcesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: AppStrings.resources),
+      appBar: AppBarWidget(
+        title: AppStrings.resources,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<ResourceBloc>().add(GetResourceDataListEvent());
+            },
+            icon: const Icon(Icons.refresh, color: Colors.white),
+          ),
+        ],
+      ),
       body: BlocBuilder<ResourceBloc, ResourceState>(
         builder: (context, state) {
           if (state is GetResourceDataLoadingState) {
