@@ -59,7 +59,7 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: AppStrings.homeWork),
+      appBar: AppBarWidget(title: AppStrings.homeWork,),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: BlocBuilder<QuestionBloc, QuestionState>(
