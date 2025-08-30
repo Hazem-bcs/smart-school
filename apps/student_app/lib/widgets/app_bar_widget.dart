@@ -1,4 +1,3 @@
-import 'package:core/theme/constants/colors.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {

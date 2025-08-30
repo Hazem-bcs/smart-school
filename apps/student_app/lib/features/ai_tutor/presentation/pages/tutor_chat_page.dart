@@ -40,14 +40,18 @@ class _TutorChatViewState extends State<TutorChatView> {
             );
           }
           if (state is ChatSuccessState) {
-            _chatController.insertMessage(
-              types.TextMessage(
-                id: state.messages.id,
-                createdAt: state.messages.createdAt,
-                authorId: state.messages.author.toString(),
-                text: state.messages.text,
-              ),
-            );
+           _chatController.insertMessage(
+  types.TextMessage(
+    id: state.messages.id,
+    createdAt: state.messages.createdAt,
+    authorId: state.messages.author == ChatAuthor.user
+        ? _user.id
+        : _aiTutor.id,
+    text: state.messages.text,
+  ),
+);
+
+
           }
         },
         child: BlocBuilder<ChatBloc, ChatState>(

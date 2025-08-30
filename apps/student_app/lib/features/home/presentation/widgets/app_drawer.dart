@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:smart_school/features/authentication/presentation/blocs/auth_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 
 class AppDrawerWidget extends StatefulWidget {
@@ -121,16 +119,22 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
                   title: AppStrings.notification,
                   assetPath: "assets/svg/notices.svg",
                   onTap: () => _navigateTo(context, '/notificationPage'))),
-          const SizedBox(height: 20),
           _buildAnimatedItem(
               9,
+              _DrawerItem(
+                  title: "Zoom Meetings",
+                  iconData: Icons.video_call,
+                  onTap: () => _navigateTo(context, '/zoom'))),
+          const SizedBox(height: 20),
+          _buildAnimatedItem(
+              10,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Divider(color: Colors.grey.shade200),
               )),
           const SizedBox(height: 10),
           _buildAnimatedItem(
-              10,
+              11,
               _DrawerItem(
                   title: "Settings",
                   iconData: Icons.settings_outlined,

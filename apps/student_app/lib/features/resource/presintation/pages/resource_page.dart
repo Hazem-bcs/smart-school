@@ -4,7 +4,6 @@ import '../widgets/resource_card.dart';
 
 class ResourcesPage extends StatefulWidget {
   const ResourcesPage({super.key});
-
   @override
   State<ResourcesPage> createState() => _ResourcesListPageState();
 }
@@ -38,7 +37,9 @@ class _ResourcesListPageState extends State<ResourcesPage> {
       body: BlocBuilder<ResourceBloc, ResourceState>(
         builder: (context, state) {
           if (state is GetResourceDataLoadingState) {
-            return const AppLoadingWidget();
+            return const Center(
+              child: AppLoadingWidget(),
+            );
           } else if (state is ResourceDataListLoadedState) {
             final resources = state.resourceList;
             if (resources.isEmpty) {

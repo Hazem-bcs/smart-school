@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school/widgets/shared_bottom_navigation.dart';
-import 'package:smart_school/widgets/responsive/responsive_helper.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/usecases/get_assignments_usecase.dart';
 import '../../data/repositories_impl/assignment_repository_impl.dart';

@@ -7,8 +7,11 @@ import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_event.dart';
 import 'package:core/blocs/theme/theme_state.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:smart_school/features/authentication/presentation/pages/splash_page.dart';
 import 'package:smart_school/features/home/presentation/pages/home_page.dart';
+import 'package:smart_school/features/home/presentation/bloc/home_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'package:smart_school/features/homework/presentation/blocs/question_bloc/question_bloc.dart';
 import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
@@ -18,6 +21,8 @@ import 'package:smart_school/features/settings/presentation/blocs/settings_bloc.
 import 'package:smart_school/features/settings/presentation/pages/settings_page.dart';
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import 'package:smart_school/features/zoom/presentation/bloc/zoom_meetings_bloc.dart';
+import 'package:smart_school/features/zoom/presentation/pages/zoom_meetings_list_page.dart';
+import 'package:smart_school/firebase_options.dart';
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
 import 'features/ai_tutor/presentation/pages/tutor_chat_page.dart';
@@ -47,11 +52,18 @@ import 'package:smart_school/widgets/app_exports.dart';
 import 'package:sizer/sizer.dart';
 import 'features/teacher/presentation/blocs/teacher_list_bloc.dart';
 import 'features/teacher/presentation/blocs/teacher_details_bloc.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await di.setupDependencies();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
+  NotificationService.initializeNotification();
+  FirebaseMessaging.onBackgroundMessage(NotificationService.firebaseMessagingBackgroundHandler);
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -59,7 +71,7 @@ void main() async {
       fallbackLocale: const Locale('en'),
       child: const MyApp(),
     ),
-  );
+  ); 
 }
 
 class MyApp extends StatelessWidget {
@@ -96,6 +108,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.getIt<ScheduleBloc>()),
         BlocProvider(create: (context) => di.getIt<SettingsBloc>()),
         BlocProvider(create: (context) => ThemeBloc()..add(InitializeTheme())),
+        BlocProvider(create: (context) => di.getIt<HomeBloc>()),
       ],
       child: Sizer(
         builder: (context, orientation, screenType) {
@@ -141,6 +154,7 @@ class MyApp extends StatelessWidget {
                             as AssignmentEntity;
                     return AssignmentDetailsPage(assignment: assignment);
                   },
+                  '/zoom': (context) => ZoomMeetingsListPage(),
                 },
                 theme: theme,
                 darkTheme: theme,

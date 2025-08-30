@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:core/theme/constants/app_colors.dart';
-import 'package:core/theme/constants/app_spacing.dart';
 import 'package:core/theme/constants/app_text_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -201,7 +200,7 @@ class _SplashPageState extends State<SplashPage>
                 height: 80,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.white.withOpacity(0.1),
+                  color: AppColors.white.withAlpha((0.1 * 255).toInt()),
                 ),
               ),
             );
@@ -222,7 +221,7 @@ class _SplashPageState extends State<SplashPage>
                 height: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.white.withOpacity(0.08),
+                  color: AppColors.white.withAlpha((0.08 * 255).toInt()),
                 ),
               ),
             );
