@@ -41,49 +41,47 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBKUgm-MEI-UTMUbbCDdFKttiMUI0rXYtk',
-    appId: '1:1078214539972:web:d2dc8fd14272ef1af76791',
-    messagingSenderId: '1078214539972',
-    projectId: 'smart-school-ca690',
-    authDomain: 'smart-school-ca690.firebaseapp.com',
-    storageBucket: 'smart-school-ca690.firebasestorage.app',
-    measurementId: 'G-F2KMXS0GVN',
+    apiKey: 'AIzaSyA_uY7ObmPnROF-wF3tgHD74je55M9qM7g',
+    appId: '1:412628730632:web:02368b95efe538d92422bd',
+    messagingSenderId: '412628730632',
+    projectId: 'sample-firebase-ai-app-a3fbe',
+    authDomain: 'sample-firebase-ai-app-a3fbe.firebaseapp.com',
+    storageBucket: 'sample-firebase-ai-app-a3fbe.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDIsF6tpY1TAAP16IbKLOj3tCPTk_B4jiI',
-    appId: '1:1078214539972:android:94d2f09315324d8af76791',
-    messagingSenderId: '1078214539972',
-    projectId: 'smart-school-ca690',
-    storageBucket: 'smart-school-ca690.firebasestorage.app',
+    apiKey: 'AIzaSyD-o0wZKUKisNRqAtKAG_XIKW9xXFc4SXo',
+    appId: '1:412628730632:android:b5230ba7517b5da62422bd',
+    messagingSenderId: '412628730632',
+    projectId: 'sample-firebase-ai-app-a3fbe',
+    storageBucket: 'sample-firebase-ai-app-a3fbe.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDgWkYwlMcPAnVLyKU3NxKdTZnliJ0cNcQ',
-    appId: '1:1078214539972:ios:d4cd3f7116df9b8ff76791',
-    messagingSenderId: '1078214539972',
-    projectId: 'smart-school-ca690',
-    storageBucket: 'smart-school-ca690.firebasestorage.app',
+    apiKey: 'AIzaSyDA4-JoiXdhJT2hjRFPqYc_A9UHt3EcTM0',
+    appId: '1:412628730632:ios:228ef32f616f4dc22422bd',
+    messagingSenderId: '412628730632',
+    projectId: 'sample-firebase-ai-app-a3fbe',
+    storageBucket: 'sample-firebase-ai-app-a3fbe.firebasestorage.app',
     iosBundleId: 'com.example.smartSchool',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDgWkYwlMcPAnVLyKU3NxKdTZnliJ0cNcQ',
-    appId: '1:1078214539972:ios:d4cd3f7116df9b8ff76791',
-    messagingSenderId: '1078214539972',
-    projectId: 'smart-school-ca690',
-    storageBucket: 'smart-school-ca690.firebasestorage.app',
+    apiKey: 'AIzaSyDA4-JoiXdhJT2hjRFPqYc_A9UHt3EcTM0',
+    appId: '1:412628730632:ios:228ef32f616f4dc22422bd',
+    messagingSenderId: '412628730632',
+    projectId: 'sample-firebase-ai-app-a3fbe',
+    storageBucket: 'sample-firebase-ai-app-a3fbe.firebasestorage.app',
     iosBundleId: 'com.example.smartSchool',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBKUgm-MEI-UTMUbbCDdFKttiMUI0rXYtk',
-    appId: '1:1078214539972:web:785f59bb3312fe3bf76791',
-    messagingSenderId: '1078214539972',
-    projectId: 'smart-school-ca690',
-    authDomain: 'smart-school-ca690.firebaseapp.com',
-    storageBucket: 'smart-school-ca690.firebasestorage.app',
-    measurementId: 'G-GEV8STRQ05',
+    apiKey: 'AIzaSyA_uY7ObmPnROF-wF3tgHD74je55M9qM7g',
+    appId: '1:412628730632:web:2a91554cac4bb4b42422bd',
+    messagingSenderId: '412628730632',
+    projectId: 'sample-firebase-ai-app-a3fbe',
+    authDomain: 'sample-firebase-ai-app-a3fbe.firebaseapp.com',
+    storageBucket: 'sample-firebase-ai-app-a3fbe.firebasestorage.app',
   );
 
 }
