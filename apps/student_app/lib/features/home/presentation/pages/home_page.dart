@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notification/domain/entities/notification_entity.dart';
+import 'package:smart_school/routing/app_routes.dart';
 import 'package:smart_school/widgets/responsive/responsive_helper.dart';
 import 'package:smart_school/widgets/shared_bottom_navigation.dart';
 
@@ -66,35 +67,71 @@ class _HomePageState extends State<HomePage> {
         key: _scaffoldKey,
         drawer: AppDrawerWidget(),
         appBar: AppBar(
+          elevation: 0,
+          backgroundColor: const Color(0xFF4F46E5),
+          iconTheme: const IconThemeData(color: Colors.white, size: 24),
+          title: Text(
+            "Smart School",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
+          ),
+          centerTitle: true,
           actions: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed('/tutorChatView');
-              },
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 20.0),
-                child: SvgPicture.asset('assets/svg/chat.svg'),
+            // Chat Icon
+            Container(
+              margin: const EdgeInsetsDirectional.only(end: 8.0),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(AppRoutes.tutorChat);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/svg/chat.svg',
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(
-                  context,
-                ).pushNamed('/notificationPage');
-              },
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 20.0),
-                child: Icon(Icons.notifications,color: Colors.white,size: 35,)
+            // Notifications Icon
+            Container(
+              margin: const EdgeInsetsDirectional.only(end: 16.0),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(AppRoutes.notifications);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.notifications_outlined,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            "Smart School",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-          backgroundColor: const Color(0xFF4F46E5), // تحديث اللون
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -117,7 +154,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 
                 // PromoSlider
-                PromoSlider(),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeLoaded) {
+                      return PromoSlider(promos: state.promos);
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
                 
                 // مسافة بعد الـ Slider
                 const SizedBox(height: 24),

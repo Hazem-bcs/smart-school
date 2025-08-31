@@ -1,7 +1,7 @@
 
-import 'package:smart_school/features/teacher/presentation/pages/teacher_details_page.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
+import 'package:smart_school/routing/navigation_extension.dart';
 
 import '../blocs/teacher_list_bloc.dart';
 
@@ -79,14 +79,7 @@ class _TeachersPageState extends State<TeachersPage> {
                     name: teacher.name,
                     subject: "Math",
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => TeacherDetailsPage(
-                            teacherId: teacher.id,
-                            teacher: teacher,
-                          ),
-                        ),
-                      );
+                      context.goToTeacherDetails(teacher.id);
                     },
                   ),
                 );

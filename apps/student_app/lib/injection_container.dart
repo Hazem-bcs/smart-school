@@ -88,8 +88,8 @@ import 'features/home/injection_container.dart' as home_di;
 // Presentation Layer - BLoCs
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
 import 'features/dues/presentation/blocs/dues_bloc.dart';
-import 'features/homework/presentation/blocs/home_work_bloc/homework_bloc.dart';
-import 'features/homework/presentation/blocs/question_bloc/question_bloc.dart';
+import 'features/quiz/presentation/blocs/home_work_bloc/homework_bloc.dart';
+import 'features/quiz/presentation/blocs/question_bloc/question_bloc.dart';
 import 'features/notification/presintation/bloc/notification_bloc.dart';
 import 'features/profile/presentation/bolcs/profile_bloc.dart';
 import 'features/resource/presintation/blocs/resource_bloc.dart';

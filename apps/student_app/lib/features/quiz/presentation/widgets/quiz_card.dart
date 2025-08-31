@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:homework/data/models/homework_model.dart';
 import 'package:homework/domain/entites/homework_entity.dart';
-import 'package:smart_school/features/homework/presentation/pages/one_homework_page.dart';
+import 'package:smart_school/routing/navigation_extension.dart';
 
 class HomeworkCard extends StatelessWidget {
   final HomeworkEntity homework;
@@ -33,11 +33,7 @@ class HomeworkCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => OneHomeworkPage(questionId: 1),
-          ),
-        );
+        context.goToQuestions(homework.id);
       },
       child: Card(
         elevation: 3,

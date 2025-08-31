@@ -39,6 +39,15 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       await _themeManager.toggleTheme();
+      // تحديث الحالة مباشرة بعد تغيير الثيم
+      if (state is ThemeLoaded) {
+        final currentState = state as ThemeLoaded;
+        emit(currentState.copyWith(
+          themeMode: _themeManager.themeMode,
+          isDarkMode: _themeManager.isDarkMode,
+          currentTheme: _themeManager.getCurrentTheme(),
+        ));
+      }
     } catch (e) {
       emit(ThemeError('Failed to toggle theme: $e'));
     }
@@ -50,6 +59,15 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       await _themeManager.setLightTheme();
+      // تحديث الحالة مباشرة بعد تغيير الثيم
+      if (state is ThemeLoaded) {
+        final currentState = state as ThemeLoaded;
+        emit(currentState.copyWith(
+          themeMode: _themeManager.themeMode,
+          isDarkMode: _themeManager.isDarkMode,
+          currentTheme: _themeManager.getCurrentTheme(),
+        ));
+      }
     } catch (e) {
       emit(ThemeError('Failed to set light theme: $e'));
     }
@@ -61,6 +79,15 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       await _themeManager.setDarkTheme();
+      // تحديث الحالة مباشرة بعد تغيير الثيم
+      if (state is ThemeLoaded) {
+        final currentState = state as ThemeLoaded;
+        emit(currentState.copyWith(
+          themeMode: _themeManager.themeMode,
+          isDarkMode: _themeManager.isDarkMode,
+          currentTheme: _themeManager.getCurrentTheme(),
+        ));
+      }
     } catch (e) {
       emit(ThemeError('Failed to set dark theme: $e'));
     }
@@ -72,19 +99,37 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       await _themeManager.setSystemTheme();
+      // تحديث الحالة مباشرة بعد تغيير الثيم
+      if (state is ThemeLoaded) {
+        final currentState = state as ThemeLoaded;
+        emit(currentState.copyWith(
+          themeMode: _themeManager.themeMode,
+          isDarkMode: _themeManager.isDarkMode,
+          currentTheme: _themeManager.getCurrentTheme(),
+        ));
+      }
     } catch (e) {
       emit(ThemeError('Failed to set system theme: $e'));
     }
   }
 
   void _onThemeManagerChanged() {
-    add(ThemeStateChanged());
+    // تحديث الحالة مباشرة عند تغيير ThemeManager
+    if (state is ThemeLoaded) {
+      final currentState = state as ThemeLoaded;
+      emit(currentState.copyWith(
+        themeMode: _themeManager.themeMode,
+        isDarkMode: _themeManager.isDarkMode,
+        currentTheme: _themeManager.getCurrentTheme(),
+      ));
+    }
   }
 
   Future<void> _onThemeStateChanged(
     ThemeStateChanged event,
     Emitter<ThemeState> emit,
   ) async {
+    // تحديث الحالة عند طلب تغيير الحالة
     if (state is ThemeLoaded) {
       final currentState = state as ThemeLoaded;
       emit(currentState.copyWith(

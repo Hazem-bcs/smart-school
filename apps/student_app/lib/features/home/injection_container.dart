@@ -5,6 +5,7 @@ import 'domain/repositories/home_repository.dart';
 import 'domain/usecases/get_home_stats_usecase.dart';
 import 'domain/usecases/get_quick_actions_usecase.dart';
 import 'domain/usecases/get_achievements_usecase.dart';
+import 'domain/usecases/get_promos_usecase.dart';
 import 'presentation/bloc/home_bloc.dart';
 
 final sl = GetIt.instance;
@@ -24,6 +25,7 @@ Future<void> initHomeFeature() async {
   sl.registerLazySingleton(() => GetHomeStatsUseCase(sl()));
   sl.registerLazySingleton(() => GetQuickActionsUseCase(sl()));
   sl.registerLazySingleton(() => GetAchievementsUseCase(sl()));
+  sl.registerLazySingleton(() => GetPromosUseCase(sl()));
 
   // BLoC
   sl.registerFactory(
@@ -31,6 +33,7 @@ Future<void> initHomeFeature() async {
       getHomeStatsUseCase: sl(),
       getQuickActionsUseCase: sl(),
       getAchievementsUseCase: sl(),
+      getPromosUseCase: sl(),
     ),
   );
 }
