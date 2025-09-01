@@ -95,7 +95,6 @@ class SettingsSection extends StatelessWidget {
                       value: isDarkMode,
                       onChanged: (_) {
                         context.read<ThemeBloc>().add(ToggleTheme());
-                        onThemeToggle();
                       },
                     ),
                   );

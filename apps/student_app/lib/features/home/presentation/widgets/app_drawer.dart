@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_school/routing/app_routes.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:smart_school/routing/navigation_extension.dart';
 
 class AppDrawerWidget extends StatefulWidget {
   const AppDrawerWidget({super.key});
@@ -33,7 +34,40 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
     Navigator.of(context).pop();
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != routeName) {
-      Navigator.of(context).pushNamed(routeName);
+      switch (routeName) {
+        case AppRoutes.profile:
+          context.goToProfile();
+          break;
+        case AppRoutes.homework:
+          context.goToHomework();
+          break;
+        case AppRoutes.subjects:
+          context.goToSubjects();
+          break;
+        case AppRoutes.teachers:
+          context.goToTeachers();
+          break;
+        case AppRoutes.attendance:
+          context.goToAttendance();
+          break;
+        case AppRoutes.dues:
+          context.goToDues();
+          break;
+        case AppRoutes.resources:
+          context.goToResources();
+          break;
+        case AppRoutes.notifications:
+          context.goToNotifications();
+          break;
+        case AppRoutes.zoom:
+          context.goToZoom();
+          break;
+        case AppRoutes.settingsPage:
+          context.goToSettings();
+          break;
+        default:
+          Navigator.of(context).pushNamed(routeName);
+      }
     }
   }
 

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../../domain/entities/promo_entity.dart';
 
 class PromoSlider extends StatefulWidget {
-  const PromoSlider({super.key});
+  final List<PromoEntity> promos;
+  
+  const PromoSlider({
+    super.key,
+    required this.promos,
+  });
 
   @override
   State<PromoSlider> createState() => _PromoSliderState();
@@ -10,14 +16,8 @@ class PromoSlider extends StatefulWidget {
 
 class _PromoSliderState extends State<PromoSlider> {
   int _currentIndex = 0;
-  final List<String> imageUrls = [
-    'https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2Nob29sfGVufDB8fDB8fHww',
-    'https://images.unsplash.com/photo-1573706376056-55f27105ff17?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1580974852861-c381510bc98a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHNjaG9vbHxlbnwwfHwwfHx8MA%3D%3D',
-    'https://plus.unsplash.com/premium_photo-1671070290623-d6f76bdbb3db?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHNjaG9vbHxlbnwwfHwwfHx8MA%3D%3D',
-    'https://images.unsplash.com/photo-1601780313063-ab9174e43dcc?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fCVEOSU4NCVEOCVCNyVEOSU4NCVEOCVBNyVEOCVBOCUyMCVEOCVBNyVEOSU4NCVEOSU4NSVEOCVBRiVEOCVBNyVEOCVCMSVEOCVCMyUyMCVEOCVBQSVEOCVBRCVEOSU4MSVEOSU4QSVEOCVCMiUyMCVEOCVCOSVEOCVBOCVEOCVBNyVEOCVCMSVEOCVBNyVEOCVBQXxlbnwwfHwwfHx8MA%3D%3D',
-    'https://plus.unsplash.com/premium_photo-1735775899897-278b39a81679?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzN8fCVEOSU4NCVEOCVCNyVEOSU4NCVEOCVBNyVEOCVBOCUyMCVEOCVBNyVEOSU4NCVEOSU4NSVEOCVBRiVEOCVBNyVEOCVCMSVEOCVCMyUyMCVEOCVBQSVEOCVBRCVEOSU4MSVEOSU4QSVEOCVCMiUyMCVEOCVCOSVEOCVBOCVEOCVBNyVEOCVCMSVEOCVBNyVEOCVBQXxlbnwwfHwwfHx8MA%3D%3D',
-  ];
+  
+  List<PromoEntity> get promos => widget.promos;
 
   void _showImageGallery(BuildContext context, int initialIndex) {
     Navigator.of(context).push(
@@ -32,7 +32,7 @@ class _PromoSliderState extends State<PromoSlider> {
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Text(
-              'إعلان ${initialIndex + 1}',
+              promos[initialIndex].title,
               style: const TextStyle(color: Colors.white),
             ),
           ),
@@ -41,7 +41,7 @@ class _PromoSliderState extends State<PromoSlider> {
             maxScale: 4.0,
             child: Center(
               child: Image.network(
-                imageUrls[initialIndex],
+                promos[initialIndex].imageUrl,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: Colors.grey[200],
@@ -76,9 +76,9 @@ class _PromoSliderState extends State<PromoSlider> {
               });
             },
           ),
-          items: imageUrls.asMap().entries.map((entry) {
+          items: promos.asMap().entries.map((entry) {
             final index = entry.key;
-            final imageUrl = entry.value;
+            final promo = entry.value;
             
             return Builder(
               builder: (BuildContext context) {
@@ -103,7 +103,7 @@ class _PromoSliderState extends State<PromoSlider> {
                       child: Stack(
                         children: [
                           Image.network(
-                            imageUrl,
+                            promo.imageUrl,
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
@@ -137,24 +137,24 @@ class _PromoSliderState extends State<PromoSlider> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'إعلان مهم',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'اضغط لمعرفة المزيد',
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.9),
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                                                                 Text(
+                                   promo.title,
+                                   style: const TextStyle(
+                                     color: Colors.white,
+                                     fontSize: 16,
+                                     fontWeight: FontWeight.bold,
+                                   ),
+                                 ),
+                                 const SizedBox(height: 4),
+                                 Row(
+                                   children: [
+                                     Text(
+                                       promo.subtitle,
+                                       style: TextStyle(
+                                         color: Colors.white.withOpacity(0.9),
+                                         fontSize: 12,
+                                       ),
+                                     ),
                                     const SizedBox(width: 8),
                                     Icon(
                                       Icons.zoom_in,
@@ -176,10 +176,10 @@ class _PromoSliderState extends State<PromoSlider> {
           }).toList(),
         ),
         const SizedBox(height: 16),
-        // Indicators
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: imageUrls.asMap().entries.map((entry) {
+                 // Indicators
+         Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: promos.asMap().entries.map((entry) {
             return Container(
               width: 8,
               height: 8,

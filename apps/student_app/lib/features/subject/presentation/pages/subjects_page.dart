@@ -1,5 +1,5 @@
 import 'package:smart_school/features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
-import 'package:smart_school/features/subject/presentation/pages/subject_details_page.dart';
+import 'package:smart_school/routing/navigation_extension.dart';
 import '../../../../widgets/app_exports.dart';
 
 
@@ -71,13 +71,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
                 return AppSubjectCard(
                   subject: subject,
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                            SubjectDetailsPage(subjectId: subject.id),
-                      ),
-                    );
+                    context.goToSubjectDetails(subject.id);
                   },
                 );
               },

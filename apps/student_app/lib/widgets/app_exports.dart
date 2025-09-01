@@ -23,7 +23,7 @@ export 'package:smart_school/features/home/presentation/widgets/app_drawer.dart'
 
 //homeWork
 export 'package:homework/data/models/homework_model.dart';
-export 'package:smart_school/features/homework/presentation/widgets/homework_card.dart';
+export 'package:smart_school/features/quiz/presentation/widgets/quiz_card.dart';
 
 
 //package
