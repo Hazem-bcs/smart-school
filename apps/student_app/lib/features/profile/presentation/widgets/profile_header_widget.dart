@@ -9,15 +9,17 @@ class ProfileHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
-            AppColors.primary.withOpacity(0.6),
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withOpacity(0.8),
+            theme.colorScheme.primary.withOpacity(0.6),
           ],
         ),
         borderRadius: const BorderRadius.only(
@@ -30,17 +32,16 @@ class ProfileHeaderWidget extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              // Profile Picture Only
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     width: 4,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: theme.shadowColor.withOpacity(0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -48,46 +49,43 @@ class ProfileHeaderWidget extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: theme.colorScheme.surface,
                   backgroundImage: user.profilePhotoUrl != null
                       ? NetworkImage(user.profilePhotoUrl!)
                       : const AssetImage("assets/images/user_3.png") as ImageProvider,
                 ),
               ),
               const SizedBox(height: 20),
-              // User Name
               Text(
                 user.name ?? 'اسم الطالب',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                   fontSize: 24,
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: 8),
-              
-              // Grade and Class Info
+
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: theme.colorScheme.onPrimary.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '${user.grade ?? ''} - ${user.classroom ?? ''} ${user.section ?? ''}',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              
+
               const SizedBox(height: 20),
-              
-              // Quick Stats Row
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -119,38 +117,40 @@ class ProfileHeaderWidget extends StatelessWidget {
   }
 
   Widget _buildStatItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
+      BuildContext context, {
+        required IconData icon,
+        required String label,
+        required String value,
+      }) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: theme.colorScheme.onPrimary.withOpacity(0.2),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Icon(
             icon,
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
             size: 24,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withOpacity(0.8),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onPrimary.withOpacity(0.8),
             fontSize: 12,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.white,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),

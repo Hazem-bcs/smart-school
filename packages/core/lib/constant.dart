@@ -1,5 +1,6 @@
 class Constants {
-  static const String baseUrl = 'http://10.75.247.164:8000'; // Laravel backend URL
+  // static const String baseUrl = 'http://10.75.247.164:8000'; // Laravel backend URL
+  static const String baseUrl = 'http://10.2.0.2:8000'; // Laravel backend URL
 
   static String loginEndpoint = '/api/login';
   static String logoutEndpoint = '/api/logout';

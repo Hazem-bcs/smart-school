@@ -1,4 +1,5 @@
-import 'package:core/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
@@ -26,9 +27,11 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBarWidget(title: AppStrings.teacherDetails),
-      backgroundColor: backGround,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<TeacherDetailsBloc, TeacherDetailsState>(
         builder: (context, state) {
           if (state is TeacherDetailsInitial ||
@@ -42,7 +45,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                 children: [
                   Text(
                     'Error: ${state.message}',
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: theme.colorScheme.error),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -53,13 +56,25 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryColor,
+                      foregroundColor: theme
+                          .elevatedButtonTheme
+                          .style
+                          ?.foregroundColor
+                          ?.resolve({MaterialState.pressed}),
+                      backgroundColor: theme
+                          .elevatedButtonTheme
+                          .style
+                          ?.backgroundColor
+                          ?.resolve({MaterialState.pressed}),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('Retry'),
+                    child: Text(
+                      'Retry',
+                      style: theme.elevatedButtonTheme.style?.textStyle
+                          ?.resolve({MaterialState.pressed}),
+                    ),
                   ),
                 ],
               ),
@@ -79,14 +94,11 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // قسم المعلومات الأساسية
-                        _buildInfoCardsSection(loadedTeacher),
+                        _buildInfoCardsSection(loadedTeacher, theme),
                         const SizedBox(height: 32),
-                        // قسم السيرة الذاتية (Bio)
-                        _buildBioSection(loadedTeacher),
+                        _buildBioSection(loadedTeacher, theme),
                         const SizedBox(height: 32),
-                        // قسم المواد الدراسية
-                        _buildSubjectsSection(context, loadedTeacher),
+                        _buildSubjectsSection(context, loadedTeacher, theme),
                       ],
                     ),
                   ),
@@ -100,17 +112,15 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     );
   }
 
-  // دالة مساعدة لبناء قسم بطاقات المعلومات (الهاتف والعنوان)
-  Widget _buildInfoCardsSection(TeacherEntity teacher) {
+  Widget _buildInfoCardsSection(TeacherEntity teacher, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Contact Info',
-          style: TextStyle(
-            color: AppTheme.primary1,
-            fontSize: 22,
+          style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
           ),
         ),
         const SizedBox(height: 16),
@@ -118,6 +128,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
           children: [
             Expanded(
               child: _buildInfoCard(
+                theme: theme,
                 icon: Icons.phone_android,
                 title: 'Phone',
                 subtitle: teacher.phone.isNotEmpty ? teacher.phone : 'N/A',
@@ -126,6 +137,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
             const SizedBox(width: 16),
             Expanded(
               child: _buildInfoCard(
+                theme: theme,
                 icon: Icons.location_on,
                 title: 'Address',
                 subtitle: teacher.address.isNotEmpty ? teacher.address : 'N/A',
@@ -137,8 +149,8 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     );
   }
 
-  // دالة مساعدة لبناء بطاقة معلومات فردية
   Widget _buildInfoCard({
+    required ThemeData theme,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -146,27 +158,31 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: primaryColor.withOpacity(0.05),
+        color: theme.colorScheme.primary.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: primaryColor.withOpacity(0.2), width: 1),
+        border: Border.all(
+          color: theme.colorScheme.primary.withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: primaryColor, size: 28),
+          Icon(icon, color: theme.colorScheme.primary, size: 28),
           const SizedBox(height: 8),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.black54,
+              color: theme.hintColor,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(fontSize: 14, color: Colors.black87),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.textTheme.bodyMedium?.color,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -175,26 +191,22 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     );
   }
 
-  // دالة مساعدة لبناء قسم السيرة الذاتية
-  Widget _buildBioSection(TeacherEntity teacher) {
+  Widget _buildBioSection(TeacherEntity teacher, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Bio',
-          style: TextStyle(
-            color: AppTheme.primary1,
-            fontSize: 22,
+          style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           teacher.description,
-          style: TextStyle(
-            color: tertiaryColor,
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
             height: 1.5,
           ),
         ),
@@ -202,17 +214,19 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     );
   }
 
-  // دالة مساعدة لبناء قسم المواد الدراسية
-  Widget _buildSubjectsSection(BuildContext context, TeacherEntity teacher) {
+  Widget _buildSubjectsSection(
+    BuildContext context,
+    TeacherEntity teacher,
+    ThemeData theme,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Subjects',
-          style: TextStyle(
-            color:AppTheme.primary1 ,
-            fontSize: 22,
+          style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
           ),
         ),
         const SizedBox(height: 16),

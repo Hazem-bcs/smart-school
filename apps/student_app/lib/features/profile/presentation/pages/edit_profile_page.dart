@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domain/entities/user_entity.dart';
-import 'package:core/theme/constants/app_colors.dart';
 import '../../../../widgets/app_exports.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -74,7 +73,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('تم حفظ التغييرات بنجاح'),
-          backgroundColor: Colors.green,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -87,22 +86,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'تعديل الملف الشخصي',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: theme.appBarTheme.titleTextStyle,
         ),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        centerTitle: true,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        elevation: theme.appBarTheme.elevation,
+        centerTitle: theme.appBarTheme.centerTitle,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.appBarTheme.foregroundColor),
         ),
       ),
       body: Form(
@@ -111,16 +109,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              // Profile Picture Section
-              _buildProfilePictureSection(),
+              _buildProfilePictureSection(theme),
               const SizedBox(height: 30),
-              
-              // Form Fields
-              _buildFormFields(),
+              _buildFormFields(theme),
               const SizedBox(height: 30),
-              
-              // Save Button
-              _buildSaveButton(),
+              _buildSaveButton(theme),
             ],
           ),
         ),
@@ -128,7 +121,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildProfilePictureSection() {
+  Widget _buildProfilePictureSection(ThemeData theme) {
     return Center(
       child: Column(
         children: [
@@ -138,12 +131,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.primary,
+                    color: theme.colorScheme.primary,
                     width: 4,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: theme.shadowColor.withOpacity(0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
@@ -151,12 +144,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 child: CircleAvatar(
                   radius: 70,
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: theme.colorScheme.surface,
                   backgroundImage: _pickedImageFile != null
                       ? FileImage(_pickedImageFile!) as ImageProvider
                       : (widget.currentUser.profilePhotoUrl != null
-                          ? NetworkImage(widget.currentUser.profilePhotoUrl!)
-                          : const AssetImage("assets/images/user_3.png") as ImageProvider),
+                      ? NetworkImage(widget.currentUser.profilePhotoUrl!)
+                      : const AssetImage("assets/images/user_3.png") as ImageProvider),
                 ),
               ),
               Positioned(
@@ -167,19 +160,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: theme.shadowColor.withOpacity(0.2),
                           blurRadius: 5,
                           offset: const Offset(0, 2),
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.camera_alt,
-                      color: Colors.white,
+                      color: theme.colorScheme.onPrimary,
                       size: 20,
                     ),
                   ),
@@ -190,9 +183,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           const SizedBox(height: 16),
           Text(
             'اضغط على الكاميرا لتغيير الصورة',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.hintColor,
             ),
           ),
         ],
@@ -200,10 +192,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildFormFields() {
+  Widget _buildFormFields(ThemeData theme) {
     return Column(
       children: [
         _buildTextField(
+          theme: theme,
           controller: _nameController,
           label: 'الاسم الكامل',
           hint: 'أدخل اسمك الكامل',
@@ -216,8 +209,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
         ),
         const SizedBox(height: 20),
-        
+
         _buildTextField(
+          theme: theme,
           controller: _emailController,
           label: 'البريد الإلكتروني',
           hint: 'أدخل بريدك الإلكتروني',
@@ -234,8 +228,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
         ),
         const SizedBox(height: 20),
-        
+
         _buildTextField(
+          theme: theme,
           controller: _phoneController,
           label: 'رقم الهاتف',
           hint: 'أدخل رقم هاتفك',
@@ -243,8 +238,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           keyboardType: TextInputType.phone,
         ),
         const SizedBox(height: 20),
-        
+
         _buildTextField(
+          theme: theme,
           controller: _addressController,
           label: 'العنوان',
           hint: 'أدخل عنوانك',
@@ -256,6 +252,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget _buildTextField({
+    required ThemeData theme,
     required TextEditingController controller,
     required String label,
     required String hint,
@@ -264,13 +261,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     String? Function(String?)? validator,
     int maxLines = 1,
   }) {
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: theme.shadowColor.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -280,24 +279,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
         controller: controller,
         keyboardType: keyboardType,
         maxLines: maxLines,
+        style: theme.textTheme.bodyMedium,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: theme.textTheme.labelMedium,
           hintText: hint,
+          hintStyle: theme.textTheme.labelSmall,
           prefixIcon: Container(
             margin: const EdgeInsets.all(8),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: theme.colorScheme.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: AppColors.primary),
+            child: Icon(icon, color: theme.colorScheme.primary),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: Colors.transparent,
+          fillColor: isDark ? theme.colorScheme.surface : Colors.transparent,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),
         validator: validator,
@@ -305,21 +307,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildSaveButton(ThemeData theme) {
     return Container(
       width: double.infinity,
       height: 55,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withOpacity(0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: theme.colorScheme.primary.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -328,20 +330,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
       child: ElevatedButton.icon(
         onPressed: _isLoading ? null : _saveChanges,
         icon: _isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : const Icon(Icons.save, color: Colors.white, size: 24),
+            ? SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            color: theme.colorScheme.onPrimary,
+            strokeWidth: 2,
+          ),
+        )
+            : Icon(Icons.save, color: theme.colorScheme.onPrimary, size: 24),
         label: Text(
           _isLoading ? 'جاري الحفظ...' : 'حفظ التغييرات',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),

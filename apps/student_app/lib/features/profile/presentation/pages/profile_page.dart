@@ -23,6 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileErrorState) {
@@ -33,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: theme.scaffoldBackgroundColor,
           appBar: const ProfileAppBar(),
           body: ProfileBody(state: state),
         );
@@ -42,34 +44,31 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
-// todo: here if we can refactor the code by separate the widgets into different files
-/// ---------------------- Widgets ----------------------
+// ---------------------- Widgets ----------------------
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ProfileAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AppBar(
       title: Text(
         AppStrings.profile,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+        style: theme.appBarTheme.titleTextStyle,
       ),
-      backgroundColor: AppColors.primary,
-      elevation: 0,
-      centerTitle: true,
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      elevation: theme.appBarTheme.elevation,
+      centerTitle: theme.appBarTheme.centerTitle,
       actions: [
         IconButton(
           onPressed: () {
             context.read<ProfileBloc>().add(GetProfileDataEvent());
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.refresh,
-            color: Colors.white,
+            color: theme.appBarTheme.actionsIconTheme?.color,
           ),
         ),
       ],
@@ -109,20 +108,19 @@ class ProfileLoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final theme = Theme.of(context);
+
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            color: AppColors.primary,
+            color: theme.colorScheme.primary,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'جاري تحميل البيانات...',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: theme.textTheme.bodyMedium,
           ),
         ],
       ),
@@ -136,11 +134,13 @@ class ProfileLoadedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return RefreshIndicator(
       onRefresh: () async {
         context.read<ProfileBloc>().add(GetProfileDataEvent());
       },
-      color: AppColors.primary,
+      color: theme.colorScheme.primary,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
@@ -162,6 +162,8 @@ class ProfileErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -169,24 +171,19 @@ class ProfileErrorWidget extends StatelessWidget {
           Icon(
             Icons.error_outline,
             size: 80,
-            color: Colors.grey[400],
+            color: theme.hintColor,
           ),
           const SizedBox(height: 16),
           Text(
             'حدث خطأ في تحميل البيانات',
-            style: TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
             ),
           ),
           const SizedBox(height: 8),
           Text(
             message,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -194,11 +191,11 @@ class ProfileErrorWidget extends StatelessWidget {
             onPressed: () {
               context.read<ProfileBloc>().add(GetProfileDataEvent());
             },
-            icon: const Icon(Icons.refresh),
-            label: const Text('إعادة المحاولة'),
+            icon: Icon(Icons.refresh, color: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+            label: Text('إعادة المحاولة', style: theme.elevatedButtonTheme.style?.textStyle?.resolve({MaterialState.pressed})),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              backgroundColor: theme.elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}),
+              foregroundColor: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -214,11 +211,11 @@ class ProfileErrorWidget extends StatelessWidget {
 class ProfileErrorSnackBar extends SnackBar {
   ProfileErrorSnackBar({super.key, required String message})
       : super(
-          content: Text(message),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        );
+    content: Text(message),
+    backgroundColor: AppColors.error,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
 }

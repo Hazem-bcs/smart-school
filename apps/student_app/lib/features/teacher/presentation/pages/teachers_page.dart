@@ -1,8 +1,6 @@
-
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/routing/navigation_extension.dart';
-
 import '../blocs/teacher_list_bloc.dart';
 
 class TeachersPage extends StatefulWidget {
@@ -21,8 +19,10 @@ class _TeachersPageState extends State<TeachersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: backGround,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBarWidget(title: "Teachers"),
       body: BlocBuilder<TeacherListBloc, TeacherListState>(
         builder: (context, state) {
@@ -30,31 +30,40 @@ class _TeachersPageState extends State<TeachersPage> {
             return const Center(child: AppLoadingWidget());
           }
           if (state is TeacherListError) {
-            print('hi from teacher page');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Error: ${state.message}',
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: theme.colorScheme.error),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<TeacherListBloc>().add(
-                        GetTeacherList(),
-                      );
+                      context.read<TeacherListBloc>().add(GetTeacherList());
                     },
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryColor,
+                      foregroundColor: theme
+                          .elevatedButtonTheme
+                          .style
+                          ?.foregroundColor
+                          ?.resolve({MaterialState.pressed}),
+                      backgroundColor: theme
+                          .elevatedButtonTheme
+                          .style
+                          ?.backgroundColor
+                          ?.resolve({MaterialState.pressed}),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('Retry'),
+                    child: Text(
+                      'Retry',
+                      style: theme.elevatedButtonTheme.style?.textStyle
+                          ?.resolve({MaterialState.pressed}),
+                    ),
                   ),
                 ],
               ),
@@ -67,7 +76,10 @@ class _TeachersPageState extends State<TeachersPage> {
               return const Center(child: Text('لا توجد بيانات للمعلمين.'));
             }
             return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 16.0,
+              ),
               itemCount: teachers.length,
               itemBuilder: (context, index) {
                 final TeacherEntity teacher = teachers[index];
