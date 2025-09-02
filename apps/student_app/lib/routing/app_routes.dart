@@ -62,12 +62,12 @@ class AppRoutes {
   
   // Feature routes
   static const String homework = '/homeWorkPage';
-  static const String dues = '/dues';
+  static const String dues = '/duesPage';
   static const String profile = '/profilePage';
   static const String subjects = '/subjectsPage';
   static const String teachers = '/teacherPage';
   static const String notifications = '/notificationPage';
-  static const String resources = '/resources';
+  static const String resources = '/resourcesPage';
   static const String settingsPage = '/settings';
   static const String schedule = '/schedule';
   static const String assignments = '/assignments';

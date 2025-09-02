@@ -8,14 +8,39 @@ class AppColors {
   AppColors._();
 
   // ==================== PRIMARY COLORS ====================
-  /// Primary brand color for Smart School
-  static const Color primary = Color(0xFF6366F1);
+  /// Primary brand color for Smart School - Modern indigo
+  static const Color primary = Color(0xFF4F46E5);
   
-  /// Secondary brand color for Smart School
-  static const Color secondary = Color(0xFF8B5CF6);
+  /// Secondary brand color for Smart School - Vibrant purple
+  static const Color secondary = Color(0xFF7C3AED);
   
-  /// Accent color for highlights and special elements
-  static const Color accent = Color(0xFF10B981);
+  /// Accent color for highlights and special elements - Emerald green
+  static const Color accent = Color(0xFF059669);
+
+  // ==================== MODERN GRADIENT COLORS ====================
+  /// Primary gradient start - Deep indigo
+  static const Color primaryGradientStart = Color(0xFF4F46E5);
+  
+  /// Primary gradient end - Vibrant purple
+  static const Color primaryGradientEnd = Color(0xFF7C3AED);
+  
+  /// Secondary gradient start - Emerald
+  static const Color secondaryGradientStart = Color(0xFF059669);
+  
+  /// Secondary gradient end - Teal
+  static const Color secondaryGradientEnd = Color(0xFF7C3AED);
+  
+  /// Warm gradient start - Orange
+  static const Color warmGradientStart = Color(0xFFF59E0B);
+  
+  /// Warm gradient end - Red
+  static const Color warmGradientEnd = Color(0xFFEF4444);
+  
+  /// Cool gradient start - Blue
+  static const Color coolGradientStart = Color(0xFF7C3AED);
+  
+  /// Cool gradient end - Indigo
+  static const Color coolGradientEnd = Color(0xFF6366F1);
 
   // ==================== SEMANTIC COLORS ====================
   /// Success color for positive actions and states
@@ -28,7 +53,7 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   
   /// Info color for informational content
-  static const Color info = Color(0xFF3B82F6);
+  static const Color info = Color(0xFF7C3AED);
 
   // ==================== NEUTRAL COLORS ====================
   /// Pure white
@@ -76,7 +101,7 @@ class AppColors {
   static const Color teacherAccent = Color(0xFF10B981);
   
   /// Student app accent color (blue)
-  static const Color studentAccent = Color(0xFF3B82F6);
+  static const Color studentAccent = Color(0xFF7C3AED);
   
   /// Parent app accent color (orange)
   static const Color parentAccent = Color(0xFFF59E0B);
@@ -104,51 +129,74 @@ class AppColors {
   static const Color lightDestructive = Color(0xFFFF3B30);
 
   // ==================== DARK THEME COLORS ====================
-  /// Dark theme background color - Modern dark blue gradient base
-  static const Color darkBackground = Color(0xFF0A0E21);
+  /// Dark theme background color - Deep modern dark
+  static const Color darkBackground = Color(0xFF0F0F23);
   
-  /// Dark theme surface color - Rich dark blue surface
-  static const Color darkSurface = Color(0xFF1A1F35);
+  /// Dark theme surface color - Rich dark surface with blue tint
+  static const Color darkSurface = Color(0xFF1A1B3A);
   
-  /// Dark theme primary text color - Pure white for contrast
+  /// Dark theme primary text color - Pure white for maximum contrast
   static const Color darkPrimaryText = Color(0xFFFFFFFF);
   
-  /// Dark theme secondary text color - Soft blue-gray
-  static const Color darkSecondaryText = Color(0xFF94A3B8);
+  /// Dark theme secondary text color - Soft purple-gray
+  static const Color darkSecondaryText = Color(0xFFA1A1AA);
   
-  /// Dark theme icon color - Bright blue-white
-  static const Color darkIcon = Color(0xFFE2E8F0);
+  /// Dark theme icon color - Light purple-white
+  static const Color darkIcon = Color(0xFFF4F4F5);
   
-  /// Dark theme divider color - Subtle blue-gray divider
-  static const Color darkDivider = Color(0xFF334155);
+  /// Dark theme divider color - Subtle purple-gray divider
+  static const Color darkDivider = Color(0xFF3F3F46);
   
-  /// Dark theme destructive color - Modern red
+  /// Dark theme destructive color - Vibrant red
   static const Color darkDestructive = Color(0xFFEF4444);
 
   // ==================== DARK THEME ACCENT COLORS ====================
-  /// Dark theme card background - Slightly lighter than surface
-  static const Color darkCardBackground = Color(0xFF242B42);
+  /// Dark theme card background - Modern glassmorphism surface
+  static const Color darkCardBackground = Color(0xFF1E1E2E);
   
-  /// Dark theme elevated surface - For floating elements
-  static const Color darkElevatedSurface = Color(0xFF2D3748);
+  /// Dark theme elevated surface - For floating elements with glassmorphism
+  static const Color darkElevatedSurface = Color(0xFF2A2A3A);
   
-  /// Dark theme gradient start - Deep purple-blue
-  static const Color darkGradientStart = Color(0xFF4C1D95);
+  /// Dark theme gradient start - Modern deep purple
+  static const Color darkGradientStart = Color(0xFF6366F1);
   
-  /// Dark theme gradient end - Deep blue
-  static const Color darkGradientEnd = Color(0xFF1E40AF);
+  /// Dark theme gradient end - Deep purple-blue
+  static const Color darkGradientEnd = Color(0xFF3B82F6);
   
-  /// Dark theme accent blue - For highlights
-  static const Color darkAccentBlue = Color(0xFF3B82F6);
+  /// Dark theme accent blue - Bright modern blue
+  static const Color darkAccentBlue = Color(0xFF60A5FA);
   
-  /// Dark theme accent purple - For special elements
-  static const Color darkAccentPurple = Color(0xFF8B5CF6);
+  /// Dark theme accent purple - Vibrant purple
+  static const Color darkAccentPurple = Color(0xFFA855F7);
   
-  /// Dark theme success green - For positive states
-  static const Color darkSuccess = Color(0xFF10B981);
+  /// Dark theme success green - Modern emerald
+  static const Color darkSuccess = Color(0xFF34D399);
   
-  /// Dark theme warning orange - For caution states
-  static const Color darkWarning = Color(0xFFF59E0B);
+  /// Dark theme warning orange - Vibrant amber
+  static const Color darkWarning = Color(0xFFFBBF24);
+
+  // ==================== GLASSMORPHISM COLORS ====================
+  /// Glassmorphism overlay light
+  static const Color glassOverlayLight = Color(0x1AFFFFFF);
+  
+  /// Glassmorphism overlay dark
+  static const Color glassOverlayDark = Color(0x1A000000);
+  
+  /// Glassmorphism border light
+  static const Color glassBorderLight = Color(0x33FFFFFF);
+  
+  /// Glassmorphism border dark
+  static const Color glassBorderDark = Color(0x33000000);
+
+  // ==================== NEUMORPHISM COLORS ====================
+  /// Neumorphism light shadow
+  static const Color neuLightShadow = Color(0x1A000000);
+  
+  /// Neumorphism dark shadow
+  static const Color neuDarkShadow = Color(0x40000000);
+  
+  /// Neumorphism highlight
+  static const Color neuHighlight = Color(0x80FFFFFF);
 
   // ==================== UTILITY METHODS ====================
   

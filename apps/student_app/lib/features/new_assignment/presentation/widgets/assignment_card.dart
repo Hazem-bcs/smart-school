@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/assignment_entity.dart';
+import 'package:core/theme/index.dart';
 
 class AssignmentCard extends StatefulWidget {
   final AssignmentEntity assignment;
@@ -281,7 +282,7 @@ class _AssignmentCardState extends State<AssignmentCard>
     if (widget.assignment.submissionStatus == SubmissionStatus.graded) {
       return Colors.green;
     } else if (widget.assignment.submissionStatus == SubmissionStatus.submitted) {
-      return Colors.blue;
+      return AppColors.primary;
     } else if (DateTime.now().isAfter(widget.assignment.dueDate)) {
       return Colors.red;
     } else {

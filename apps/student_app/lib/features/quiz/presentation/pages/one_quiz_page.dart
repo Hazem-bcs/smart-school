@@ -1,6 +1,8 @@
+import 'package:core/theme/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import '../../../../widgets/modern_design/modern_effects.dart';
 import '../blocs/question_bloc/question_bloc.dart';
 import '../widgets/question_card.dart';
 
@@ -458,6 +460,9 @@ class _ExamResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     final isExcellent = percentage >= 90;
     final isGood = percentage >= 80;
     final isPass = percentage >= 60;
@@ -468,152 +473,221 @@ class _ExamResultDialog extends StatelessWidget {
     String resultSubtext;
 
     if (isExcellent) {
-      resultColor = const Color(0xFF10B981);
-      resultIcon = Icons.emoji_events;
+      resultColor = isDark ? AppColors.darkSuccess : AppColors.success;
+      resultIcon = Icons.emoji_events_rounded;
       resultText = 'ممتاز!';
-      resultSubtext = 'أداء رائع!';
+      resultSubtext = 'أداء رائع ومتميز!';
     } else if (isGood) {
-      resultColor = const Color(0xFF3B82F6);
-      resultIcon = Icons.thumb_up;
+      resultColor = isDark ? AppColors.darkAccentBlue : AppColors.primary;
+      resultIcon = Icons.thumb_up_rounded;
       resultText = 'جيد جداً!';
       resultSubtext = 'أداء مميز!';
     } else if (isPass) {
-      resultColor = const Color(0xFFF59E0B);
-      resultIcon = Icons.check_circle;
+      resultColor = isDark ? AppColors.darkWarning : AppColors.warning;
+      resultIcon = Icons.check_circle_rounded;
       resultText = 'مقبول';
       resultSubtext = 'أداء جيد!';
     } else {
-      resultColor = const Color(0xFFEF4444);
-      resultIcon = Icons.sentiment_dissatisfied;
+      resultColor = isDark ? AppColors.darkDestructive : AppColors.error;
+      resultIcon = Icons.sentiment_dissatisfied_rounded;
       resultText = 'يحتاج تحسين';
-      resultSubtext = 'استمر في التعلم!';
+      resultSubtext = 'استمر في التعلم والتدريب!';
     }
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Container(
+      backgroundColor: Colors.transparent,
+      child: ModernEffects.glassmorphism(
+        isDark: isDark,
+        opacity: 0.95,
+        blur: 25.0,
+        borderOpacity: 0.3,
+        borderRadius: BorderRadius.circular(32),
         padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              resultColor.withOpacity(0.05),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                resultColor.withOpacity(0.1),
+                resultColor.withOpacity(0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(32),
+            boxShadow: ModernEffects.modernShadow(
+              isDark: isDark,
+              type: ShadowType.glow,
+            ),
+          ),
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Result Icon
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      resultColor.withOpacity(0.2),
+                      resultColor.withOpacity(0.1),
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: resultColor.withOpacity(0.3),
+                    width: 3,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: resultColor.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  resultIcon,
+                  color: resultColor,
+                  size: 50,
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // Result Title
+              Text(
+                resultText,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: resultColor,
+                  letterSpacing: 1.0,
+                ),
+              ),
+              const SizedBox(height: 12),
+              
+              // Result Subtitle
+              Text(
+                resultSubtext,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              
+              // Score Display
+              ModernEffects.neumorphism(
+                isDark: isDark,
+                distance: 4.0,
+                intensity: 0.1,
+                borderRadius: BorderRadius.circular(24),
+                padding: const EdgeInsets.all(32),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        resultColor.withOpacity(0.05),
+                        resultColor.withOpacity(0.1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '$totalScore',
+                        style: TextStyle(
+                          fontSize: 56,
+                          fontWeight: FontWeight.w800,
+                          color: resultColor,
+                        ),
+                      ),
+                      Text(
+                        'من $totalMarks',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: resultColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: resultColor.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          '${percentage.toStringAsFixed(1)}%',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: resultColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              
+              // Accept Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: ModernEffects.modernGradient(
+                      isDark: isDark,
+                      type: isExcellent ? GradientType.success : 
+                            isGood ? GradientType.primary :
+                            isPass ? GradientType.warning : GradientType.primary,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: resultColor.withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: onAccept,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'قبول النتيجة',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Result Icon
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: resultColor.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                resultIcon,
-                color: resultColor,
-                size: 48,
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Result Title
-            Text(
-              resultText,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: resultColor,
-              ),
-            ),
-            const SizedBox(height: 8),
-            
-            // Result Subtitle
-            Text(
-              resultSubtext,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 32),
-            
-            // Score Display
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: resultColor.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '$totalScore',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: resultColor,
-                    ),
-                  ),
-                  Text(
-                    'من $totalMarks',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${percentage.toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: resultColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 32),
-            
-            // Accept Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: onAccept,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: resultColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 4,
-                ),
-                child: const Text(
-                  'قبول النتيجة',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

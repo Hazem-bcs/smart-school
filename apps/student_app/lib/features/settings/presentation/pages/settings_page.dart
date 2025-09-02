@@ -8,6 +8,7 @@ import 'package:smart_school/features/settings/presentation/widgets/setting_app_
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
+import '../../../../widgets/modern_design/modern_effects.dart';
 import '../../../authentication/presentation/blocs/auth_bloc.dart';
 import '../blocs/settings_bloc.dart';
 import '../blocs/settings_event.dart';
@@ -299,43 +300,157 @@ class SupportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(title: 'Support & About'),
-        SettingsCard(
+        _buildModernSupportCard(context, theme, isDark),
+      ],
+    );
+  }
+
+  Widget _buildModernSupportCard(BuildContext context, ThemeData theme, bool isDark) {
+    return ModernEffects.neumorphism(
+      isDark: isDark,
+      distance: 6.0,
+      intensity: 0.1,
+      borderRadius: BorderRadius.circular(20),
+      margin: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context)),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
+      child: Column(
+        children: [
+          _buildModernSupportTile(
+            context: context,
+            theme: theme,
+            isDark: isDark,
+            icon: Icons.help_outline_rounded,
+            iconColor: isDark ? AppColors.darkAccentBlue : AppColors.info,
+            title: 'Help & FAQ',
+            subtitle: 'Get help and find answers',
+            onTap: () => Navigator.pushNamed(context, '/help-faq'),
+          ),
+          _buildDivider(isDark),
+          _buildModernSupportTile(
+            context: context,
+            theme: theme,
+            isDark: isDark,
+            icon: Icons.info_outline_rounded,
+            iconColor: isDark ? AppColors.darkSuccess : AppColors.success,
+            title: 'About App',
+            subtitle: 'Version 1.0.0',
+            onTap: () => Navigator.pushNamed(context, '/about-app'),
+          ),
+          _buildDivider(isDark),
+          _buildModernSupportTile(
+            context: context,
+            theme: theme,
+            isDark: isDark,
+            icon: Icons.logout_rounded,
+            iconColor: isDark ? AppColors.darkDestructive : AppColors.error,
+            title: 'Logout',
+            subtitle: 'Sign out of your account',
+            onTap: onShowLogoutDialog,
+            isDestructive: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernSupportTile({
+    required BuildContext context,
+    required ThemeData theme,
+    required bool isDark,
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool isDestructive = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
+        child: Row(
           children: [
-            AnimatedSettingTile(
-              cardAnimationController: cardAnimationController,
-              icon: Icons.help_outline,
-              title: 'Help & FAQ',
-              subtitle: 'Get help and find answers',
-              trailing: TrailingIcon(isDestructive: false),
-              onTap: () => Navigator.pushNamed(context, '/help-faq'),
-              isDestructive: false,
+            Container(
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 14, desktop: 16)),
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: iconColor.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Icon(
+                icon,
+                color: iconColor,
+                size: ResponsiveHelper.getIconSize(context, mobile: 22, tablet: 24, desktop: 26),
+              ),
             ),
-            AnimatedSettingTile(
-              cardAnimationController: cardAnimationController,
-              icon: Icons.info_outline,
-              title: 'About App',
-              subtitle: 'Version 1.0.0',
-              trailing: TrailingIcon(isDestructive: false),
-              onTap: () => Navigator.pushNamed(context, '/about-app'),
-              isDestructive: false,
+            SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
+                      color: isDestructive 
+                        ? iconColor 
+                        : (isDark ? AppColors.darkPrimaryText : AppColors.gray800),
+                    ),
+                  ),
+                  SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
+                      color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            AnimatedSettingTile(
-              cardAnimationController: cardAnimationController,
-              icon: Icons.logout,
-              title: 'Logout',
-              subtitle: 'Sign out of your account',
-              trailing: TrailingIcon(isDestructive: true),
-              onTap: onShowLogoutDialog,
-              isDestructive: true,
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkElevatedSurface : AppColors.gray100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
+                size: 16,
+              ),
             ),
           ],
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildDivider(bool isDark) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      height: 1,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.transparent,
+            isDark ? AppColors.darkDivider.withOpacity(0.3) : AppColors.gray200.withOpacity(0.5),
+            Colors.transparent,
+          ],
+        ),
+      ),
     );
   }
 }
@@ -347,6 +462,8 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.getSpacing(
@@ -357,15 +474,18 @@ class SectionTitle extends StatelessWidget {
         ),
         vertical: ResponsiveHelper.getSpacing(
           context,
-          mobile: 16,
-          tablet: 20,
-          desktop: 24,
+          mobile: 20,
+          tablet: 24,
+          desktop: 28,
         ),
       ),
       child: Text(
         title,
         style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          fontSize: ResponsiveHelper.getFontSize(context, mobile: 22, tablet: 24, desktop: 26),
+          letterSpacing: 0.5,
+          color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
         ),
       ),
     );
@@ -626,70 +746,166 @@ class LogoutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: isDark
-          ? AppColors.darkCardBackground
-          : theme.dialogTheme.backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkDestructive.withOpacity(0.2)
-                  : AppColors.error.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.logout,
-              color: isDark ? AppColors.darkDestructive : AppColors.error,
-            ),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: ModernEffects.glassmorphism(
+        isDark: isDark,
+        opacity: 0.95,
+        blur: 20.0,
+        borderOpacity: 0.3,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 28, desktop: 32)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDialogIcon(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28)),
+              _buildDialogTitle(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
+              _buildDialogContent(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 28, tablet: 32, desktop: 36)),
+              _buildDialogActions(context),
+            ],
           ),
-          const SizedBox(width: 12),
-          Text(
-            'Logout',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogIcon(BuildContext context) {
+    final iconColor = isDark ? AppColors.darkDestructive : AppColors.error;
+    
+    return Container(
+      width: ResponsiveHelper.getIconSize(context, mobile: 70, tablet: 80, desktop: 90),
+      height: ResponsiveHelper.getIconSize(context, mobile: 70, tablet: 80, desktop: 90),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            iconColor.withOpacity(0.2),
+            iconColor.withOpacity(0.1),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: iconColor.withOpacity(0.3),
+          width: 2,
+        ),
+      ),
+      child: Icon(
+        Icons.logout_rounded,
+        color: iconColor,
+        size: ResponsiveHelper.getIconSize(context, mobile: 35, tablet: 40, desktop: 45),
+      ),
+    );
+  }
+
+  Widget _buildDialogTitle(BuildContext context) {
+    return Text(
+      'Logout',
+      style: theme.textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+        fontSize: ResponsiveHelper.getFontSize(context, mobile: 22, tablet: 24, desktop: 26),
+        color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
+      ),
+    );
+  }
+
+  Widget _buildDialogContent(BuildContext context) {
+    return Text(
+      'Are you sure you want to logout?',
+      textAlign: TextAlign.center,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
+        color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+        height: 1.5,
+      ),
+    );
+  }
+
+  Widget _buildDialogActions(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildCancelButton(context),
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
+        Expanded(
+          child: _buildLogoutButton(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCancelButton(BuildContext context) {
+    return Container(
+      height: ResponsiveHelper.getButtonHeight(context),
+      child: ElevatedButton(
+        onPressed: () => Navigator.pop(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isDark ? AppColors.darkElevatedSurface : AppColors.gray100,
+          foregroundColor: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Text(
+          'Cancel',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(BuildContext context) {
+    final buttonColor = isDark ? AppColors.darkDestructive : AppColors.error;
+    
+    return Container(
+      height: ResponsiveHelper.getButtonHeight(context),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            buttonColor,
+            buttonColor.withOpacity(0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: buttonColor.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      content: Text(
-        'Are you sure you want to logout?',
-        style: theme.textTheme.bodyMedium,
+      child: ElevatedButton(
+        onPressed: onConfirm,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: AppColors.white,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Text(
+          'Logout',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
+            color: AppColors.white,
+          ),
+        ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(
-            'Cancel',
-            style: theme.textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: onConfirm,
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-                isDark ? AppColors.darkDestructive : AppColors.error,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: Text(
-            'Logout',
-            style: theme.textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

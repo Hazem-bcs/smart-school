@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
 
 class AppLoadingWidget extends StatefulWidget {
   final double size;
@@ -20,8 +21,8 @@ class _LoadingWidgetState extends State<AppLoadingWidget> {
       width: widget.size,
       child:
       Platform.isAndroid
-          ? CircularProgressIndicator(color: Colors.blue,)
-          : CupertinoActivityIndicator(color: Colors.blue),
+          ? CircularProgressIndicator(color: AppColors.primary,)
+          : CupertinoActivityIndicator(color: AppColors.primary),
     );
   }
 }

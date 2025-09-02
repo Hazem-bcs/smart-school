@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:core/theme/index.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../domain/entities/assignment_entity.dart';
@@ -156,7 +158,7 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage>
     if (widget.assignment.submissionStatus == SubmissionStatus.graded) {
       return Colors.green;
     } else if (widget.assignment.submissionStatus == SubmissionStatus.submitted) {
-      return Colors.blue;
+      return AppColors.primary;
     } else if (DateTime.now().isAfter(widget.assignment.dueDate)) {
       return Colors.red;
     } else {
@@ -213,7 +215,7 @@ class AssignmentDetailsAppBar extends StatelessWidget implements PreferredSizeWi
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: const Color(0xFF7B61FF),
+      backgroundColor: AppColors.primary,
       leading: IconButton(
         icon: Container(
           padding: const EdgeInsets.all(8),

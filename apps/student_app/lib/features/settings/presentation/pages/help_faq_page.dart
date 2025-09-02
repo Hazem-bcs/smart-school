@@ -176,14 +176,14 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                     AppColors.darkGradientEnd,
                   ]
                 : [
-                    AppColors.info,
                     AppColors.primary,
+                    AppColors.secondary,
                   ],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: (isDark ? AppColors.darkGradientStart : AppColors.info).withOpacity(0.3),
+              color: (isDark ? AppColors.darkGradientStart : AppColors.primary).withOpacity(0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -195,12 +195,12 @@ class _HelpFaqPageState extends State<HelpFaqPage>
               width: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
               height: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: AppColors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 Icons.help_outline,
-                color: Colors.white,
+                color: AppColors.white,
                 size: ResponsiveHelper.getIconSize(context, mobile: 30, tablet: 35, desktop: 40),
               ),
             ),
@@ -214,7 +214,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 20, tablet: 22, desktop: 24),
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
@@ -222,7 +222,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                     'Find answers to common questions and get support',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                      color: Colors.white.withOpacity(0.9),
+                      color: AppColors.white.withOpacity(0.9),
                     ),
                   ),
                 ],
@@ -323,12 +323,12 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                 leading: Container(
                   padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkAccentBlue.withOpacity(0.2) : AppColors.info.withOpacity(0.1),
+                    color: isDark ? AppColors.darkAccentBlue.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     Icons.help_outline,
-                    color: isDark ? AppColors.darkAccentBlue : AppColors.info,
+                    color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
                     size: ResponsiveHelper.getIconSize(context, mobile: 20, tablet: 22, desktop: 24),
                   ),
                 ),

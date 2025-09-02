@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:core/theme/index.dart';
 
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../domain/entities/schedule_entity.dart';
@@ -180,23 +181,23 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
                   ),
                   child: state.schedules.isEmpty 
                       ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.event_busy,
-                                size: 64,
-                                color: isDark ? Colors.white54 : Colors.grey[400],
-                              ),
-                              SizedBox(height: ResponsiveHelper.getSpacing(context)),
-                              Text(
-                                'لا توجد دروس لهذا اليوم',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: isDark ? Colors.white54 : Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
+                                            child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.event_busy,
+                        size: 64,
+                        color: isDark ? AppColors.darkSecondaryText : AppColors.gray400,
+                      ),
+                      SizedBox(height: ResponsiveHelper.getSpacing(context)),
+                      Text(
+                        'لا توجد دروس لهذا اليوم',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                        ),
+                      ),
+                    ],
+                  ),
                         )
                       : ListView.builder(
                           itemCount: state.schedules.length,
@@ -249,19 +250,19 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
                 Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: Colors.red[400],
+                  color: AppColors.error,
                 ),
                 SizedBox(height: ResponsiveHelper.getSpacing(context)),
                 Text(
                   'حدث خطأ في تحميل الجدول',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.red[600],
+                    color: AppColors.error,
                   ),
                 ),
                 Text(
                   state.message,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.red[400],
+                    color: AppColors.error.withOpacity(0.8),
                   ),
                 ),
               ],

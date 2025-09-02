@@ -1,6 +1,10 @@
 import 'package:homework/domain/entites/homework_entity.dart';
+import 'package:smart_school/routing/index.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:core/theme/index.dart';
+import '../../../../widgets/modern_design/modern_effects.dart';
 import '../blocs/home_work_bloc/homework_bloc.dart';
+import 'one_quiz_page.dart';
 
 class HomeworkPage extends StatefulWidget {
   const HomeworkPage({super.key});
@@ -53,9 +57,12 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: _buildAppBar(),
+      backgroundColor: isDark ? AppColors.darkBackground : const Color(0xFFF8FAFC),
+      appBar: _buildAppBar(theme, isDark),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SlideTransition(
@@ -63,13 +70,13 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
           child: BlocBuilder<HomeworkBloc, HomeworkState>(
             builder: (context, state) {
               if (state is HomeworkLoading) {
-                return _buildLoadingState();
+                return _buildLoadingState(theme, isDark);
               } else if (state is HomeworkLoaded) {
-                return _buildHomeworkGrid(state.homeworkList);
+                return _buildHomeworkGrid(state.homeworkList, theme, isDark);
               } else if (state is HomeworkFailure) {
-                return _buildErrorState(state.message);
+                return _buildErrorState(state.message, theme, isDark);
               }
-              return _buildEmptyState();
+              return _buildEmptyState(theme, isDark);
             },
           ),
         ),
@@ -77,16 +84,25 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme, bool isDark) {
     return AppBar(
       elevation: 0,
-      backgroundColor: const Color(0xFF4F46E5),
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: ModernEffects.modernGradient(
+            isDark: isDark,
+            type: GradientType.primary,
+          ),
+        ),
+      ),
       title: Text(
         AppStrings.homeWork,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: 20,
+        style: TextStyle(
+          color: AppColors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: 22,
+          letterSpacing: 0.5,
         ),
       ),
       centerTitle: true,
@@ -97,20 +113,24 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               onTap: () {
                 context.read<HomeworkBloc>().add(GetHomeworksEvent());
               },
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.white.withOpacity(0.3),
+                    width: 1,
+                  ),
                 ),
                 child: const Icon(
-                  Icons.refresh,
+                  Icons.refresh_rounded,
                   color: Colors.white,
-                  size: 20,
+                  size: 22,
                 ),
               ),
             ),
@@ -120,58 +140,97 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(ThemeData theme, bool isDark) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F46E5)),
-            strokeWidth: 3,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'جاري تحميل الواجبات...',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+      child: ModernEffects.glassmorphism(
+        isDark: isDark,
+        opacity: 0.9,
+        blur: 15.0,
+        borderRadius: BorderRadius.circular(24),
+        margin: const EdgeInsets.all(40),
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: ModernEffects.modernGradient(
+                  isDark: isDark,
+                  type: GradientType.primary,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: ModernEffects.modernShadow(
+                  isDark: isDark,
+                  type: ShadowType.glow,
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 4,
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            Text(
+              'جاري تحميل الواجبات...',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontSize: 20,
+                color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'يرجى الانتظار قليلاً',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: 16,
+                color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(String message, ThemeData theme, bool isDark) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.all(24),
+        margin: const EdgeInsets.all(32),
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? AppColors.darkCardBackground : Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              color: (isDark ? AppColors.darkDestructive : AppColors.error).withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
           ],
+          border: Border.all(
+            color: isDark ? AppColors.darkDivider.withOpacity(0.3) : AppColors.gray200,
+            width: 1,
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: (isDark ? AppColors.darkDestructive : AppColors.error).withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 48,
+              child: Icon(
+                Icons.error_outline_rounded,
+                color: isDark ? AppColors.darkDestructive : AppColors.error,
+                size: 40,
               ),
             ),
             const SizedBox(height: 24),
@@ -179,8 +238,8 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
               'حدث خطأ في التحميل',
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+                fontWeight: FontWeight.w700,
+                color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
               ),
             ),
             const SizedBox(height: 12),
@@ -188,23 +247,28 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
               message,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                height: 1.4,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                context.read<HomeworkBloc>().add(GetHomeworksEvent());
-              },
-              icon: const Icon(Icons.refresh),
-              label: const Text('إعادة المحاولة'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context.read<HomeworkBloc>().add(GetHomeworksEvent());
+                },
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('إعادة المحاولة'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -214,70 +278,85 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
     );
   }
 
-  Widget _buildHomeworkGrid(List<HomeworkEntity> homeworks) {
+  Widget _buildHomeworkGrid(List<HomeworkEntity> homeworks, ThemeData theme, bool isDark) {
     return CustomScrollView(
       slivers: [
         // Header Section
         SliverToBoxAdapter(
-          child: Container(
+          child: ModernEffects.glassmorphism(
+            isDark: isDark,
+            opacity: 0.95,
+            blur: 20.0,
+            borderRadius: BorderRadius.circular(24),
             margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF4F46E5),
-                  const Color(0xFF7C3AED),
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: ModernEffects.modernGradient(
+                  isDark: isDark,
+                  type: GradientType.primary,
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: ModernEffects.modernShadow(
+                  isDark: isDark,
+                  type: ShadowType.glow,
+                ),
+              ),
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.white.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.assignment_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'الواجبات المتاحة',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${homeworks.length} واجب متاح',
+                            style: TextStyle(
+                              color: AppColors.white.withOpacity(0.9),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF4F46E5).withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.assignment,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'الواجبات المتاحة',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${homeworks.length} واجب متاح',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ),
           ),
         ),
@@ -288,14 +367,14 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 1.2,
+              childAspectRatio: 0.85, // تقليل النسبة لإعطاء مساحة أكبر للطول
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final homework = homeworks[index];
-                return _buildHomeworkCard(homework, index);
+                return _buildHomeworkCard(homework, index, theme, isDark);
               },
               childCount: homeworks.length,
             ),
@@ -304,13 +383,13 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
         
         // Bottom Spacing
         const SliverToBoxAdapter(
-          child: SizedBox(height: 20),
+          child: SizedBox(height: 40),
         ),
       ],
     );
   }
 
-  Widget _buildHomeworkCard(HomeworkEntity homework, int index) {
+    Widget _buildHomeworkCard(HomeworkEntity homework, int index, ThemeData theme, bool isDark) {
     return AnimatedBuilder(
       animation: _fadeController,
       builder: (context, child) {
@@ -320,99 +399,125 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
             opacity: _fadeController.value,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                color: isDark ? AppColors.darkCardBackground : Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF4F46E5).withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    color: _getSubjectColor(index).withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
                 ],
+                border: Border.all(
+                  color: isDark ? AppColors.darkDivider.withOpacity(0.3) : AppColors.gray200,
+                  width: 1,
+                ),
               ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: () {
-                    // Navigate to homework details
-                  },
-                                      child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
+                                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      splashColor: _getSubjectColor(index).withOpacity(0.1),
+                      highlightColor: _getSubjectColor(index).withOpacity(0.05),
+                      onTap: () {
+                        // تحويل String ID إلى int
+                        final int? homeworkId = int.tryParse(homework.id);
+                        if (homeworkId != null) {
+                          context.goToQuestions(homework.id);
+                        } else {
+                          // في حالة فشل التحويل، عرض رسالة خطأ
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('خطأ في معرف الواجب'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         // Status Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _getStatusColor(homework.status).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: _getStatusColor(homework.status),
-                              width: 1,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(homework.status).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _getStatusText(homework.status),
+                                  style: TextStyle(
+                                    color: _getStatusColor(homework.status),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            _getStatusText(homework.status),
-                            style: TextStyle(
-                              color: _getStatusColor(homework.status),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          ],
                         ),
                         
                         const SizedBox(height: 12),
                         
-                        // Subject Icon
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: _getSubjectColor(index).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            _getSubjectIcon(homework.subject),
-                            color: _getSubjectColor(index),
-                            size: 20,
-                          ),
+                        // Subject Icon and Name
+                        Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: _getSubjectColor(index).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                _getSubjectIcon(homework.subject),
+                                color: _getSubjectColor(index),
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                homework.subject,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                         
                         const SizedBox(height: 12),
-                        
-                        // Subject Name
-                        Expanded(
-                          child: Text(
-                            homework.subject,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E293B),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        
-                        const SizedBox(height: 6),
                         
                         // Due Date
                         Row(
                           children: [
                             Icon(
-                              Icons.calendar_today,
-                              size: 12,
-                              color: Colors.grey[600],
+                              Icons.access_time_rounded,
+                              size: 14,
+                              color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
                             ),
-                            const SizedBox(width: 3),
+                            const SizedBox(width: 6),
                             Expanded(
                               child: Text(
                                 _formatDate(homework.dueDate),
                                 style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey[600],
+                                  fontSize: 12,
+                                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
+                                  fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -421,22 +526,47 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                           ],
                         ),
                         
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         
                         // Action Button
-                        Container(
+                        SizedBox(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF4F46E5).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'عرض التفاصيل',
+                          height: 36,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // تحويل String ID إلى int
+                              final int? homeworkId = int.tryParse(homework.id);
+                              if (homeworkId != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OneHomeworkPage(
+                                      questionId: homeworkId,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // في حالة فشل التحويل، عرض رسالة خطأ
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('خطأ في معرف الواجب'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _getSubjectColor(index),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text(
+                              'بدء الواجب',
                               style: TextStyle(
-                                color: Color(0xFF4F46E5),
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -454,42 +584,63 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(ThemeData theme, bool isDark) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
+      child: Container(
+        margin: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(40),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCardBackground : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
-            child: Icon(
-              Icons.assignment_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+          ],
+          border: Border.all(
+            color: isDark ? AppColors.darkDivider.withOpacity(0.3) : AppColors.gray200,
+            width: 1,
           ),
-          const SizedBox(height: 24),
-          Text(
-            'لا توجد واجبات متاحة',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: (isDark ? AppColors.darkAccentBlue : AppColors.primary).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.assignment_outlined,
+                size: 50,
+                color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'تحقق لاحقاً من وجود واجبات جديدة',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
+            const SizedBox(height: 24),
+            Text(
+              'لا توجد واجبات متاحة',
+              style: TextStyle(
+                fontSize: 22,
+                color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 12),
+            Text(
+              'تحقق لاحقاً من وجود واجبات جديدة',
+              style: TextStyle(
+                fontSize: 16,
+                color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

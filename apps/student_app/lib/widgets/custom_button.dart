@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
+
 class CustomButton extends StatelessWidget {
     CustomButton({
     required this.content,
     required this.onPressed,
     this.borderColor,
-    this.buttonColor=Colors.blue,
+    this.buttonColor=AppColors.primary,
     required this.width,
     this.shapeBorder,
     this.shadowColor,

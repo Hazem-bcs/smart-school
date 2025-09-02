@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:core/theme/index.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
 import '../blocs/schedule_bloc.dart';
@@ -125,12 +126,12 @@ class _SchedulePageState extends State<SchedulePage>
         'جدول الأسبوع',
         style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white : const Color(0xFF0E141B),
+          color: isDark ? AppColors.white : AppColors.gray900,
         ),
       ),
       automaticallyImplyLeading: false,
       backgroundColor:
-          isDark ? const Color(0xFF1A1A2E) : const Color(0xFFF8F9FA),
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       elevation: 0,
       centerTitle: true,
     );
