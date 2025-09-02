@@ -51,12 +51,12 @@ class ProfileCard extends StatelessWidget {
               width: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
               height: ResponsiveHelper.getIconSize(context, mobile: 60, tablet: 70, desktop: 80),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: AppColors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 Icons.person,
-                color: Colors.white,
+                color: AppColors.white,
                 size: ResponsiveHelper.getIconSize(context, mobile: 30, tablet: 35, desktop: 40),
               ),
             ),
@@ -70,7 +70,7 @@ class ProfileCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 18, tablet: 20, desktop: 22),
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
@@ -78,7 +78,7 @@ class ProfileCard extends StatelessWidget {
                     email,
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                      color: Colors.white.withOpacity(0.8),
+                      color: AppColors.white.withOpacity(0.8),
                     ),
                   ),
                 ],
@@ -89,12 +89,12 @@ class ProfileCard extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 10, desktop: 12)),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppColors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.edit,
-                  color: Colors.white,
+                  color: AppColors.white,
                   size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
                 ),
               ),

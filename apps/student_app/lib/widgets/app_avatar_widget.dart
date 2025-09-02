@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
 
 class AppAvatarWidget extends StatelessWidget {
   final String imageUrl;
@@ -11,7 +12,7 @@ class AppAvatarWidget extends StatelessWidget {
     Key? key,
     required this.imageUrl,
     this.isBordered = false,
-    this.borderColor = Colors.blue,
+    this.borderColor = AppColors.primary,
     this.radius = 20,
     this.borderThickness = 2.0,
   }) : assert(radius >= borderThickness),

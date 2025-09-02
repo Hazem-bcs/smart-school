@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../domain/entities/schedule_entity.dart';
 
@@ -30,7 +31,7 @@ class ScheduleCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      color: isDark ? const Color(0xFF1A1A2E) : Colors.white,
+      color: isDark ? AppColors.darkCardBackground : AppColors.white,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -57,13 +58,13 @@ class ScheduleCard extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: isDark 
-            ? const Color(0xFF2A2A3E) 
-            : const Color(0xFFE7EDF3),
+            ? AppColors.darkElevatedSurface
+            : AppColors.gray100,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(
         icon,
-        color: const Color(0xFF4A90E2),
+        color: AppColors.info,
         size: 24,
       ),
     );
@@ -77,14 +78,14 @@ class ScheduleCard extends StatelessWidget {
           title,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF0E141B),
+            color: isDark ? AppColors.white : AppColors.gray900,
           ),
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 2, tablet: 4, desktop: 6)),
         Text(
           subtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF4E7397),
+            color: AppColors.gray600,
           ),
         ),
       ],
@@ -98,15 +99,15 @@ class ScheduleCard extends StatelessWidget {
     switch (status) {
       case ScheduleStatus.upcoming:
         statusIcon = Icons.schedule;
-        statusColor = const Color(0xFF4A90E2);
+        statusColor = AppColors.info;
         break;
       case ScheduleStatus.ongoing:
         statusIcon = Icons.play_circle_outline;
-        statusColor = const Color(0xFF4CAF50);
+        statusColor = AppColors.success;
         break;
       case ScheduleStatus.completed:
         statusIcon = Icons.check_circle_outline;
-        statusColor = const Color(0xFF4CAF50);
+        statusColor = AppColors.success;
         break;
     }
     

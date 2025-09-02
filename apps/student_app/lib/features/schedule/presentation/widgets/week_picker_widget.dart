@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:core/theme/index.dart';
 
 class WeekPicker extends StatefulWidget {
   final DateTime selectedDate;
@@ -91,13 +92,13 @@ class _WeekPickerState extends State<WeekPicker> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A1A2E) : const Color(0xFFF8F9FA),
+        color: isDark ? AppColors.darkBackground : AppColors.lightBackground,
         borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(20.0),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -111,7 +112,7 @@ class _WeekPickerState extends State<WeekPicker> {
               IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios,
-                  color: isDark ? Colors.white70 : Colors.black54,
+                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
                   size: 20,
                 ),
                 onPressed: _goToPreviousWeek,
@@ -120,13 +121,13 @@ class _WeekPickerState extends State<WeekPicker> {
                 DateFormat('MMMM yyyy', 'en').format(_currentWeekStart),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : const Color(0xFF0E141B),
+                  color: isDark ? AppColors.white : AppColors.gray900,
                 ),
               ),
               IconButton(
                 icon: Icon(
                   Icons.arrow_forward_ios,
-                  color: isDark ? Colors.white70 : Colors.black54,
+                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
                   size: 20,
                 ),
                 onPressed: _goToNextWeek,
@@ -150,8 +151,8 @@ class _WeekPickerState extends State<WeekPicker> {
                       DateFormat('EEE', 'en').format(day),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isSelected
-                            ? (isDark ? Colors.white : theme.primaryColor)
-                            : (isDark ? Colors.white70 : Colors.black54),
+                            ? (isDark ? AppColors.white : AppColors.primary)
+                            : (isDark ? AppColors.darkSecondaryText : AppColors.gray500),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -162,29 +163,27 @@ class _WeekPickerState extends State<WeekPicker> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? (isDark ? theme.primaryColor : theme.primaryColor)
+                            ? AppColors.primary
                             : Colors.transparent,
                         shape: BoxShape.circle,
                         border: isSelected
                             ? Border.all(
-                                color: isDark
-                                    ? Colors.purpleAccent
-                                    : theme.primaryColor,
+                                color: AppColors.primary,
                                 width: 1.5,
                               )
                             : null,
                       ),
-                      child: Text(
-                        DateFormat('d').format(day),
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: isSelected
-                              ? Colors.white
-                              : (isDark ? Colors.white : Colors.black),
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                                              child: Text(
+                          DateFormat('d').format(day),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: isSelected
+                                ? AppColors.white
+                                : (isDark ? AppColors.white : AppColors.black),
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
-                      ),
                     ),
                   ],
                 ),

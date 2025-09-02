@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:core/theme/index.dart';
 
 class SettingsTile extends StatelessWidget {
   final IconData icon;
@@ -27,14 +28,14 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultIconColor = isDestructive 
-        ? const Color(0xFFEF4444) 
-        : const Color(0xFF6366F1);
+        ? AppColors.error 
+        : AppColors.primary;
     
     final defaultTitleColor = isDestructive 
-        ? const Color(0xFFEF4444) 
-        : const Color(0xFF1E293B);
+        ? AppColors.error 
+        : AppColors.gray800;
     
-    final defaultSubtitleColor = const Color(0xFF64748B);
+    final defaultSubtitleColor = AppColors.gray500;
 
     return Material(
       color: Colors.transparent,

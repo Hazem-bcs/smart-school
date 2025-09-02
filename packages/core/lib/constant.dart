@@ -1,6 +1,6 @@
 class Constants {
-  static const String baseUrl = 'http://10.75.247.164:8000'; // Laravel backend URL
-
+  static const String baseUrl = 'https://03a4dfe57407.ngrok-free.app'; // Laravel backend URL
+// http://10.224.171.164:8000
   static String loginEndpoint = '/api/login';
   static String logoutEndpoint = '/api/logout';
   static String getDuesEndpoint = '/api/showinvoices';

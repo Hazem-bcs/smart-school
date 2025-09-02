@@ -30,7 +30,7 @@ class ProfileInfoWidget extends StatelessWidget {
             icon: Icons.email,
             title: 'البريد الإلكتروني',
             subtitle: user.email,
-            color: Colors.blue,
+            color: AppColors.primary,
           ),
           const SizedBox(height: 12),
           
