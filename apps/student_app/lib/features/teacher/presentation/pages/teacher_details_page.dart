@@ -30,7 +30,19 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBarWidget(title: AppStrings.teacherDetails),
+      appBar: AppBar(
+        title: Text(AppStrings.teacherDetails),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<TeacherDetailsBloc>().add(
+                GetTeacherById(teacherId: widget.teacherId),
+              );
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
       backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<TeacherDetailsBloc, TeacherDetailsState>(
         builder: (context, state) {
@@ -39,70 +51,92 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
             return const Center(child: AppLoadingWidget());
           }
           if (state is TeacherDetailsError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Error: ${state.message}',
-                    style: TextStyle(color: theme.colorScheme.error),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<TeacherDetailsBloc>().add(
-                        GetTeacherById(teacherId: widget.teacherId),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: theme
-                          .elevatedButtonTheme
-                          .style
-                          ?.foregroundColor
-                          ?.resolve({MaterialState.pressed}),
-                      backgroundColor: theme
-                          .elevatedButtonTheme
-                          .style
-                          ?.backgroundColor
-                          ?.resolve({MaterialState.pressed}),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<TeacherDetailsBloc>().add(
+                  GetTeacherById(teacherId: widget.teacherId),
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Error: ${state.message}',
+                          style: TextStyle(color: theme.colorScheme.error),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<TeacherDetailsBloc>().add(
+                              GetTeacherById(teacherId: widget.teacherId),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: theme
+                                .elevatedButtonTheme
+                                .style
+                                ?.foregroundColor
+                                ?.resolve({MaterialState.pressed}),
+                            backgroundColor: theme
+                                .elevatedButtonTheme
+                                .style
+                                ?.backgroundColor
+                                ?.resolve({MaterialState.pressed}),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Retry',
+                            style: theme.elevatedButtonTheme.style?.textStyle
+                                ?.resolve({MaterialState.pressed}),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      'Retry',
-                      style: theme.elevatedButtonTheme.style?.textStyle
-                          ?.resolve({MaterialState.pressed}),
-                    ),
                   ),
-                ],
+                ),
               ),
             );
           }
           if (state is TeacherDetailsLoaded) {
             final TeacherEntity loadedTeacher = state.teacher;
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 24,
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<TeacherDetailsBloc>().add(
+                  GetTeacherById(teacherId: widget.teacherId),
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 24,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildInfoCardsSection(loadedTeacher, theme),
+                          const SizedBox(height: 32),
+                          _buildBioSection(loadedTeacher, theme),
+                          const SizedBox(height: 32),
+                          _buildSubjectsSection(context, loadedTeacher, theme),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildInfoCardsSection(loadedTeacher, theme),
-                        const SizedBox(height: 32),
-                        _buildBioSection(loadedTeacher, theme),
-                        const SizedBox(height: 32),
-                        _buildSubjectsSection(context, loadedTeacher, theme),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }
@@ -215,10 +249,10 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
   }
 
   Widget _buildSubjectsSection(
-    BuildContext context,
-    TeacherEntity teacher,
-    ThemeData theme,
-  ) {
+      BuildContext context,
+      TeacherEntity teacher,
+      ThemeData theme,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -251,7 +285,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              SubjectDetailsPage(subjectId: subject.id),
+                          SubjectDetailsPage(subjectId: subject.id),
                     ),
                   );
                 },

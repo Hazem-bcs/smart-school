@@ -119,7 +119,7 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
               2,
               _DrawerItem(
                   title: AppStrings.subject,
-                  assetPath: "assets/svg/book.svg",
+                  assetPath: "assets/svg/homework.svg",
                   onTap: () => _navigateTo(context, '/subjectsPage'))),
           _buildAnimatedItem(
               3,

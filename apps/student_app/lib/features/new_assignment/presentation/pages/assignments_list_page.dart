@@ -25,7 +25,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   List<AssignmentEntity> _allAssignments = [];
   List<AssignmentEntity> _filteredAssignments = [];
   late Future<List<AssignmentEntity>> _assignmentsFuture;
-  
+
   // Animation controllers
   late AnimationController _fadeAnimationController;
   late AnimationController _slideAnimationController;
@@ -44,7 +44,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _slideAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -80,8 +80,8 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   Future<List<AssignmentEntity>> _fetchAssignments() async {
     final result = await getAssignmentsUseCase('class_a');
     return result.fold(
-      (failure) => throw failure,
-      (assignments) {
+          (failure) => throw failure,
+          (assignments) {
         _allAssignments = assignments;
         _applyFilter();
         return _allAssignments;
@@ -124,7 +124,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: _buildAppBar(theme),
@@ -138,9 +138,37 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return _buildLoadingState();
               } else if (snapshot.hasError) {
-                return _buildErrorState(snapshot.error.toString());
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _assignmentsFuture = _fetchAssignments();
+                    });
+                  },
+                  color: const Color(0xFF7B61FF),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                      child: _buildErrorState(snapshot.error.toString()),
+                    ),
+                  ),
+                );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return _buildEmptyState();
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _assignmentsFuture = _fetchAssignments();
+                    });
+                  },
+                  color: const Color(0xFF7B61FF),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                      child: _buildEmptyState(),
+                    ),
+                  ),
+                );
               } else {
                 return _buildContent(context, theme, isDark);
               }
@@ -186,6 +214,14 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
       ),
       centerTitle: false,
       actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh, color: Colors.white),
+          onPressed: () {
+            setState(() {
+              _assignmentsFuture = _fetchAssignments();
+            });
+          },
+        ),
         Container(
           margin: const EdgeInsets.only(right: 16),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -423,7 +459,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
 
   Widget _buildFilterChip(String text, AssignmentFilter filter, ThemeData theme) {
     final isSelected = _selectedFilter == filter;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -435,13 +471,13 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? const Color(0xFF7B61FF) 
+          color: isSelected
+              ? const Color(0xFF7B61FF)
               : theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-                ? const Color(0xFF7B61FF) 
+            color: isSelected
+                ? const Color(0xFF7B61FF)
                 : Colors.grey.withOpacity(0.3),
             width: 1.5,
           ),

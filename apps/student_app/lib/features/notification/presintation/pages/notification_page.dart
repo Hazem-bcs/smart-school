@@ -44,61 +44,98 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title:AppStrings.notification),
+      appBar: AppBarWidget(
+        title: AppStrings.notification,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<NotificationBloc>().add(GetNotificationListEvent());
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<NotificationBloc, NotificationState>(
         builder: (context, state) {
           if (state is NotificationInitial || state is NotificationLoadingState) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is NotificationErrorState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 80, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    'خطأ في تحميل الإشعارات:\n${state.message}',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red),
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<NotificationBloc>().add(GetNotificationListEvent());
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline, size: 80, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text(
+                          'خطأ في تحميل الإشعارات:\n${state.message}',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<NotificationBloc>().add(GetNotificationListEvent());
+                          },
+                          child: const Text('retry'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<NotificationBloc>().add(GetNotificationListEvent());
-                    },
-                    child: const Text('retry'),
-                  ),
-                ],
+                ),
               ),
             );
           } else if (state is NotificationListLoadedState) {
             final notifications = state.notificationList;
 
             if (notifications.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.notifications_off, size: 80, color: Colors.grey[400]),
-                    const SizedBox(height: 16),
-                    Text(
-                      'لا توجد إشعارات حالياً',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.grey),
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<NotificationBloc>().add(GetNotificationListEvent());
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.notifications_off, size: 80, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          Text(
+                            'لا توجد إشعارات حالياً',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.grey),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               );
             }
             notifications.sort((a, b) => b.sentTime.compareTo(a.sentTime));
-            return ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return NotificationCard(
-                  notification: notification,
-                  onTap: () => _onNotificationTap(notification),
-                );
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<NotificationBloc>().add(GetNotificationListEvent());
               },
+              child: ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return NotificationCard(
+                    notification: notification,
+                    onTap: () => _onNotificationTap(notification),
+                  );
+                },
+              ),
             );
           }
           return const SizedBox.shrink();

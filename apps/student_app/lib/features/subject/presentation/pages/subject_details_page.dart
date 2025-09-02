@@ -1,4 +1,3 @@
-
 import 'package:core/domain/entities/subject_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +8,7 @@ class SubjectDetailsPage extends StatefulWidget {
   final int subjectId;
 
   const SubjectDetailsPage({Key? key, required this.subjectId})
-    : super(key: key);
+      : super(key: key);
 
   @override
   State<SubjectDetailsPage> createState() => _SubjectDetailsPageState();
@@ -26,14 +25,16 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<SubjectBloc, SubjectState>(
-        builder: (context, state) {
-          if (state is SubjectLoading || state is SubjectInitial) {
-            return const Center(child: AppLoadingWidget());
-          }
-          if (state is SubjectFailure) {
-            return Center(
+    return BlocBuilder<SubjectBloc, SubjectState>(
+      builder: (context, state) {
+        if (state is SubjectLoading || state is SubjectInitial) {
+          return const Scaffold(
+            body: Center(child: AppLoadingWidget()),
+          );
+        }
+        if (state is SubjectFailure) {
+          return Scaffold(
+            body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -48,32 +49,50 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
                   ),
                 ],
               ),
-            );
-          }
-          if (state is SubjectLoaded) {
-            final SubjectEntity subject = state.subjectEntity;
-            final String teachersText = subject.teachers
-                .map((t) => '• $t')
-                .join('\n');
-            final String notesText = subject.notes
-                .map((n) => '• $n')
-                .join('\n');
+            ),
+          );
+        }
+        if (state is SubjectLoaded) {
+          final SubjectEntity subject = state.subjectEntity;
+          final String teachersText = subject.teachers
+              .map((t) => '• $t')
+              .join('\n');
+          final String notesText = subject.notes
+              .map((n) => '• $n')
+              .join('\n');
 
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  subject.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                subject.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
-                centerTitle: true,
-                iconTheme: const IconThemeData(color: Colors.white),
-                backgroundColor: const Color(0xFF7B61FF),
               ),
-              body: SingleChildScrollView(
+              centerTitle: true,
+              iconTheme: const IconThemeData(color: Colors.white),
+              backgroundColor: const Color(0xFF7B61FF),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () {
+                    context.read<SubjectBloc>().add(
+                      GetSubjectDetailsEvent(id: widget.subjectId),
+                    );
+                  },
+                ),
+              ],
+            ),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                context.read<SubjectBloc>().add(
+                  GetSubjectDetailsEvent(id: widget.subjectId),
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -98,11 +117,11 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
                   ),
                 ),
               ),
-            );
-          }
-          return const Center(child: Text('Unknown state.'));
-        },
-      ),
+            ),
+          );
+        }
+        return const Center(child: Text('Unknown state.'));
+      },
     );
   }
 
@@ -132,11 +151,11 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
   }
 
   Widget _buildDetailsCard(
-    BuildContext context, {
-    required String title,
-    required String content,
-    required IconData icon,
-  }) {
+      BuildContext context, {
+        required String title,
+        required String content,
+        required IconData icon,
+      }) {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -148,7 +167,6 @@ class _SubjectDetailsPageState extends State<SubjectDetailsPage> {
             Row(
               children: [
                 Icon(icon, color: const Color(0xFF7B61FF), size: 30),
-
                 const SizedBox(width: 15),
                 Text(
                   title,
