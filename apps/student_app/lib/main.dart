@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_event.dart';
 import 'package:core/blocs/theme/theme_state.dart';
+import 'package:core/constant.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -32,7 +33,9 @@ void main() async {
 /// Initialize all app dependencies and services
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  // get base url from github
+  await Constants.init();
   // Initialize localization
   await EasyLocalization.ensureInitialized();
   
