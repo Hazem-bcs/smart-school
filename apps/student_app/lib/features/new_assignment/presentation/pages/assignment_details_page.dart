@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:core/theme/index.dart';
+import 'package:core/widgets/index.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
 import 'dart:io';
 import '../../domain/entities/assignment_entity.dart';
 
@@ -209,48 +211,22 @@ class AssignmentDetailsAppBar extends StatelessWidget implements PreferredSizeWi
   }) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: AppColors.primary,
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        onPressed: onBack,
-      ),
-      title: const Text(
-        'تفاصيل المهمة',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
-      ),
-      centerTitle: true,
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return AppBarWidget(
+      title: 'تفاصيل المهمة',
+      leadingIcon: Icons.arrow_back,
+      onLeadingPressed: onBack,
+      automaticallyImplyLeading: false,
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            '$points نقطة',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        AppBarActions.counter(
+          text: '$points نقطة',
+          isDark: isDark,
         ),
       ],
     );
@@ -616,8 +592,10 @@ class AssignmentTeacherImageSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF7B61FF)),
+                      child: SmartSchoolLoading(
+                        type: LoadingType.pulse,
+                        size: 40,
+                        showMessage: false,
                       ),
                     ),
                   );

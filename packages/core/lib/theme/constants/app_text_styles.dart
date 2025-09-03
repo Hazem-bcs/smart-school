@@ -9,8 +9,8 @@ class AppTextStyles {
   AppTextStyles._();
 
   // ==================== FONT FAMILIES ====================
-  /// Primary font family for the app
-  static const String primaryFont = 'Roboto';
+  /// Primary font family for the app - Arabic support
+  static const String primaryFont = 'Cairo';
   
   /// Secondary font family for special cases
   static const String secondaryFont = 'Poppins';

@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 part 'dues_event.dart';
 part 'dues_state.dart';
 
+/// BLoC لإدارة حالة المستحقات
 class DuesBloc extends Bloc<DuesEvent, DuesState> {
   final GetMyDuesUseCase getMyDuesUseCase;
 
@@ -13,12 +14,13 @@ class DuesBloc extends Bloc<DuesEvent, DuesState> {
     on<GetDuesListEvent>(_getDuesList);
   }
 
-  Future<void> _getDuesList(GetDuesListEvent event , Emitter<DuesState> emit) async {
+  /// جلب قائمة المستحقات
+  Future<void> _getDuesList(GetDuesListEvent event, Emitter<DuesState> emit) async {
     emit(DuesDataLoadingState());
     final result = await getMyDuesUseCase();
     result.fold(
       (failure) => emit(DuesErrorState(message: failure.message)),
       (duesList) => emit(DuesDataLoadedState(dueList: duesList)),
     );
-}
+  }
 }

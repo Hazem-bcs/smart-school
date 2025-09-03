@@ -2,20 +2,23 @@ import 'package:core/theme/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
-import '../../../../widgets/modern_design/modern_effects.dart';
+import 'package:core/theme/index.dart';
+import 'package:core/widgets/index.dart';
+import '../../../../widgets/modern_design/modern_effects.dart' as modern_effects;
+import '../../../../widgets/app_bar_widget.dart';
 import '../blocs/question_bloc/question_bloc.dart';
 import '../widgets/question_card.dart';
 
-class OneHomeworkPage extends StatefulWidget {
+class OneQuizPage extends StatefulWidget {
   final int questionId;
 
-  const OneHomeworkPage({super.key, required this.questionId});
+  const OneQuizPage({super.key, required this.questionId});
 
   @override
-  State<OneHomeworkPage> createState() => _OneHomeworkPageState();
+  State<OneQuizPage> createState() => _OneQuizPageState();
 }
 
-class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderStateMixin {
+class _OneQuizPageState extends State<OneQuizPage> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
@@ -75,7 +78,7 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
   void finishExam() {
     final totalMarks = marks.values.fold(0, (a, b) => a + b);
     final percentage = totalMarks > 0 ? (totalScore / totalMarks) * 100.0 : 0.0;
-    
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -93,9 +96,12 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: _buildAppBar(),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: _buildAppBar(theme),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SlideTransition(
@@ -105,13 +111,13 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
             child: BlocBuilder<QuestionBloc, QuestionState>(
               builder: (context, state) {
                 if (state is QuestionInitial || state is QuestionLoadingState) {
-                  return _buildLoadingState();
+                  return _buildLoadingState(theme);
                 } else if (state is QuestionFailureState) {
-                  return _buildErrorState(state.message);
+                  return _buildErrorState(state.message, theme);
                 } else if (state is GetListQuestionLoadedState) {
-                  return _buildQuizContent(state);
+                  return _buildQuizContent(state, theme);
                 }
-                return _buildEmptyState();
+                return _buildEmptyState(theme);
               },
             ),
           ),
@@ -120,85 +126,41 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: const Color(0xFF4F46E5),
-      title: Text(
-        AppStrings.homeWork,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      centerTitle: true,
-      iconTheme: const IconThemeData(color: Colors.white),
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return AppBarWidget(
+      title: AppStrings.homeWork,
       actions: [
-        Container(
-          margin: const EdgeInsetsDirectional.only(end: 16.0),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.timer,
-                color: Colors.white,
-                size: 18,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                '${answers.length}/${marks.length}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
+        AppBarActions.counter(
+          text: '${answers.length}/${marks.length}',
+          isDark: isDark,
         ),
       ],
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(ThemeData theme) {
     return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F46E5)),
-            strokeWidth: 3,
-          ),
-          SizedBox(height: 24),
-          Text(
-            'جاري تحميل الأسئلة...',
-            style: TextStyle(
-              fontSize: 18,
-              color: Color(0xFF64748B),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+      child: SmartSchoolLoading(
+        message: 'جاري تحميل الأسئلة...',
+        type: LoadingType.dots,
+        size: 60,
       ),
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(String message, ThemeData theme) {
     return Center(
       child: Container(
         margin: const EdgeInsets.all(24),
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withOpacity(0.1),
+              color: theme.colorScheme.error.withOpacity(0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -210,30 +172,28 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
+                color: theme.colorScheme.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.error_outline,
-                color: Colors.red,
+                color: theme.colorScheme.error,
                 size: 48,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               'حدث خطأ في التحميل',
-              style: TextStyle(
-                fontSize: 20,
+              style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+                color: theme.textTheme.titleLarge?.color,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               message,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.hintColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -244,11 +204,11 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
                   GetListQuestionEvent(homeWorkId: widget.questionId),
                 );
               },
-              icon: const Icon(Icons.refresh),
-              label: const Text('إعادة المحاولة'),
+              icon: Icon(Icons.refresh, color: theme.colorScheme.onPrimary),
+              label: Text('إعادة المحاولة', style: TextStyle(color: theme.colorScheme.onPrimary)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
-                foregroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -261,20 +221,20 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
     );
   }
 
-  Widget _buildQuizContent(GetListQuestionLoadedState state) {
+  Widget _buildQuizContent(GetListQuestionLoadedState state, ThemeData theme) {
     return Column(
       children: [
         // Progress Header
-        _buildProgressHeader(state.questionList.length),
+        _buildProgressHeader(state.questionList.length, theme),
         const SizedBox(height: 20),
-        
+
         // Questions List
         Expanded(
           child: ListView.builder(
             itemCount: state.questionList.length,
             itemBuilder: (context, index) {
               final question = state.questionList[index];
-              
+
               if (!marks.containsKey(question.questionNumber)) {
                 marks[question.questionNumber] = question.marks;
               }
@@ -309,25 +269,25 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
             },
           ),
         ),
-        
+
         // Finish Button
-        _buildFinishButton(),
+        _buildFinishButton(theme),
       ],
     );
   }
 
-  Widget _buildProgressHeader(int totalQuestions) {
+  Widget _buildProgressHeader(int totalQuestions, ThemeData theme) {
     final answeredQuestions = answers.length;
     final progress = totalQuestions > 0 ? answeredQuestions / totalQuestions : 0.0;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: theme.shadowColor.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -340,18 +300,16 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
             children: [
               Text(
                 'التقدم',
-                style: TextStyle(
-                  fontSize: 18,
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: theme.textTheme.titleMedium?.color,
                 ),
               ),
               Text(
                 '$answeredQuestions/$totalQuestions',
-                style: TextStyle(
-                  fontSize: 16,
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF4F46E5),
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ],
@@ -359,8 +317,8 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
           const SizedBox(height: 16),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.grey[200],
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4F46E5)),
+            backgroundColor: theme.dividerColor,
+            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
             minHeight: 8,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -369,20 +327,20 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
     );
   }
 
-  Widget _buildFinishButton() {
+  Widget _buildFinishButton(ThemeData theme) {
     final totalQuestions = marks.length;
     final answeredQuestions = answers.length;
     final isComplete = answeredQuestions == totalQuestions && totalQuestions > 0;
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.shadowColor.withOpacity(0.1),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -391,8 +349,8 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
       child: ElevatedButton(
         onPressed: isComplete ? finishExam : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isComplete ? const Color(0xFF4F46E5) : Colors.grey[300],
-          foregroundColor: isComplete ? Colors.white : Colors.grey[600],
+          backgroundColor: isComplete ? theme.colorScheme.primary : theme.disabledColor,
+          foregroundColor: isComplete ? theme.colorScheme.onPrimary : theme.hintColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -409,8 +367,7 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
             const SizedBox(width: 12),
             Text(
               isComplete ? 'إنهاء الاختبار' : 'أجب على جميع الأسئلة أولاً',
-              style: TextStyle(
-                fontSize: 18,
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -420,7 +377,7 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(ThemeData theme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -428,14 +385,13 @@ class _OneHomeworkPageState extends State<OneHomeworkPage> with TickerProviderSt
           Icon(
             Icons.quiz_outlined,
             size: 64,
-            color: Colors.grey[400],
+            color: theme.hintColor,
           ),
           const SizedBox(height: 24),
           Text(
             'لا توجد أسئلة متاحة',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey[600],
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.hintColor,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -462,11 +418,11 @@ class _ExamResultDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final isExcellent = percentage >= 90;
     final isGood = percentage >= 80;
     final isPass = percentage >= 60;
-    
+
     Color resultColor;
     IconData resultIcon;
     String resultText;
@@ -496,7 +452,7 @@ class _ExamResultDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: ModernEffects.glassmorphism(
+      child: modern_effects.ModernEffects.glassmorphism(
         isDark: isDark,
         opacity: 0.95,
         blur: 25.0,
@@ -514,9 +470,9 @@ class _ExamResultDialog extends StatelessWidget {
               ],
             ),
             borderRadius: BorderRadius.circular(32),
-            boxShadow: ModernEffects.modernShadow(
+            boxShadow: modern_effects.ModernEffects.modernShadow(
               isDark: isDark,
-              type: ShadowType.glow,
+              type: modern_effects.ShadowType.glow,
             ),
           ),
           padding: const EdgeInsets.all(24),
@@ -556,33 +512,31 @@ class _ExamResultDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              
+
               // Result Title
               Text(
                 resultText,
-                style: TextStyle(
-                  fontSize: 32,
+                style: theme.textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: resultColor,
                   letterSpacing: 1.0,
                 ),
               ),
               const SizedBox(height: 12),
-              
+
               // Result Subtitle
               Text(
                 resultSubtext,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.hintColor,
                   fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-              
+
               // Score Display
-              ModernEffects.neumorphism(
+              modern_effects.ModernEffects.neumorphism(
                 isDark: isDark,
                 distance: 4.0,
                 intensity: 0.1,
@@ -590,31 +544,22 @@ class _ExamResultDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(32),
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        resultColor.withOpacity(0.05),
-                        resultColor.withOpacity(0.1),
-                      ],
-                    ),
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Column(
                     children: [
                       Text(
                         '$totalScore',
-                        style: TextStyle(
-                          fontSize: 56,
+                        style: theme.textTheme.displaySmall?.copyWith(
                           fontWeight: FontWeight.w800,
                           color: resultColor,
                         ),
                       ),
                       Text(
                         'من $totalMarks',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: theme.hintColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -631,8 +576,7 @@ class _ExamResultDialog extends StatelessWidget {
                         ),
                         child: Text(
                           '${percentage.toStringAsFixed(1)}%',
-                          style: TextStyle(
-                            fontSize: 28,
+                          style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: resultColor,
                           ),
@@ -643,18 +587,18 @@ class _ExamResultDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              
+
               // Accept Button
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: ModernEffects.modernGradient(
+                    gradient: modern_effects.ModernEffects.modernGradient(
                       isDark: isDark,
-                      type: isExcellent ? GradientType.success : 
-                            isGood ? GradientType.primary :
-                            isPass ? GradientType.warning : GradientType.primary,
+                      type: isExcellent ? modern_effects.GradientTypeModern.success :
+                      isGood ? modern_effects.GradientTypeModern.primary :
+                      isPass ? modern_effects.GradientTypeModern.warning : modern_effects.GradientTypeModern.primary,
                     ),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
@@ -674,10 +618,9 @@ class _ExamResultDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'قبول النتيجة',
-                      style: TextStyle(
-                        fontSize: 20,
+                      style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
                         letterSpacing: 0.5,

@@ -136,7 +136,7 @@ class _QuestionCardState extends State<QuestionCard> with TickerProviderStateMix
       decoration: BoxDecoration(
         gradient: ModernEffects.modernGradient(
           isDark: isDark,
-          type: GradientType.primary,
+          type: GradientTypeModern.primary,
         ),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),

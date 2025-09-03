@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:core/theme/index.dart';
+import 'package:core/widgets/index.dart';
 
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../domain/entities/schedule_entity.dart';
@@ -240,7 +241,12 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
           );
         } else if (state is ScheduleLoading) {
           print('🔍 AnimatedScheduleList: Loading state');
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SmartSchoolLoading(
+              message: 'جاري تحميل الجدول...',
+              type: LoadingType.primary,
+            ),
+          );
         } else if (state is ScheduleError) {
           print('🔍 AnimatedScheduleList: Error state: ${state.message}');
           return Center(

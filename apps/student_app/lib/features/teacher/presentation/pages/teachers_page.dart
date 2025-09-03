@@ -1,8 +1,8 @@
-
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/routing/navigation_extension.dart';
-
 import '../blocs/teacher_list_bloc.dart';
 
 class TeachersPage extends StatefulWidget {
@@ -21,42 +21,75 @@ class _TeachersPageState extends State<TeachersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: backGround,
-      appBar: AppBarWidget(title: "Teachers"),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBarWidget(
+        title: "Teachers",
+        actions: [
+          AppBarActions.refresh(
+            onPressed: () {
+              context.read<TeacherListBloc>().add(GetTeacherList());
+            },
+            isDark: theme.brightness == Brightness.dark,
+          ),
+        ],
+      ),
       body: BlocBuilder<TeacherListBloc, TeacherListState>(
         builder: (context, state) {
           if (state is TeacherListInitial || state is TeacherListLoading) {
             return const Center(child: AppLoadingWidget());
           }
           if (state is TeacherListError) {
-            print('hi from teacher page');
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Error: ${state.message}',
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<TeacherListBloc>().add(
-                        GetTeacherList(),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<TeacherListBloc>().add(GetTeacherList());
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height -
+                      AppBar().preferredSize.height,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Error: ${state.message}',
+                          style: TextStyle(color: theme.colorScheme.error),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<TeacherListBloc>().add(GetTeacherList());
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: theme
+                                .elevatedButtonTheme
+                                .style
+                                ?.foregroundColor
+                                ?.resolve({MaterialState.pressed}),
+                            backgroundColor: theme
+                                .elevatedButtonTheme
+                                .style
+                                ?.backgroundColor
+                                ?.resolve({MaterialState.pressed}),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Retry',
+                            style: theme.elevatedButtonTheme.style?.textStyle
+                                ?.resolve({MaterialState.pressed}),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const Text('Retry'),
                   ),
-                ],
+                ),
               ),
             );
           }
@@ -64,26 +97,48 @@ class _TeachersPageState extends State<TeachersPage> {
             final List<TeacherEntity> teachers = state.teacherList;
 
             if (teachers.isEmpty) {
-              return const Center(child: Text('لا توجد بيانات للمعلمين.'));
-            }
-            return ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              itemCount: teachers.length,
-              itemBuilder: (context, index) {
-                final TeacherEntity teacher = teachers[index];
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: TeacherProfileCard(
-                    imageUrl: teacher.imageUrl,
-                    name: teacher.name,
-                    subject: "Math",
-                    onTap: () {
-                      context.goToTeacherDetails(teacher.id);
-                    },
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<TeacherListBloc>().add(GetTeacherList());
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height,
+                    child: const Center(
+                        child: Text('لا توجد بيانات للمعلمين.')),
                   ),
-                );
+                ),
+              );
+            }
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<TeacherListBloc>().add(GetTeacherList());
               },
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
+                itemCount: teachers.length,
+                itemBuilder: (context, index) {
+                  final TeacherEntity teacher = teachers[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: TeacherProfileCard(
+                      imageUrl: teacher.imageUrl,
+                      name: teacher.name,
+                      subject: "Math",
+                      onTap: () {
+                        context.goToTeacherDetails(teacher.id);
+                      },
+                    ),
+                  );
+                },
+              ),
             );
           }
 

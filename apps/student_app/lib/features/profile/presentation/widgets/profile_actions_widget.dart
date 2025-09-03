@@ -10,25 +10,26 @@ class ProfileActionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          // Edit Profile Button
           Container(
             width: double.infinity,
             height: 55,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary,
-                  AppColors.primary.withOpacity(0.8),
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primary.withOpacity(0.8),
                 ],
               ),
               borderRadius: BorderRadius.circular(15),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: theme.colorScheme.primary.withOpacity(0.3),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -42,15 +43,15 @@ class ProfileActionsWidget extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.edit,
-                color: Colors.white,
+                color: theme.colorScheme.onPrimary,
                 size: 24,
               ),
-              label: const Text(
+              label: Text(
                 'تعديل الملف الشخصي',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -64,8 +65,7 @@ class ProfileActionsWidget extends StatelessWidget {
               ),
             ),
           ),
-          
-       ],
+        ],
       ),
     );
   }

@@ -145,7 +145,7 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => di.getIt<QuestionBloc>(),
-            child: OneHomeworkPage(questionId: int.parse(questionId)),
+            child: OneQuizPage(questionId: int.parse(questionId)),
           ),
           settings: settings,
         );

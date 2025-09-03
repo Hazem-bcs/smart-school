@@ -1,19 +1,28 @@
 abstract class AppStrings {
   //headers
-  static const String smartSchool = "Smart School";
-  static const String teachers = "Teachers";
-  static const String profile = "Profile";
-  static const String homeWork = "HomeWork";
-  static const String subject = "Subject";
-  static const String dues = "Dues";
-  static const String  resources = "Resources";
-  static const String   attendance = "Attendance";
-  static const String    notification = "Notification";
-  static const String teacherDetails = "Teacher Details";
-  static const String editProfile = "edit Profile";
+  static const String smartSchool = "المدرسة الذكية";
+  static const String teachers = "المعلمون";
+  static const String profile = "الملف الشخصي";
+  static const String homeWork = "الواجب المنزلي";
+  static const String subject = "المادة";
+  static const String dues = "المستحقات";
+  static const String  resources = "الموارد";
+  static const String   attendance = "الحضور";
+  static const String    notification = "الإشعارات";
+  static const String teacherDetails = "تفاصيل المعلم";
+  static const String editProfile = "تعديل الملف الشخصي";
 
-  static const String post = "post";
+  static const String post = "نشر";
 
-  static const String bio = "bio : ";
-  static const String subjects = "Subject : ";
+  static const String bio = "السيرة الذاتية: ";
+  static const String subjects = "المادة: ";
+
+  // ==================== NOTIFICATION STRINGS ====================
+  static const String loadingNotifications = "جاري تحميل الإشعارات...";
+  static const String noNotifications = "لا توجد إشعارات حالياً";
+  static const String errorLoadingNotifications = "خطأ في تحميل الإشعارات:";
+  static const String retry = "إعادة المحاولة";
+  static const String markAsRead = "تم تحديد \"%s\" كمقروءة";
+  static const String notificationTapped = "نقر على الإشعار: %s";
+  static const String refresh = "تحديث";
 }

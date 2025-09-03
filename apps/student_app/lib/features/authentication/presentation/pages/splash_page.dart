@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_text_styles.dart';
+import 'package:core/widgets/index.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -348,26 +349,10 @@ class _SplashPageState extends State<SplashPage>
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthChecking) {
-          return Column(
-            children: [
-              SizedBox(
-                width: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                height: ResponsiveHelper.getIconSize(context, mobile: 24, tablet: 28, desktop: 32),
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
-                  backgroundColor: AppColors.white.withOpacity(0.3),
-                ),
-              ),
-              SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
-              Text(
-                'جاري التحميل...',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.white.withOpacity(0.8),
-                  fontSize: ResponsiveHelper.getFontSize(context, mobile: 12, tablet: 14, desktop: 16),
-                ),
-              ),
-            ],
+          return SmartSchoolLoading(
+            message: 'جاري التحميل...',
+            type: LoadingType.ripple,
+            size: ResponsiveHelper.getIconSize(context, mobile: 40, tablet: 50, desktop: 60),
           );
         }
         return const SizedBox.shrink();

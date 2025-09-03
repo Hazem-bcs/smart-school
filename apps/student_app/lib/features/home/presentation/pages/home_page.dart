@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notification/domain/entities/notification_entity.dart';
 import 'package:smart_school/routing/app_routes.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
 import 'package:smart_school/widgets/responsive/responsive_helper.dart';
 import 'package:smart_school/widgets/shared_bottom_navigation.dart';
+import 'package:core/widgets/index.dart';
 
 import '../../../notification/presintation/bloc/notification_bloc.dart';
 import '../../../notification/presintation/widgets/notification_card.dart';
@@ -66,70 +67,22 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: _scaffoldKey,
         drawer: AppDrawerWidget(),
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: const Color(0xFF4F46E5),
-          iconTheme: const IconThemeData(color: Colors.white, size: 24),
-          title: Text(
-            "Smart School",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-            ),
-          ),
-          centerTitle: true,
+        appBar: AppBarWidget(
+          title: "Smart School",
           actions: [
             // Chat Icon
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 8.0),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(AppRoutes.tutorChat);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/svg/chat.svg',
-                      width: 20,
-                      height: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+            AppBarActions.chat(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.tutorChat);
+              },
+              isDark: Theme.of(context).brightness == Brightness.dark,
             ),
             // Notifications Icon
-            Container(
-              margin: const EdgeInsetsDirectional.only(end: 16.0),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(AppRoutes.notifications);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
+            AppBarActions.notification(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.notifications);
+              },
+              isDark: Theme.of(context).brightness == Brightness.dark,
             ),
           ],
         ),
@@ -169,14 +122,17 @@ class _HomePageState extends State<HomePage> {
                 // Home Stats and Progress
                 BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
-                    if (state is HomeInitial || state is HomeLoading) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: CircularProgressIndicator(),
+                                      if (state is HomeInitial || state is HomeLoading) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: SmartSchoolLoading(
+                          message: 'جاري تحميل البيانات...',
+                          type: LoadingType.dots,
                         ),
-                      );
-                    } else if (state is HomeLoaded) {
+                      ),
+                    );
+                  } else if (state is HomeLoaded) {
                       return Column(
                         children: [
                           // بطاقة الإحصائيات

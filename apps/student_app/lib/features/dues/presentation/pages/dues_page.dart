@@ -1,8 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:core/widgets/index.dart';
+import 'package:core/theme/index.dart';
+import 'package:core/theme/constants/app_colors.dart';
 import '../blocs/dues_bloc.dart';
-import '../widgets/dues_card.dart';
-import 'test_dues_connection_page.dart';
+import '../widgets/index.dart';
 
+/// الصفحة الرئيسية لعرض المستحقات
 class DuesPage extends StatefulWidget {
   const DuesPage({super.key});
 
@@ -22,7 +27,7 @@ class _DuesPageState extends State<DuesPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _duesBloc = BlocProvider.of<DuesBloc>(context);
-    _duesBloc.add(GetDuesListEvent()); 
+    _duesBloc.add(GetDuesListEvent());
   }
 
   @override
@@ -32,70 +37,77 @@ class _DuesPageState extends State<DuesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBarWidget(title: "Dues Details"),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBarWidget(
+        title: "تفاصيل المستحقات",
+        actions: [
+          AppBarActions.refresh(
+            onPressed: () {
+              context.read<DuesBloc>().add(GetDuesListEvent());
+            },
+            isDark: isDark,
+          ),
+        ],
+      ),
       body: Container(
-        margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: Column(
           children: [
             // Test Connection Button (only in debug mode)
             if (const bool.fromEnvironment('DEBUG'))
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TestDuesConnectionPage(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.bug_report),
-                  label: const Text('اختبار الاتصال'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ),
-            // Dues List
+              const DuesDebugButton(),
+            
+            // Dues Content
             Expanded(
               child: BlocBuilder<DuesBloc, DuesState>(
                 builder: (context, state) {
-                  if (state is DuesInitial || state is DuesDataLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is DuesDataLoadedState) {
-                    if (state.dueList.isEmpty) {
-                      return const Center(child: Text('No dues found.'));
-                    }
-                    return ListView.builder(
-                      itemCount: state.dueList.length,
-                      itemBuilder: (context, index) {
-                        return DueCard(dueEntity: state.dueList[index]);
-                      },
-                    );
-                  } else if (state is DuesErrorState) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Error: ${state.message}'),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<DuesBloc>().add(GetDuesListEvent());
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const Center(child: Text('Unknown state'));
+                  return _buildContent(context, state, isDark);
                 },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// بناء المحتوى بناءً على حالة BLoC
+  Widget _buildContent(BuildContext context, DuesState state, bool isDark) {
+    if (state is DuesInitial || state is DuesDataLoadingState) {
+      return const DuesLoadingWidget();
+    } else if (state is DuesDataLoadedState) {
+      if (state.dueList.isEmpty) {
+        return DuesEmptyWidget(
+          onRefresh: () async {
+            context.read<DuesBloc>().add(GetDuesListEvent());
+          },
+        );
+      }
+      return DuesListWidget(
+        duesList: state.dueList,
+        onRefresh: () async {
+          context.read<DuesBloc>().add(GetDuesListEvent());
+        },
+      );
+    } else if (state is DuesErrorState) {
+      return DuesErrorWidget(
+        message: state.message,
+        onRetry: () {
+          context.read<DuesBloc>().add(GetDuesListEvent());
+        },
+      );
+    }
+    
+    // Default state
+    return Center(
+      child: Text(
+        'حالة غير معروفة',
+        style: TextStyle(
+          color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
         ),
       ),
     );

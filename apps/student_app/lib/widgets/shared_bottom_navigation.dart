@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_school/widgets/responsive/responsive_helper.dart';
 import 'package:smart_school/widgets/responsive/responsive_widgets.dart';
 import 'package:smart_school/routing/navigation_extension.dart';
+import 'package:core/theme/constants/app_colors.dart';
 
 class SharedBottomNavigation extends StatelessWidget {
   final int currentIndex;
@@ -41,31 +42,35 @@ class SharedBottomNavigation extends StatelessWidget {
       {
         'icon': Icons.dashboard,
         'activeIcon': Icons.dashboard,
-        'label': 'Dashboard',
+        'label': 'الرئيسية',
       },
       {
         'icon': Icons.assignment,
         'activeIcon': Icons.assignment,
-        'label': 'Assignments',
+        'label': 'الواجبات',
       },
       {
         'icon': Icons.calendar_today,
         'activeIcon': Icons.calendar_today,
-        'label': 'Schedule',
+        'label': 'الجدول',
       },
       {
         'icon': Icons.settings,
         'activeIcon': Icons.settings,
-        'label': 'Settings',
+        'label': 'الإعدادات',
       },
     ];
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark 
+            ? AppColors.darkCardBackground 
+            : AppColors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: (Theme.of(context).brightness == Brightness.dark 
+                ? AppColors.darkDivider 
+                : AppColors.gray200).withOpacity(0.2),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -130,7 +135,9 @@ class SharedBottomNavigation extends StatelessWidget {
           decoration: BoxDecoration(
             color:
                 isSelected
-                    ? Theme.of(context).primaryColor.withOpacity(0.1)
+                    ? (Theme.of(context).brightness == Brightness.dark 
+                        ? AppColors.darkAccentBlue 
+                        : AppColors.primary).withOpacity(0.1)
                     : Colors.transparent,
             borderRadius: BorderRadius.circular(
               ResponsiveHelper.getBorderRadius(context),
@@ -145,8 +152,12 @@ class SharedBottomNavigation extends StatelessWidget {
                     : item['icon'] as IconData,
                 color:
                     isSelected
-                        ? Theme.of(context).primaryColor
-                        : const Color(0xFF4E7397),
+                        ? (Theme.of(context).brightness == Brightness.dark 
+                            ? AppColors.darkAccentBlue 
+                            : AppColors.primary)
+                        : (Theme.of(context).brightness == Brightness.dark 
+                            ? AppColors.darkSecondaryText 
+                            : AppColors.gray600),
                 size: ResponsiveHelper.getIconSize(
                   context,
                   mobile: 24,
@@ -171,8 +182,12 @@ class SharedBottomNavigation extends StatelessWidget {
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   color:
                       isSelected
-                          ? Theme.of(context).primaryColor
-                          : const Color(0xFF4E7397),
+                          ? (Theme.of(context).brightness == Brightness.dark 
+                              ? AppColors.darkAccentBlue 
+                              : AppColors.primary)
+                          : (Theme.of(context).brightness == Brightness.dark 
+                              ? AppColors.darkSecondaryText 
+                              : AppColors.gray600),
                 ),
               ),
             ],

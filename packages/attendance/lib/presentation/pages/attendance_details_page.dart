@@ -71,44 +71,52 @@ class _AttendanceDetailsPageState extends State<AttendanceDetailsPage>
     final isRtl = context.locale.languageCode == 'ar';
 
     return Scaffold(
-        backgroundColor: AppColors.getBackgroundColor(brightness),
-        appBar: AppBar(
-          title: Text(
-            'attendance_details'.tr(),
-            style: AppTextStyles.h2.copyWith(
-              color: AppColors.white,
-              fontWeight: AppTextStyles.bold,
-            ),
-          ),
-          backgroundColor: AppColors.primary,
-          elevation: 0,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: AppColors.white,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+      backgroundColor: AppColors.getBackgroundColor(brightness),
+      appBar: AppBar(
+        title: Text(
+          'attendance_details'.tr(),
+          style: AppTextStyles.h2.copyWith(
+            color: AppColors.white,
+            fontWeight: AppTextStyles.bold,
           ),
         ),
-        body: FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: BlocBuilder<AttendanceDetailsBloc, AttendanceDetailsState>(
-              builder: (context, state) {
-                if (state is AttendanceDetailsLoading) {
-                  return _buildLoadingState();
-                } else if (state is AttendanceDetailsLoaded) {
-                  return _buildContent(state, isRtl);
-                } else if (state is AttendanceDetailsError) {
-                  return _buildErrorState(state.message);
-                }
-                return _buildInitialState();
-              },
-            ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.white,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<AttendanceDetailsBloc>().add(LoadAttendanceDetailsEvent(year: widget.year, month: widget.month));
+            },
+            icon: const Icon(Icons.refresh, color: AppColors.white),
+          ),
+        ],
+      ),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: BlocBuilder<AttendanceDetailsBloc, AttendanceDetailsState>(
+            builder: (context, state) {
+              if (state is AttendanceDetailsLoading) {
+                return _buildLoadingState();
+              } else if (state is AttendanceDetailsLoaded) {
+                return _buildContent(state, isRtl);
+              } else if (state is AttendanceDetailsError) {
+                return _buildErrorState(state.message);
+              }
+              return _buildInitialState();
+            },
           ),
         ),
+      ),
     );
   }
 
@@ -136,53 +144,64 @@ class _AttendanceDetailsPageState extends State<AttendanceDetailsPage>
   }
 
   Widget _buildErrorState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: AppSpacing.xlPadding,
-            decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.error_outline,
-              size: 60,
-              color: AppColors.error,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<AttendanceDetailsBloc>().add(LoadAttendanceDetailsEvent(year: widget.year, month: widget.month));
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: AppSpacing.xlPadding,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.error_outline,
+                    size: 60,
+                    color: AppColors.error,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.lg),
+                Text(
+                  'error_loading_details'.tr(),
+                  style: AppTextStyles.h3.copyWith(
+                    color: AppColors.error,
+                    fontWeight: AppTextStyles.medium,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: AppSpacing.xl),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<AttendanceDetailsBloc>().add(
+                      LoadAttendanceDetailsEvent(year: widget.year, month: widget.month),
+                    );
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: Text('retry'.tr()),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: AppSpacing.lg),
-          Text(
-            'error_loading_details'.tr(),
-            style: AppTextStyles.h3.copyWith(
-              color: AppColors.error,
-              fontWeight: AppTextStyles.medium,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: AppSpacing.xl),
-          ElevatedButton.icon(
-            onPressed: () {
-              context.read<AttendanceDetailsBloc>().add(
-                LoadAttendanceDetailsEvent(year: widget.year, month: widget.month),
-              );
-            },
-            icon: const Icon(Icons.refresh),
-            label: Text('retry'.tr()),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -211,25 +230,31 @@ class _AttendanceDetailsPageState extends State<AttendanceDetailsPage>
     final List<int> presentDays = state.attendanceDetails.presentDays;
     final List<int> absentDays = state.attendanceDetails.absentDays;
 
-    return SingleChildScrollView(
-      padding: AppSpacing.screenPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(isRtl),
-          SizedBox(height: AppSpacing.xl),
-          _buildStatistics(presentDays, absentDays),
-          SizedBox(height: AppSpacing.xl),
-          _buildProgressSection(presentDays, absentDays),
-          SizedBox(height: AppSpacing.xl),
-          AttendanceCalendarWidget(
-            presentDays: presentDays,
-            absentDays: absentDays,
-            year: widget.year,
-            month: widget.month,
-            isRtl: isRtl,
-          ),
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<AttendanceDetailsBloc>().add(LoadAttendanceDetailsEvent(year: widget.year, month: widget.month));
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: AppSpacing.screenPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(isRtl),
+            SizedBox(height: AppSpacing.xl),
+            _buildStatistics(presentDays, absentDays),
+            SizedBox(height: AppSpacing.xl),
+            _buildProgressSection(presentDays, absentDays),
+            SizedBox(height: AppSpacing.xl),
+            AttendanceCalendarWidget(
+              presentDays: presentDays,
+              absentDays: absentDays,
+              year: widget.year,
+              month: widget.month,
+              isRtl: isRtl,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -379,7 +404,7 @@ class _AttendanceDetailsPageState extends State<AttendanceDetailsPage>
     final brightness = Theme.of(context).brightness;
     final totalDays = presentDays.length + absentDays.length;
     final attendanceRate = totalDays > 0 ? (presentDays.length / totalDays) : 0.0;
-    
+
     return Container(
       padding: AppSpacing.lgPadding,
       decoration: BoxDecoration(
@@ -495,4 +520,3 @@ class _AttendanceDetailsPageState extends State<AttendanceDetailsPage>
     }
   }
 }
-

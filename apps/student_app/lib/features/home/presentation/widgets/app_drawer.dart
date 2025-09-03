@@ -119,7 +119,7 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
               2,
               _DrawerItem(
                   title: AppStrings.subject,
-                  assetPath: "assets/svg/book.svg",
+                  assetPath: "assets/svg/homework.svg",
                   onTap: () => _navigateTo(context, '/subjectsPage'))),
           _buildAnimatedItem(
               3,
@@ -156,7 +156,7 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
           _buildAnimatedItem(
               9,
               _DrawerItem(
-                  title: "Zoom Meetings",
+                  title: "مكالمات زوم",
                   iconData: Icons.video_call,
                   onTap: () => _navigateTo(context, '/zoom'))),
           const SizedBox(height: 20),
@@ -170,7 +170,7 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget>
           _buildAnimatedItem(
               11,
               _DrawerItem(
-                  title: "Settings",
+                  title: "الإعدادات",
                   iconData: Icons.settings_outlined,
                   onTap: () => _navigateTo(context, '/settings'))),
         ],

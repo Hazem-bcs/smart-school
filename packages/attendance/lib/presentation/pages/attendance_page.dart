@@ -65,7 +65,7 @@ class _AttendancePageState extends State<AttendancePage>
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    
+
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(brightness),
       appBar: AppBar(
@@ -86,6 +86,14 @@ class _AttendancePageState extends State<AttendancePage>
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
+            },
+            icon: const Icon(Icons.refresh, color: AppColors.white),
+          ),
+        ],
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -227,11 +235,38 @@ class _AttendancePageState extends State<AttendancePage>
           return _buildLoadingState();
         } else if (state is MonthlyAttendanceLoaded) {
           if (state.monthlyAttendance.isEmpty) {
-            return _buildEmptyState();
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - 250, // Adjust height to make pull-to-refresh work
+                  child: _buildEmptyState(),
+                ),
+              ),
+            );
           }
-          return _buildAttendanceListView(state.monthlyAttendance);
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
+            },
+            child: _buildAttendanceListView(state.monthlyAttendance),
+          );
         } else if (state is AttendanceError) {
-          return _buildErrorState(state.message);
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height - 250, // Adjust height
+                child: _buildErrorState(state.message),
+              ),
+            ),
+          );
         }
         return _buildInitialState();
       },
@@ -268,7 +303,7 @@ class _AttendancePageState extends State<AttendancePage>
         children: [
           Container(
             padding: AppSpacing.xlPadding,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.gray100,
               shape: BoxShape.circle,
             ),
@@ -368,7 +403,7 @@ class _AttendancePageState extends State<AttendancePage>
       itemCount: monthlyAttendance.length,
       itemBuilder: (context, index) {
         final monthData = monthlyAttendance[index];
-        
+
         return Card(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
           child: ListTile(
@@ -436,4 +471,3 @@ class _AttendancePageState extends State<AttendancePage>
     }
   }
 }
-

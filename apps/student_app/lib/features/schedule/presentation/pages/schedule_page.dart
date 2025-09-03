@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:core/theme/index.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
 import '../blocs/schedule_bloc.dart';
@@ -119,21 +120,10 @@ class _SchedulePageState extends State<SchedulePage>
   }
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    final isDark = theme.brightness == Brightness.dark;
-
-    return AppBar(
-      title: Text(
-        'جدول الأسبوع',
-        style: theme.textTheme.headlineSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: isDark ? AppColors.white : AppColors.gray900,
-        ),
-      ),
+    return const AppBarWidget(
+      title: 'جدول الأسبوع',
       automaticallyImplyLeading: false,
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      elevation: 0,
-      centerTitle: true,
+      gradientType: GradientType.primary,
     );
   }
 

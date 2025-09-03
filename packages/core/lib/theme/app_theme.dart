@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'app_bar_theme.dart';
+import 'constants/app_colors.dart';
 
 class AppTheme {
   AppTheme._();
@@ -20,6 +22,7 @@ class AppTheme {
 
   static ThemeData get lightTheme => ThemeData(
     brightness: Brightness.light,
+    fontFamily: 'Cairo', // Arabic font support
     colorScheme: const ColorScheme.light(
       primary: primary,
       secondary: secondary,
@@ -34,12 +37,7 @@ class AppTheme {
       onError: Colors.white,
     ),
     scaffoldBackgroundColor: Colors.white,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: primary,
-      foregroundColor: Colors.white,
-      elevation: 2,
-      centerTitle: true,
-    ),
+    appBarTheme: SmartSchoolAppBarTheme.lightAppBarTheme,
     cardTheme: const CardThemeData(
       color: surfaceLight,
       elevation: 2,
@@ -117,6 +115,7 @@ class AppTheme {
 
   static ThemeData get darkTheme => ThemeData(
     brightness: Brightness.dark,
+    fontFamily: 'Cairo', // Arabic font support
     colorScheme: const ColorScheme.dark(
       primary: accent,
       secondary: primary,
@@ -131,12 +130,7 @@ class AppTheme {
       onError: Colors.white,
     ),
     scaffoldBackgroundColor: const Color(0xFF121212),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: surfaceDark,
-      foregroundColor: textDark,
-      elevation: 2,
-      centerTitle: true,
-    ),
+    appBarTheme: SmartSchoolAppBarTheme.darkAppBarTheme,
     cardTheme: const CardThemeData(
       color: surfaceDark,
       elevation: 2,

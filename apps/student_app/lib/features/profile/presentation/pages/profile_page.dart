@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_strings.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
+import 'package:core/widgets/index.dart';
 import '../bolcs/profile_bloc.dart';
 import '../widgets/profile_header_widget.dart';
 import '../widgets/profile_info_widget.dart';
@@ -23,6 +25,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileErrorState) {
@@ -33,8 +37,18 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: Colors.grey[50],
-          appBar: const ProfileAppBar(),
+          backgroundColor: theme.scaffoldBackgroundColor,
+          appBar: AppBarWidget(
+            title: AppStrings.profile,
+            actions: [
+              AppBarActions.refresh(
+                onPressed: () {
+                  context.read<ProfileBloc>().add(GetProfileDataEvent());
+                },
+                isDark: theme.brightness == Brightness.dark,
+              ),
+            ],
+          ),
           body: ProfileBody(state: state),
         );
       },
@@ -42,43 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
-// todo: here if we can refactor the code by separate the widgets into different files
-/// ---------------------- Widgets ----------------------
-
-class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProfileAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        AppStrings.profile,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-      backgroundColor: AppColors.primary,
-      elevation: 0,
-      centerTitle: true,
-      actions: [
-        IconButton(
-          onPressed: () {
-            context.read<ProfileBloc>().add(GetProfileDataEvent());
-          },
-          icon: const Icon(
-            Icons.refresh,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
+// ---------------------- Widgets ----------------------
 
 class ProfileBody extends StatelessWidget {
   final ProfileState state;
@@ -109,23 +87,9 @@ class ProfileLoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            color: AppColors.primary,
-          ),
-          SizedBox(height: 16),
-          Text(
-            'جاري تحميل البيانات...',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
+    return const SmartSchoolLoading(
+      message: 'جاري تحميل البيانات...',
+      type: LoadingType.primary,
     );
   }
 }
@@ -136,11 +100,13 @@ class ProfileLoadedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return RefreshIndicator(
       onRefresh: () async {
         context.read<ProfileBloc>().add(GetProfileDataEvent());
       },
-      color: AppColors.primary,
+      color: theme.colorScheme.primary,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
@@ -162,6 +128,8 @@ class ProfileErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -169,24 +137,19 @@ class ProfileErrorWidget extends StatelessWidget {
           Icon(
             Icons.error_outline,
             size: 80,
-            color: Colors.grey[400],
+            color: theme.hintColor,
           ),
           const SizedBox(height: 16),
           Text(
             'حدث خطأ في تحميل البيانات',
-            style: TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
             ),
           ),
           const SizedBox(height: 8),
           Text(
             message,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -194,11 +157,11 @@ class ProfileErrorWidget extends StatelessWidget {
             onPressed: () {
               context.read<ProfileBloc>().add(GetProfileDataEvent());
             },
-            icon: const Icon(Icons.refresh),
-            label: const Text('إعادة المحاولة'),
+            icon: Icon(Icons.refresh, color: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+            label: Text('إعادة المحاولة', style: theme.elevatedButtonTheme.style?.textStyle?.resolve({MaterialState.pressed})),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              backgroundColor: theme.elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}),
+              foregroundColor: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -214,11 +177,11 @@ class ProfileErrorWidget extends StatelessWidget {
 class ProfileErrorSnackBar extends SnackBar {
   ProfileErrorSnackBar({super.key, required String message})
       : super(
-          content: Text(message),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        );
+    content: Text(message),
+    backgroundColor: AppColors.error,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
 }

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
+import 'package:core/widgets/index.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_event.dart';
-import 'package:smart_school/features/settings/presentation/widgets/setting_app_bar.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
+
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/shared_bottom_navigation.dart';
@@ -150,11 +152,17 @@ class _SettingsScreenState extends State<SettingsScreen>
       listener: _authListener,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: const SettingsAppBar(),
+        appBar: const AppBarWidget(
+          title: 'الإعدادات',
+          automaticallyImplyLeading: false,
+        ),
         body: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, state) {
             if (state is GetProfileLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const SmartSchoolLoading(
+                message: 'جاري تحميل الملف الشخصي...',
+                type: LoadingType.primary,
+              );
             } else if (state is GetProfileFailure) {
               return Center(
                 child: Text(
@@ -193,7 +201,10 @@ class _SettingsScreenState extends State<SettingsScreen>
               );
             }
             // الحالة الافتراضية (مثلاً عند أول تحميل)
-            return const Center(child: CircularProgressIndicator());
+            return const SmartSchoolLoading(
+              message: 'جاري التحميل...',
+              type: LoadingType.primary,
+            );
           },
         ),
         bottomNavigationBar: const SettingsBottomNavigationBar(),

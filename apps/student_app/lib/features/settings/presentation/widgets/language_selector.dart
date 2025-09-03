@@ -68,7 +68,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             decoration: BoxDecoration(
               gradient: ModernEffects.modernGradient(
                 isDark: isDark,
-                type: GradientType.primary,
+                type: GradientTypeModern.primary,
               ),
               borderRadius: BorderRadius.circular(14),
               boxShadow: ModernEffects.modernShadow(
@@ -239,7 +239,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                       decoration: BoxDecoration(
                         gradient: ModernEffects.modernGradient(
                           isDark: isDark,
-                          type: GradientType.success,
+                          type: GradientTypeModern.success,
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: ModernEffects.modernShadow(

@@ -19,6 +19,7 @@ class AppTextStyle{
       fontWeight: FontWeight.w700,
       fontSize: fontSize,
       letterSpacing: 1.2,
+      fontFamily: 'Cairo', // Arabic font support
       shadows: [
         Shadow(
           color: Colors.black26,
@@ -28,7 +29,4 @@ class AppTextStyle{
       ],
     );
   }
-
-
-
 }

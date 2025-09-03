@@ -1,4 +1,7 @@
+import 'package:core/theme/app_bar_theme.dart';
+import 'package:core/widgets/index.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
 import 'package:smart_school/widgets/shared_bottom_navigation.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/usecases/get_assignments_usecase.dart';
@@ -25,7 +28,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   List<AssignmentEntity> _allAssignments = [];
   List<AssignmentEntity> _filteredAssignments = [];
   late Future<List<AssignmentEntity>> _assignmentsFuture;
-  
+
   // Animation controllers
   late AnimationController _fadeAnimationController;
   late AnimationController _slideAnimationController;
@@ -44,7 +47,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _slideAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -80,8 +83,8 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   Future<List<AssignmentEntity>> _fetchAssignments() async {
     final result = await getAssignmentsUseCase('class_a');
     return result.fold(
-      (failure) => throw failure,
-      (assignments) {
+          (failure) => throw failure,
+          (assignments) {
         _allAssignments = assignments;
         _applyFilter();
         return _allAssignments;
@@ -124,7 +127,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: _buildAppBar(theme),
@@ -138,9 +141,37 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return _buildLoadingState();
               } else if (snapshot.hasError) {
-                return _buildErrorState(snapshot.error.toString());
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _assignmentsFuture = _fetchAssignments();
+                    });
+                  },
+                  color: const Color(0xFF7B61FF),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                      child: _buildErrorState(snapshot.error.toString()),
+                    ),
+                  ),
+                );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return _buildEmptyState();
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      _assignmentsFuture = _fetchAssignments();
+                    });
+                  },
+                  color: const Color(0xFF7B61FF),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
+                      child: _buildEmptyState(),
+                    ),
+                  ),
+                );
               } else {
                 return _buildContent(context, theme, isDark);
               }
@@ -156,80 +187,33 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   }
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: const Color(0xFF7B61FF),
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.assignment,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Text(
-            'المهام الدراسية',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-        ],
-      ),
-      centerTitle: false,
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return AppBarWidget(
+      title: 'المهام الدراسية',
+      gradientType: GradientType.primary,
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            '${_filteredAssignments.length} مهمة',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        AppBarActions.refresh(
+          onPressed: () {
+            setState(() {
+              _assignmentsFuture = _fetchAssignments();
+            });
+          },
+          isDark: isDark,
+        ),
+        AppBarActions.counter(
+          text: '${_filteredAssignments.length} مهمة',
+          isDark: isDark,
         ),
       ],
     );
   }
 
   Widget _buildLoadingState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF7B61FF)),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'جاري تحميل المهام...',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+    return const SmartSchoolLoading(
+      message: 'جاري تحميل المهام...',
+      type: LoadingType.primary,
+      size: 80.0,
     );
   }
 
@@ -423,7 +407,7 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
 
   Widget _buildFilterChip(String text, AssignmentFilter filter, ThemeData theme) {
     final isSelected = _selectedFilter == filter;
-    
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -435,13 +419,13 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? const Color(0xFF7B61FF) 
+          color: isSelected
+              ? const Color(0xFF7B61FF)
               : theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-                ? const Color(0xFF7B61FF) 
+            color: isSelected
+                ? const Color(0xFF7B61FF)
                 : Colors.grey.withOpacity(0.3),
             width: 1.5,
           ),

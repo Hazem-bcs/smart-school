@@ -1,3 +1,4 @@
+import 'package:core/theme/app_bar_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_core/flutter_chat_core.dart' as types;
@@ -28,7 +29,10 @@ class _TutorChatViewState extends State<TutorChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(title: "Assistant Bot 🤖"),
+      appBar: AppBarWidget(
+        title: "Assistant Bot 🤖",
+        gradientType: GradientType.primary,
+      ),
       body: BlocListener<ChatBloc, ChatState>(
         listener: (context, state) {
           if (state is ChatErrorState) {

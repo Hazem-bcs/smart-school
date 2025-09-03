@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:dues/domain/usecases/get_my_dues.dart';
 import 'package:core/network/failures.dart';
+import 'package:core/widgets/index.dart';
+import 'package:core/theme/index.dart';
+import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/theme/constants/app_text_styles.dart';
+import 'package:core/theme/constants/app_spacing.dart';
 import '../../../../injection_container.dart' as di;
 
+/// صفحة اختبار الاتصال مع Laravel Backend
 class TestDuesConnectionPage extends StatefulWidget {
   const TestDuesConnectionPage({super.key});
 
@@ -16,58 +22,31 @@ class _TestDuesConnectionPageState extends State<TestDuesConnectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('اختبار الاتصال - المستحقات'),
-        backgroundColor: Colors.blue,
+        backgroundColor: isDark ? AppColors.darkGradientStart : AppColors.primary,
         foregroundColor: Colors.white,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        padding: AppSpacing.basePadding,
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: _isTesting ? null : _testConnection,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              ),
-              child: _isTesting
-                  ? const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        ),
-                        SizedBox(width: 12),
-                        Text('جاري الاختبار...'),
-                      ],
-                    )
-                  : const Text('اختبار الاتصال مع Laravel Backend'),
-            ),
-            const SizedBox(height: 24),
+            _buildTestButton(theme, isDark),
+            const SizedBox(height: AppSpacing.xl),
             if (_testResult.isNotEmpty)
               Expanded(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SingleChildScrollView(
-                      child: Text(
-                        _testResult,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                child: _buildResultCard(theme, isDark),
               ),
           ],
         ),
@@ -75,6 +54,60 @@ class _TestDuesConnectionPageState extends State<TestDuesConnectionPage> {
     );
   }
 
+  /// بناء زر الاختبار
+  Widget _buildTestButton(ThemeData theme, bool isDark) {
+    return ElevatedButton(
+      onPressed: _isTesting ? null : _testConnection,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+
+      ),
+      child: _isTesting
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: SmartSchoolLoading(
+                    type: LoadingType.pulse,
+                    size: 20,
+                    showMessage: false,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text('جاري الاختبار...'),
+              ],
+            )
+          : const Text('اختبار الاتصال مع Laravel Backend'),
+    );
+  }
+
+  /// بناء بطاقة النتائج
+  Widget _buildResultCard(ThemeData theme, bool isDark) {
+    return Card(
+      elevation: AppSpacing.smElevation,
+
+      color: isDark ? AppColors.darkCardBackground : AppColors.white,
+      child: Padding(
+        padding: AppSpacing.basePadding,
+        child: SingleChildScrollView(
+          child: Text(
+            _testResult,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontSize: 14,
+              fontFamily: 'monospace',
+              color: isDark ? AppColors.darkPrimaryText : AppColors.gray800,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// اختبار الاتصال
   Future<void> _testConnection() async {
     setState(() {
       _isTesting = true;
@@ -136,6 +169,7 @@ ${duesList.map((due) => '''
     }
   }
 
+  /// الحصول على تفاصيل الخطأ
   String _getFailureDetails(Failure failure) {
     if (failure is ServerFailure) {
       return '''

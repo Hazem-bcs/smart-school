@@ -118,34 +118,34 @@ class ModernEffects {
   /// Creates a modern gradient background
   static LinearGradient modernGradient({
     required bool isDark,
-    GradientType type = GradientType.primary,
+    GradientTypeModern type = GradientTypeModern.primary,
     AlignmentGeometry begin = Alignment.topLeft,
     AlignmentGeometry end = Alignment.bottomRight,
   }) {
     List<Color> colors;
     
     switch (type) {
-      case GradientType.primary:
+      case GradientTypeModern.primary:
         colors = isDark
           ? [AppColors.darkGradientStart, AppColors.darkGradientEnd]
           : [AppColors.primaryGradientStart, AppColors.primaryGradientEnd];
         break;
-      case GradientType.secondary:
+      case GradientTypeModern.secondary:
         colors = isDark
           ? [AppColors.darkAccentPurple, AppColors.darkAccentBlue]
           : [AppColors.secondaryGradientStart, AppColors.secondaryGradientEnd];
         break;
-      case GradientType.success:
+      case GradientTypeModern.success:
         colors = isDark
           ? [AppColors.darkSuccess, AppColors.accent]
           : [AppColors.success, AppColors.accent];
         break;
-      case GradientType.warning:
+      case GradientTypeModern.warning:
         colors = isDark
           ? [AppColors.darkWarning, AppColors.warmGradientEnd]
           : [AppColors.warmGradientStart, AppColors.warmGradientEnd];
         break;
-      case GradientType.cool:
+      case GradientTypeModern.cool:
         colors = isDark
           ? [AppColors.darkAccentBlue, AppColors.darkGradientEnd]
           : [AppColors.coolGradientStart, AppColors.coolGradientEnd];
@@ -217,7 +217,7 @@ class ModernEffects {
 }
 
 /// Gradient types for modern effects
-enum GradientType {
+enum GradientTypeModern {
   primary,
   secondary,
   success,

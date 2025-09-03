@@ -26,11 +26,11 @@ class _ResourcesListPageState extends State<ResourcesPage> {
       appBar: AppBarWidget(
         title: AppStrings.resources,
         actions: [
-          IconButton(
+          AppBarActions.refresh(
             onPressed: () {
               context.read<ResourceBloc>().add(GetResourceDataListEvent());
             },
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            isDark: Theme.of(context).brightness == Brightness.dark,
           ),
         ],
       ),

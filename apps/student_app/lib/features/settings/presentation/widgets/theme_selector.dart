@@ -83,7 +83,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
             decoration: BoxDecoration(
               gradient: ModernEffects.modernGradient(
                 isDark: isDark,
-                type: GradientType.warning,
+                type: GradientTypeModern.warning,
               ),
               borderRadius: BorderRadius.circular(14),
               boxShadow: ModernEffects.modernShadow(
@@ -275,7 +275,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                       decoration: BoxDecoration(
                         gradient: ModernEffects.modernGradient(
                           isDark: isDark,
-                          type: GradientType.success,
+                          type: GradientTypeModern.success,
                         ),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: ModernEffects.modernShadow(

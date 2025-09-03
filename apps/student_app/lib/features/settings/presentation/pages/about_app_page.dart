@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:core/theme/index.dart';
+import 'package:smart_school/widgets/app_bar_widget.dart';
 import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../../widgets/modern_design/modern_effects.dart';
@@ -103,38 +104,13 @@ class _AboutAppPageState extends State<AboutAppPage>
   }
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    return AppBar(
-      title: Text(
-        'About App',
-        style: theme.textTheme.headlineSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: theme.shadowColor.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.arrow_back_ios,
-            color: theme.iconTheme.color,
-            size: ResponsiveHelper.getIconSize(context, mobile: 18, tablet: 20, desktop: 22),
-          ),
-        ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      backgroundColor: theme.appBarTheme.backgroundColor,
-      elevation: 0,
-      centerTitle: true,
+    
+    return AppBarWidget(
+      title: 'About App',
+      leadingIcon: Icons.arrow_back_ios,
+      onLeadingPressed: () => Navigator.pop(context),
+      automaticallyImplyLeading: false,
+      gradientType: GradientType.primary,
     );
   }
 
@@ -153,7 +129,7 @@ class _AboutAppPageState extends State<AboutAppPage>
           decoration: BoxDecoration(
             gradient: ModernEffects.modernGradient(
               isDark: isDark,
-              type: GradientType.primary,
+              type: GradientTypeModern.primary,
             ),
             borderRadius: BorderRadius.circular(28),
             boxShadow: ModernEffects.modernShadow(

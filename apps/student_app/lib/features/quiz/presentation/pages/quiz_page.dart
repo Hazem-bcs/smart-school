@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homework/domain/entites/homework_entity.dart';
 import 'package:smart_school/routing/index.dart';
 import 'package:smart_school/widgets/app_exports.dart';
 import 'package:core/theme/index.dart';
-import '../../../../widgets/modern_design/modern_effects.dart';
+import 'package:core/widgets/index.dart';
+import '../../../../widgets/modern_design/modern_effects.dart' as modern_effects;
+import '../../../../widgets/app_bar_widget.dart';
 import '../blocs/home_work_bloc/homework_bloc.dart';
 import 'one_quiz_page.dart';
 
@@ -59,7 +63,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : const Color(0xFFF8FAFC),
       appBar: _buildAppBar(theme, isDark),
@@ -85,56 +89,14 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
   }
 
   PreferredSizeWidget _buildAppBar(ThemeData theme, bool isDark) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: ModernEffects.modernGradient(
-            isDark: isDark,
-            type: GradientType.primary,
-          ),
-        ),
-      ),
-      title: Text(
-        AppStrings.homeWork,
-        style: TextStyle(
-          color: AppColors.white,
-          fontWeight: FontWeight.w700,
-          fontSize: 22,
-          letterSpacing: 0.5,
-        ),
-      ),
-      centerTitle: true,
-      iconTheme: const IconThemeData(color: Colors.white),
+    return AppBarWidget(
+      title: AppStrings.homeWork,
       actions: [
-        Container(
-          margin: const EdgeInsetsDirectional.only(end: 16.0),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                context.read<HomeworkBloc>().add(GetHomeworksEvent());
-              },
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.refresh_rounded,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-            ),
-          ),
+        AppBarActions.refresh(
+          onPressed: () {
+            context.read<HomeworkBloc>().add(GetHomeworksEvent());
+          },
+          isDark: isDark,
         ),
       ],
     );
@@ -142,7 +104,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
 
   Widget _buildLoadingState(ThemeData theme, bool isDark) {
     return Center(
-      child: ModernEffects.glassmorphism(
+      child: modern_effects.ModernEffects.glassmorphism(
         isDark: isDark,
         opacity: 0.9,
         blur: 15.0,
@@ -156,22 +118,23 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                gradient: ModernEffects.modernGradient(
+                gradient: modern_effects.ModernEffects.modernGradient(
                   isDark: isDark,
-                  type: GradientType.primary,
+                  type: modern_effects.GradientTypeModern.primary,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: ModernEffects.modernShadow(
+                boxShadow: modern_effects.ModernEffects.modernShadow(
                   isDark: isDark,
-                  type: ShadowType.glow,
+                  type: modern_effects.ShadowType.glow,
                 ),
               ),
-              child: const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  strokeWidth: 4,
+                              child: const Center(
+                  child: SmartSchoolLoading(
+                    type: LoadingType.wave,
+                    size: 50,
+                    showMessage: false,
+                  ),
                 ),
-              ),
             ),
             const SizedBox(height: 32),
             Text(
@@ -279,117 +242,119 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
   }
 
   Widget _buildHomeworkGrid(List<HomeworkEntity> homeworks, ThemeData theme, bool isDark) {
-    return CustomScrollView(
-      slivers: [
-        // Header Section
-        SliverToBoxAdapter(
-          child: ModernEffects.glassmorphism(
-            isDark: isDark,
-            opacity: 0.95,
-            blur: 20.0,
-            borderRadius: BorderRadius.circular(24),
-            margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(24),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: ModernEffects.modernGradient(
-                  isDark: isDark,
-                  type: GradientType.primary,
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: ModernEffects.modernShadow(
-                  isDark: isDark,
-                  type: ShadowType.glow,
-                ),
-              ),
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<HomeworkBloc>().add(GetHomeworksEvent());
+      },
+      color: theme.colorScheme.primary,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: modern_effects.ModernEffects.glassmorphism(
+              isDark: isDark,
+              opacity: 0.95,
+              blur: 20.0,
+              borderRadius: BorderRadius.circular(24),
+              margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(24),
-              child: Row(
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: AppColors.white.withOpacity(0.3),
-                        width: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: modern_effects.ModernEffects.modernGradient(
+                    isDark: isDark,
+                    type: modern_effects.GradientTypeModern.primary,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: modern_effects.ModernEffects.modernShadow(
+                    isDark: isDark,
+                    type: modern_effects.ShadowType.glow,
+                    ),
+                  ),
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppColors.white.withOpacity(0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.assignment_rounded,
+                        color: Colors.white,
+                        size: 32,
                       ),
                     ),
-                    child: const Icon(
-                      Icons.assignment_rounded,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'الواجبات المتاحة',
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '${homeworks.length} واجب متاح',
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'الواجبات المتاحة',
                             style: TextStyle(
-                              color: AppColors.white.withOpacity(0.9),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              color: AppColors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${homeworks.length} واجب متاح',
+                              style: TextStyle(
+                                color: AppColors.white.withOpacity(0.9),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        
-        // Grid Section
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.85, // تقليل النسبة لإعطاء مساحة أكبر للطول
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final homework = homeworks[index];
-                return _buildHomeworkCard(homework, index, theme, isDark);
-              },
-              childCount: homeworks.length,
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.85,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                  final homework = homeworks[index];
+                  return _buildHomeworkCard(homework, index, theme, isDark);
+                },
+                childCount: homeworks.length,
+              ),
             ),
           ),
-        ),
-        
-        // Bottom Spacing
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 40),
-        ),
-      ],
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 40),
+          ),
+        ],
+      ),
     );
   }
 
-    Widget _buildHomeworkCard(HomeworkEntity homework, int index, ThemeData theme, bool isDark) {
+  Widget _buildHomeworkCard(HomeworkEntity homework, int index, ThemeData theme, bool isDark) {
     return AnimatedBuilder(
       animation: _fadeController,
       builder: (context, child) {
@@ -413,34 +378,31 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                   width: 1,
                 ),
               ),
-                                child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
-                      splashColor: _getSubjectColor(index).withOpacity(0.1),
-                      highlightColor: _getSubjectColor(index).withOpacity(0.05),
-                      onTap: () {
-                        // تحويل String ID إلى int
-                        final int? homeworkId = int.tryParse(homework.id);
-                        if (homeworkId != null) {
-                          context.goToQuestions(homework.id);
-                        } else {
-                          // في حالة فشل التحويل، عرض رسالة خطأ
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('خطأ في معرف الواجب'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  splashColor: _getSubjectColor(index).withOpacity(0.1),
+                  highlightColor: _getSubjectColor(index).withOpacity(0.05),
+                  onTap: () {
+                    final int? homeworkId = int.tryParse(homework.id);
+                    if (homeworkId != null) {
+                      context.goToQuestions(homework.id);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('خطأ في معرف الواجب'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Status Badge
                         Row(
                           children: [
                             Expanded(
@@ -465,10 +427,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                             ),
                           ],
                         ),
-                        
                         const SizedBox(height: 12),
-                        
-                        // Subject Icon and Name
                         Row(
                           children: [
                             Container(
@@ -499,10 +458,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                             ),
                           ],
                         ),
-                        
                         const SizedBox(height: 12),
-                        
-                        // Due Date
                         Row(
                           children: [
                             Icon(
@@ -525,28 +481,23 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                             ),
                           ],
                         ),
-                        
                         const SizedBox(height: 16),
-                        
-                        // Action Button
                         SizedBox(
                           width: double.infinity,
                           height: 36,
                           child: ElevatedButton(
                             onPressed: () {
-                              // تحويل String ID إلى int
                               final int? homeworkId = int.tryParse(homework.id);
                               if (homeworkId != null) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => OneHomeworkPage(
+                                    builder: (context) => OneQuizPage(
                                       questionId: homeworkId,
                                     ),
                                   ),
                                 );
                               } else {
-                                // في حالة فشل التحويل، عرض رسالة خطأ
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('خطأ في معرف الواجب'),
@@ -679,12 +630,12 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
 
   Color _getSubjectColor(int index) {
     final colors = [
-      const Color(0xFF4F46E5), // Blue
-      const Color(0xFF7C3AED), // Purple
-      const Color(0xFF10B981), // Green
-      const Color(0xFFF59E0B), // Yellow
-      const Color(0xFFEF4444), // Red
-      const Color(0xFF06B6D4), // Cyan
+      const Color(0xFF4F46E5),
+      const Color(0xFF7C3AED),
+      const Color(0xFF10B981),
+      const Color(0xFFF59E0B),
+      const Color(0xFFEF4444),
+      const Color(0xFF06B6D4),
     ];
     return colors[index % colors.length];
   }
@@ -711,7 +662,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = date.difference(now).inDays;
-    
+
     if (difference < 0) {
       return 'متأخر';
     } else if (difference == 0) {
