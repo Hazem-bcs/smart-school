@@ -94,6 +94,14 @@ extension NavigationExtension on BuildContext {
     );
   }
   
+  void goToQuestionsWithInt(int questionId) {
+    Navigator.pushNamed(
+      this, 
+      AppRoutes.questions,
+      arguments: questionId.toString(),
+    );
+  }
+  
   void goToTutorChat() {
     Navigator.pushNamed(this, AppRoutes.tutorChat);
   }

@@ -230,10 +230,10 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-09-01T03:34:39.212458Z",
+  "generated": "2025-09-04T03:10:26.229301Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
-  "flutterRoot": "file:///D:/download/flutter",
+  "flutterRoot": "file:///C:/dev/flutter",
   "flutterVersion": "3.29.3",
   "pubCache": "file:///C:/Users/ASUS/AppData/Local/Pub/Cache"
 }

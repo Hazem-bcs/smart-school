@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:resource/domain/entities/resource_entity.dart';
-import 'package:smart_school/widgets/app_exports.dart';
+import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/theme/constants/app_spacing.dart';
+import 'package:core/theme/constants/app_text_styles.dart';
+import 'package:core/theme/constants/app_strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Widget لعرض بطاقة مورد واحد
 class ResourceCard extends StatelessWidget {
   final ResourceEntity resource;
 
@@ -10,94 +15,116 @@ class ResourceCard extends StatelessWidget {
     required this.resource,
   });
 
-
+  /// فتح رابط المورد
   Future<void> _launchUrl() async {
     final Uri uri = Uri.parse(resource.url);
     if (!await launchUrl(uri)) {
-      throw Exception('Could not launch ${resource.url}');
+      throw Exception('لا يمكن فتح الرابط: ${resource.url}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      elevation: 4.0,
+      margin: AppSpacing.smMargin,
+      elevation: AppSpacing.smElevation,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: AppSpacing.baseBorderRadius,
       ),
+      color: isDark ? AppColors.darkCardBackground : AppColors.lightSurface,
       child: InkWell(
         onTap: _launchUrl,
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: AppSpacing.baseBorderRadius,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: AppSpacing.cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // عنوان المورد
               Text(
                 resource.title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
+                style: AppTextStyles.h4.copyWith(
+                  color: isDark ? AppColors.darkPrimaryText : AppColors.secondary,
+                  fontWeight: AppTextStyles.bold,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: AppSpacing.sm),
+              
+              // وصف المورد
               Text(
                 resource.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[700],
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: isDark ? AppColors.darkSecondaryText : AppColors.gray700,
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: AppSpacing.md),
+              
+              // رابط المورد
               Row(
                 children: [
-                  Icon(Icons.link, color: Colors.blue, size: 18),
-                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.link,
+                    color: isDark ? AppColors.darkAccentPurple : AppColors.info,
+                    size: AppSpacing.smIcon,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
                       resource.url,
-                      style: const TextStyle(
-                        color: Colors.blue,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: isDark ? AppColors.darkAccentPurple : AppColors.info,
                         decoration: TextDecoration.underline,
-                        fontSize: 13,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   IconButton(
-                    icon: const Icon(Icons.open_in_new, color: primaryColor),
+                    icon: Icon(
+                      Icons.open_in_new,
+                      color: isDark ? AppColors.darkAccentPurple : AppColors.secondary,
+                    ),
                     onPressed: _launchUrl,
-                    tooltip: 'Open Link',
+                    tooltip: AppStrings.openLink,
                   ),
                 ],
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: AppSpacing.md),
+              
+              // معلومات إضافية
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'By: ${resource.teacherId}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    AppStrings.byTeacher.replaceAll('%s', resource.teacherId),
+                    style: AppTextStyles.caption.copyWith(
+                      color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
+                    ),
                   ),
                   Text(
                     '${resource.createdAt.day}/${resource.createdAt.month}/${resource.createdAt.year}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: AppTextStyles.caption.copyWith(
+                      color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
+                    ),
                   ),
                 ],
               ),
+              
+              // الفصول المستهدفة
               if (resource.targetClasses.isNotEmpty) ...[
-                const SizedBox(height: 8.0),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Target Classes: ${resource.targetClasses.join(', ')}',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  AppStrings.targetClasses.replaceAll('%s', resource.targetClasses.join(', ')),
+                  style: AppTextStyles.caption.copyWith(
+                    color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

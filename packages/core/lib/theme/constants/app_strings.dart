@@ -25,4 +25,17 @@ abstract class AppStrings {
   static const String markAsRead = "تم تحديد \"%s\" كمقروءة";
   static const String notificationTapped = "نقر على الإشعار: %s";
   static const String refresh = "تحديث";
+
+  // ==================== RESOURCE STRINGS ====================
+  static const String loadingResources = "جاري تحميل الموارد...";
+  static const String noResources = "لا توجد موارد متاحة حالياً";
+  static const String resourcesComingSoon = "سيتم إضافة موارد جديدة قريباً";
+  static const String errorLoadingResources = "حدث خطأ في تحميل الموارد";
+  static const String retryLoading = "إعادة المحاولة";
+  static const String loadResources = "تحميل الموارد";
+  static const String openLink = "فتح الرابط";
+  static const String byTeacher = "بواسطة: %s";
+  static const String targetClasses = "الفصول المستهدفة: %s";
+  static const String tapToLoad = "اضغط لتحميل الموارد";
+  static const String pullToRefresh = "أو اسحب للأسفل للتحديث";
 }

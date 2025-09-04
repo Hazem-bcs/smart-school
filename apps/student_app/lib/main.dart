@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_event.dart';
 import 'package:core/blocs/theme/theme_state.dart';
-import 'package:core/constant.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -17,12 +16,12 @@ import 'injection_container.dart' as di;
 import 'blocs/sensitive_connectivity/connectivity_bloc.dart';
 import 'features/authentication/presentation/blocs/auth_bloc.dart';
 import 'features/authentication/presentation/cuibts/on_boarding_cubit.dart';
-import 'features/authentication/presentation/pages/splash_page.dart';
 import 'services/notification_service.dart';
 import 'widgets/app_exports.dart';
 
 // Routing imports
 import 'routing/index.dart';
+import 'features/authentication/presentation/pages/splash_page.dart';
 
 /// Main entry point of the Smart School application
 void main() async {
@@ -34,8 +33,8 @@ void main() async {
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // get base url from github
-  await Constants.init();
+  // get base url from github 
+  // Constants.init();
   // Initialize localization
   await EasyLocalization.ensureInitialized();
   
@@ -152,5 +151,55 @@ class AppWithTheme extends StatelessWidget {
       return themeState.themeMode;
     }
     return ThemeMode.system;
+  }
+}
+
+/// Initial route page that handles authentication and onboarding logic
+class InitialRoutePage extends StatelessWidget {
+  const InitialRoutePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        } else if (state is Unauthenticated) {
+          _navigateBasedOnBoarding(context);
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthChecking) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          
+          // Check authentication status when page loads
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<AuthBloc>().add(CheckAuthenticationStatusEvent());
+          });
+          
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _navigateBasedOnBoarding(BuildContext context) async {
+    final bool hasSeenOnboarding = await context.read<OnboardingCubit>().checkOnboardingStatus();
+    if (context.mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        !hasSeenOnboarding ? '/onBoarding' : '/login',
+        (route) => false,
+      );
+    }
   }
 }

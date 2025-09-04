@@ -1,16 +1,13 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:core/theme/constants/app_colors.dart';
-import 'package:core/theme/constants/app_text_styles.dart';
 import 'package:core/widgets/index.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
 import '../blocs/auth_bloc.dart';
 import '../cuibts/on_boarding_cubit.dart';
-import '../../../../generated/locale_keys.g.dart';
-import '../../../../widgets/responsive/responsive_helper.dart';
+import '../widgets/splash_logo_widget.dart';
+import '../widgets/splash_app_name_widget.dart';
+import '../widgets/splash_background_elements.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -140,9 +137,9 @@ class _SplashPageState extends State<SplashPage>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.primary,
-                    AppColors.secondary,
-                    AppColors.accent,
+                    AppColors.primary.withAlpha((0.7 * 255).toInt()),
+                    AppColors.secondary.withAlpha((0.6 * 255).toInt()),
+                    AppColors.accent.withAlpha((0.5 * 255).toInt()),
                   ],
                   stops: [
                     0.0,
@@ -154,7 +151,9 @@ class _SplashPageState extends State<SplashPage>
               child: Stack(
                 children: [
                   // Animated background elements
-                  ..._buildBackgroundElements(),
+                  SplashBackgroundElements(
+                    backgroundAnimation: _backgroundAnimation,
+                  ),
                   
                   // Main content
                   Center(
@@ -162,14 +161,20 @@ class _SplashPageState extends State<SplashPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Logo with animations
-                        _buildAnimatedLogo(),
+                        SplashLogoWidget(
+                          scaleAnimation: _logoScaleAnimation,
+                          opacityAnimation: _logoOpacityAnimation,
+                        ),
                         
-                        SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 32, tablet: 40, desktop: 48)),
+                        SizedBox(height: 32),
                         
                         // App name with animations
-                        _buildAnimatedAppName(),
+                        SplashAppNameWidget(
+                          slideAnimation: _textSlideAnimation,
+                          opacityAnimation: _textOpacityAnimation,
+                        ),
                         
-                        SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 32, desktop: 40)),
+                        SizedBox(height: 24),
                         
                         // Loading indicator
                         _buildLoadingIndicator(),
@@ -185,178 +190,57 @@ class _SplashPageState extends State<SplashPage>
     );
   }
 
-  List<Widget> _buildBackgroundElements() {
-    return [
-      // Floating circles
-      Positioned(
-        top: 10.h,
-        left: 5.w,
-        child: AnimatedBuilder(
-          animation: _backgroundController,
-          builder: (context, child) {
-            return Transform.rotate(
-              angle: _backgroundController.value * 2 * math.pi,
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white.withAlpha((0.1 * 255).toInt()),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      
-      Positioned(
-        top: 20.h,
-        right: 10.w,
-        child: AnimatedBuilder(
-          animation: _backgroundController,
-          builder: (context, child) {
-            return Transform.rotate(
-              angle: -_backgroundController.value * 2 * math.pi,
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white.withAlpha((0.08 * 255).toInt()),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      
-      Positioned(
-        bottom: 15.h,
-        left: 15.w,
-        child: AnimatedBuilder(
-          animation: _backgroundController,
-          builder: (context, child) {
-            return Transform.rotate(
-              angle: _backgroundController.value * 1.5 * math.pi,
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white.withOpacity(0.05),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      
-      // Gradient overlay
-      Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.center,
-            radius: 1.5,
-            colors: [
-              AppColors.primary.withOpacity(0.3),
-              AppColors.primary.withOpacity(0.1),
-              Colors.transparent,
-            ],
-          ),
-        ),
-      ),
-    ];
-  }
-
-  Widget _buildAnimatedLogo() {
-    return AnimatedBuilder(
-      animation: _logoController,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _logoScaleAnimation.value,
-          child: Opacity(
-            opacity: _logoOpacityAnimation.value,
-            child: Container(
-              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.white.withOpacity(0.15),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-              child: Image.asset(
-                'assets/images/graduation-hat.png',
-                color: AppColors.white,
-                height: ResponsiveHelper.getIconSize(context, mobile: 80, tablet: 100, desktop: 120),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildAnimatedAppName() {
-    return AnimatedBuilder(
-      animation: _textController,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, _textSlideAnimation.value),
-          child: Opacity(
-            opacity: _textOpacityAnimation.value,
-            child: Column(
-              children: [
-                Text(
-                  LocaleKeys.stellar.tr(),
-                  style: AppTextStyles.h1.copyWith(
-                    color: AppColors.white,
-                    fontSize: ResponsiveHelper.getFontSize(context, mobile: 32, tablet: 40, desktop: 48),
-                    fontWeight: AppTextStyles.bold,
-                    letterSpacing: 2,
-                    shadows: [
-                      Shadow(
-                        color: AppColors.black.withOpacity(0.3),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
-                Text(
-                  'Smart School',
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.white.withOpacity(0.9),
-                    fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
-                    fontWeight: AppTextStyles.medium,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildLoadingIndicator() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthChecking) {
-          return SmartSchoolLoading(
-            message: 'جاري التحميل...',
-            type: LoadingType.ripple,
-            size: ResponsiveHelper.getIconSize(context, mobile: 40, tablet: 50, desktop: 60),
-          );
+          return _buildSimpleLoadingIndicator();
         }
         return const SizedBox.shrink();
       },
+    );
+  }
+
+  Widget _buildSimpleLoadingIndicator() {
+    return Column(
+      children: [
+        // Simple animated dots
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (index) {
+            return AnimatedBuilder(
+              animation: _backgroundController,
+              builder: (context, child) {
+                final delay = index * 0.2;
+                final animationValue = (_backgroundController.value + delay) % 1.0;
+                final opacity = (0.3 + 0.7 * (1 - animationValue)).clamp(0.3, 1.0);
+                
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.white.withAlpha((opacity * 255).toInt()),
+                  ),
+                );
+              },
+            );
+          }),
+        ),
+        
+        SizedBox(height: 16),
+        
+        // Simple loading text
+        Text(
+          'جاري التحميل...',
+          style: TextStyle(
+            color: AppColors.white.withAlpha((0.8 * 255).toInt()),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }

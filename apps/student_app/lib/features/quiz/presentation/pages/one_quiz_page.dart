@@ -130,7 +130,7 @@ class _OneQuizPageState extends State<OneQuizPage> with TickerProviderStateMixin
     final isDark = theme.brightness == Brightness.dark;
     
     return AppBarWidget(
-      title: AppStrings.homeWork,
+      title: 'الواجبات',
       actions: [
         AppBarActions.counter(
           text: '${answers.length}/${marks.length}',

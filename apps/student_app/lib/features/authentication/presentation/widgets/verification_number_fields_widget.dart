@@ -1,11 +1,11 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/theme/constants/app_spacing.dart';
 
-
-class VerificationNumberFields extends StatefulWidget {
-  const VerificationNumberFields({
+class VerificationNumberFieldsWidget extends StatefulWidget {
+  const VerificationNumberFieldsWidget({
     super.key,
     required this.onCompleted,
     this.validator,
@@ -17,25 +17,32 @@ class VerificationNumberFields extends StatefulWidget {
   final FormFieldValidator<String>? validator;
 
   @override
-  State<VerificationNumberFields> createState() => _VerificationNumberFieldsState();
+  State<VerificationNumberFieldsWidget> createState() => _VerificationNumberFieldsWidgetState();
 }
 
-class _VerificationNumberFieldsState extends State<VerificationNumberFields> {
+class _VerificationNumberFieldsWidgetState extends State<VerificationNumberFieldsWidget> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     Size size = MediaQuery.of(context).size;
 
     final defaultPinTheme = PinTheme(
-      width: min(60,size.width / 6) ,
+      width: min(60, size.width / 6),
       height: 60,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.grey.shade400,
+        borderRadius: AppSpacing.mdBorderRadius,
+        color: isDark ? AppColors.darkElevatedSurface : AppColors.gray400,
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: AppSpacing.mdBorderRadius,
+      color: isDark ? AppColors.darkAccentBlue.withOpacity(0.1) : AppColors.primary.withOpacity(0.1),
+      border: Border.all(
+        color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
+        width: 2,
+      ),
     );
 
     final submittedPinTheme = defaultPinTheme.copyWith(
@@ -55,8 +62,7 @@ class _VerificationNumberFieldsState extends State<VerificationNumberFields> {
         onCompleted: widget.onCompleted,
         onChanged: widget.onChanged,
         length: 6,
-        inputFormatters: [
-        ],
+        inputFormatters: [],
       ),
     );
   }

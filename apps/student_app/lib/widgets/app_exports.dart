@@ -38,3 +38,6 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:core/theme/constants/app_strings.dart';
 export 'package:core/theme/constants/colors.dart';
 export 'package:core/theme/constants/app_text_style.dart';
+
+// App widgets exports
+export '../features/authentication/presentation/widgets/index.dart';

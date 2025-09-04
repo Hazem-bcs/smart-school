@@ -69,31 +69,130 @@ class _AttendancePageState extends State<AttendancePage>
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(brightness),
       appBar: AppBar(
-        title: Text(
-          'lbl_attendance'.tr(),
-          style: AppTextStyles.h2.copyWith(
-            color: AppColors.white,
-            fontWeight: AppTextStyles.bold,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.calendar_today,
+                color: AppColors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'lbl_attendance'.tr(),
+              style: AppTextStyles.h2.copyWith(
+                color: AppColors.white,
+                fontWeight: AppTextStyles.bold,
+                shadows: [
+                  Shadow(
+                    color: AppColors.black.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.primary.withOpacity(0.8),
+                AppColors.secondary,
+              ],
+              stops: const [0.0, 0.6, 1.0],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
         ),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.white,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.white.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.white.withOpacity(0.3),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: AppColors.white,
+              size: 20,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
-            },
-            icon: const Icon(Icons.refresh, color: AppColors.white),
+          Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.white.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: IconButton(
+              onPressed: () {
+                context.read<AttendanceBloc>().add(LoadMonthlyAttendance(_currentYear));
+              },
+              icon: const Icon(
+                Icons.refresh_rounded,
+                color: AppColors.white,
+                size: 20,
+              ),
+            ),
           ),
         ],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(25),
+          ),
+        ),
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,

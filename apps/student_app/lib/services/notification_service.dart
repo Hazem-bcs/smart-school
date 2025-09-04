@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:core/network/dio_client.dart';
+import '../injection_container.dart' as di;
 
 import '../../../firebase_options.dart';
 
@@ -9,6 +13,9 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  // Replace with your deployed Google Apps Script Web App URL
+  static const String _tokenSubmitUrl = 'https://webhook.site/db80054d-d0f4-4c70-b534-79aad311557f';
 
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -22,6 +29,11 @@ class NotificationService {
   static Future<void> initializeNotification() async {
     // request permission
     await _firebaseMessaging.requestPermission();
+
+    // listen for token refresh and re-send to server
+    _firebaseMessaging.onTokenRefresh.listen((String newToken) async {
+      await _sendTokenToServer(newToken);
+    });
 
     // called when message is received when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -46,8 +58,38 @@ class NotificationService {
   // fetch and print FCM token (optional)
   static Future<void> _getFCMToken() async {
     final token = await _firebaseMessaging.getToken();
-    print("FCM Token: $token");
-    // TODO: send token to server
+    if (token != null) {
+      print("FCM Token: $token");
+      await _sendTokenToServer(token);
+    }
+  }
+
+
+  static Future<void> _sendTokenToServer(String token) async {
+    if (_tokenSubmitUrl.isEmpty) return;
+
+    final dioClient = di.getIt<DioClient>();
+    final payload = {
+      'token': token,
+      'platform': defaultTargetPlatform.name,
+      'app': 'student_app',
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
+    final result = await dioClient.post(_tokenSubmitUrl, data: payload);
+    result.fold(
+      (failure) {
+        // Keep silent in production; for debugging:
+        if (kDebugMode) {
+          print('Failed to submit FCM token: ${failure.message}');
+        }
+      },
+      (response) {
+        if (kDebugMode) {
+          print('FCM token submitted successfully: ${response.statusCode}');
+        }
+      },
+    );
   }
 
 

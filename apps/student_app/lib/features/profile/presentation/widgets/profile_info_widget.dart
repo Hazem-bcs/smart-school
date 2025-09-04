@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:core/domain/entities/user_entity.dart';
+import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/theme/constants/app_text_styles.dart';
+import 'package:core/theme/constants/app_spacing.dart';
 
 class ProfileInfoWidget extends StatelessWidget {
   final UserEntity user;
@@ -9,125 +12,116 @@ class ProfileInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: AppSpacing.lgPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Title
-          Text(
-            'المعلومات الشخصية',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 20),
-
+          _buildSectionTitle('المعلومات الشخصية', theme, isDark),
+          const SizedBox(height: AppSpacing.lg),
+          
           // Personal Information Cards
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.email,
             title: 'البريد الإلكتروني',
             subtitle: user.email,
-            color: theme.colorScheme.primary,
+            color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
+            isDark: isDark,
           ),
-          const SizedBox(height: 12),
-
+          const SizedBox(height: AppSpacing.md),
+          
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.phone,
             title: 'رقم الهاتف',
             subtitle: user.phone ?? 'غير محدد',
-            color: theme.colorScheme.tertiary, // استخدام لون ثالث من الثيم
+            color: isDark ? AppColors.darkAccentPurple : AppColors.accent,
+            isDark: isDark,
           ),
-          const SizedBox(height: 12),
-
+          const SizedBox(height: AppSpacing.md),
+          
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.location_on,
             title: 'العنوان',
             subtitle: user.address ?? 'غير محدد',
-            color: theme.colorScheme.secondary, // استخدام لون ثانوي من الثيم
+            color: isDark ? AppColors.darkSuccess : AppColors.secondary,
+            isDark: isDark,
           ),
-          const SizedBox(height: 12),
-
+          const SizedBox(height: AppSpacing.md),
+          
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.cake,
             title: 'تاريخ الميلاد',
             subtitle: _formatDate(user.dateBirth),
-            color: theme.colorScheme.onBackground, // استخدام لون مناسب
+            color: isDark ? AppColors.darkWarning : AppColors.gray600,
+            isDark: isDark,
           ),
-          const SizedBox(height: 20),
-
+          const SizedBox(height: AppSpacing.lg),
+          
           // Family Information Section
-          Text(
-            'معلومات العائلة',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 20),
-
+          _buildSectionTitle('معلومات العائلة', theme, isDark),
+          const SizedBox(height: AppSpacing.lg),
+          
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.person,
             title: 'اسم الأب',
             subtitle: user.fatherName ?? 'غير محدد',
-            color: theme.colorScheme.onSurface,
+            color: isDark ? AppColors.darkIcon : AppColors.gray500,
+            isDark: isDark,
           ),
-          const SizedBox(height: 12),
-
+          const SizedBox(height: AppSpacing.md),
+          
           _buildInfoCard(
-            context,
-            theme: theme,
             icon: Icons.person,
             title: 'اسم الأم',
             subtitle: user.motherName ?? 'غير محدد',
-            color: theme.colorScheme.inversePrimary,
+            color: isDark ? AppColors.darkSecondaryText : AppColors.info,
+            isDark: isDark,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoCard(
-      BuildContext context, {
-        required ThemeData theme,
-        required IconData icon,
-        required String title,
-        required String subtitle,
-        required Color color,
-      }) {
+  Widget _buildSectionTitle(String title, ThemeData theme, bool isDark) {
+    return Text(
+      title,
+      style: AppTextStyles.h3.copyWith(
+        color: isDark ? AppColors.darkPrimaryText : AppColors.primary,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required bool isDark,
+  }) {
     return Container(
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(15),
+        color: isDark ? AppColors.darkCardBackground : AppColors.lightSurface,
+        borderRadius: AppSpacing.baseBorderRadius,
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withOpacity(0.1),
+            color: AppColors.black.withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppSpacing.basePadding,
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppSpacing.mdPadding,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppSpacing.mdBorderRadius,
               ),
               child: Icon(
                 icon,
@@ -135,24 +129,24 @@ class ProfileInfoWidget extends StatelessWidget {
                 size: 24,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.base),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: theme.hintColor,
+                      color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     subtitle,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.textTheme.bodyLarge?.color,
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: isDark ? AppColors.darkPrimaryText : AppColors.gray900,
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
                     ),

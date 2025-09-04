@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:core/domain/entities/user_entity.dart';
 import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/theme/constants/app_text_styles.dart';
+import 'package:core/theme/constants/app_spacing.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
   final UserEntity user;
@@ -10,17 +12,24 @@ class ProfileHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primary.withOpacity(0.8),
-            theme.colorScheme.primary.withOpacity(0.6),
-          ],
+          colors: isDark
+            ? [
+                AppColors.darkGradientStart,
+                AppColors.darkGradientEnd,
+                AppColors.darkAccentBlue,
+              ]
+            : [
+                AppColors.primary,
+                AppColors.secondary,
+                AppColors.accent,
+              ],
         ),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(30),
@@ -29,86 +38,16 @@ class ProfileHeaderWidget extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: AppSpacing.lgPadding,
           child: Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: theme.colorScheme.onPrimary,
-                    width: 4,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withOpacity(0.2),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: theme.colorScheme.surface,
-                  backgroundImage: user.profilePhotoUrl != null
-                      ? NetworkImage(user.profilePhotoUrl!)
-                      : const AssetImage("assets/images/user_3.png") as ImageProvider,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                user.name ?? 'اسم الطالب',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onPrimary,
-                  fontSize: 24,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 8),
-
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onPrimary.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '${user.grade ?? ''} - ${user.classroom ?? ''} ${user.section ?? ''}',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildStatItem(
-                    context,
-                    icon: Icons.school,
-                    label: 'الصف',
-                    value: user.classroom ?? 'غير محدد',
-                  ),
-                  _buildStatItem(
-                    context,
-                    icon: Icons.person,
-                    label: 'الجنس',
-                    value: user.gender == 'Male' ? 'ذكر' : 'أنثى',
-                  ),
-                  _buildStatItem(
-                    context,
-                    icon: Icons.flag,
-                    label: 'الجنسية',
-                    value: user.nationality ?? 'غير محدد',
-                  ),
-                ],
-              ),
+              _buildProfilePicture(theme, isDark),
+              const SizedBox(height: AppSpacing.lg),
+              _buildUserName(theme, isDark),
+              const SizedBox(height: AppSpacing.sm),
+              _buildUserGrade(theme, isDark),
+              const SizedBox(height: AppSpacing.lg),
+              _buildUserStats(theme, isDark),
             ],
           ),
         ),
@@ -116,41 +55,120 @@ class ProfileHeaderWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required String value,
-      }) {
-    final theme = Theme.of(context);
+  Widget _buildProfilePicture(ThemeData theme, bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: AppColors.white,
+          width: 4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: 60,
+        backgroundColor: isDark ? AppColors.darkCardBackground : AppColors.white,
+        backgroundImage: user.profilePhotoUrl != null
+            ? NetworkImage(user.profilePhotoUrl!)
+            : const AssetImage("assets/images/user_3.png") as ImageProvider,
+      ),
+    );
+  }
 
+  Widget _buildUserName(ThemeData theme, bool isDark) {
+    return Text(
+      user.name ?? 'اسم الطالب',
+      style: AppTextStyles.h2.copyWith(
+        color: AppColors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildUserGrade(ThemeData theme, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.2),
+        borderRadius: AppSpacing.lgBorderRadius,
+      ),
+      child: Text(
+        '${user.grade ?? ''} - ${user.classroom ?? ''} ${user.section ?? ''}',
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.white,
+          fontWeight: FontWeight.w500,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildUserStats(ThemeData theme, bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildStatItem(
+          icon: Icons.school,
+          label: 'الصف',
+          value: user.classroom ?? 'غير محدد',
+          isDark: isDark,
+        ),
+        _buildStatItem(
+          icon: Icons.person,
+          label: 'الجنس',
+          value: user.gender == 'Male' ? 'ذكر' : 'أنثى',
+          isDark: isDark,
+        ),
+        _buildStatItem(
+          icon: Icons.flag,
+          label: 'الجنسية',
+          value: user.nationality ?? 'غير محدد',
+          isDark: isDark,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatItem({
+    required IconData icon,
+    required String label,
+    required String value,
+    required bool isDark,
+  }) {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.mdPadding,
           decoration: BoxDecoration(
-            color: theme.colorScheme.onPrimary.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(15),
+            color: AppColors.white.withOpacity(0.2),
+            borderRadius: AppSpacing.baseBorderRadius,
           ),
           child: Icon(
             icon,
-            color: theme.colorScheme.onPrimary,
-            size: 24,
+            color: AppColors.white,
+            size: 32,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onPrimary.withOpacity(0.8),
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.white.withOpacity(0.8),
             fontSize: 12,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onPrimary,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.white,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),

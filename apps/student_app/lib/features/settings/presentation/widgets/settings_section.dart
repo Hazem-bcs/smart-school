@@ -45,7 +45,7 @@ class SettingsSection extends StatelessWidget {
         vertical: ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28),
       ),
       child: Text(
-        'Preferences',
+        'التفضيلات',
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
           fontSize: ResponsiveHelper.getFontSize(context, mobile: 22, tablet: 24, desktop: 26),
@@ -81,8 +81,8 @@ class SettingsSection extends StatelessWidget {
       context: context,
       icon: Icons.notifications_rounded,
       iconColor: isDark ? AppColors.darkAccentBlue : AppColors.primary,
-      title: 'Notifications',
-      subtitle: 'Manage your notification preferences',
+      title: 'الإشعارات',
+      subtitle: 'إدارة تفضيلات الإشعارات الخاصة بك',
       trailing: _buildModernSwitch(
         value: notificationsEnabled,
         onChanged: onNotificationsChanged,
@@ -95,7 +95,7 @@ class SettingsSection extends StatelessWidget {
       context: context,
       icon: Icons.language_rounded,
       iconColor: isDark ? AppColors.darkSuccess : AppColors.success,
-      title: 'Language',
+      title: 'اللغة',
       subtitle: isEnglish ? 'English' : 'العربية',
       trailing: _buildArrowIcon(),
       onTap: onLanguageToggle,
@@ -117,8 +117,8 @@ class SettingsSection extends StatelessWidget {
           context: context,
           icon: isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
           iconColor: isDark ? AppColors.darkWarning : AppColors.warning,
-          title: 'Dark Mode',
-          subtitle: isDarkMode ? 'Enabled' : 'Disabled',
+          title: 'الوضع الداكن',
+          subtitle: isDarkMode ? 'مفعل' : 'معطل',
           trailing: _buildModernSwitch(
             value: isDarkMode,
             onChanged: (_) {

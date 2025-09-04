@@ -4,7 +4,12 @@ import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/modern_design/modern_effects.dart';
 
 class ThemeSelector extends StatefulWidget {
-  const ThemeSelector({super.key});
+  final Function(String) onThemeSelected;
+  
+  const ThemeSelector({
+    super.key,
+    required this.onThemeSelected,
+  });
 
   @override
   State<ThemeSelector> createState() => _ThemeSelectorState();
@@ -185,7 +190,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
               setState(() {
                 _selectedTheme = themeItem['name'];
               });
-              // TODO: تطبيق تغيير المظهر
+              widget.onThemeSelected(themeItem['name']);
               Navigator.pop(context);
             },
             borderRadius: BorderRadius.circular(20),

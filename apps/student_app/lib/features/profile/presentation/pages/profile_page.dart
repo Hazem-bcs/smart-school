@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_strings.dart';
+import 'package:core/theme/constants/app_spacing.dart';
 import 'package:smart_school/widgets/app_bar_widget.dart';
 import 'package:core/widgets/index.dart';
 import '../bolcs/profile_bloc.dart';
-import '../widgets/profile_header_widget.dart';
-import '../widgets/profile_info_widget.dart';
-import '../widgets/profile_actions_widget.dart';
+import '../widgets/index.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -30,9 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            ProfileErrorSnackBar(message: state.message),
-          );
+          _showErrorSnackBar(context, state.message);
         }
       },
       builder: (context, state) {
@@ -49,139 +46,32 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          body: ProfileBody(state: state),
+          body: ProfileBodyWidget(state: state),
         );
       },
     );
   }
-}
 
-// ---------------------- Widgets ----------------------
-
-class ProfileBody extends StatelessWidget {
-  final ProfileState state;
-  const ProfileBody({super.key, required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    if (state is GetDataLoadingState) {
-      return const ProfileLoadingWidget();
-    }
-
-    if (state is ProfileDataLoadedState) {
-      final userEntity = (state as ProfileDataLoadedState).userEntity;
-      return ProfileLoadedWidget(userEntity: userEntity);
-    }
-
-    if (state is ProfileErrorState) {
-      final message = (state as ProfileErrorState).message;
-      return ProfileErrorWidget(message: message);
-    }
-
-    return const SizedBox.shrink();
-  }
-}
-
-class ProfileLoadingWidget extends StatelessWidget {
-  const ProfileLoadingWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const SmartSchoolLoading(
-      message: 'جاري تحميل البيانات...',
-      type: LoadingType.primary,
-    );
-  }
-}
-
-class ProfileLoadedWidget extends StatelessWidget {
-  final dynamic userEntity;
-  const ProfileLoadedWidget({super.key, required this.userEntity});
-
-  @override
-  Widget build(BuildContext context) {
+  void _showErrorSnackBar(BuildContext context, String message) {
     final theme = Theme.of(context);
-
-    return RefreshIndicator(
-      onRefresh: () async {
-        context.read<ProfileBloc>().add(GetProfileDataEvent());
-      },
-      color: theme.colorScheme.primary,
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            ProfileHeaderWidget(user: userEntity),
-            ProfileInfoWidget(user: userEntity),
-            ProfileActionsWidget(user: userEntity),
-            const SizedBox(height: 20),
-          ],
+    final isDark = theme.brightness == Brightness.dark;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: AppColors.white,
+            fontFamily: 'Cairo',
+          ),
         ),
+        backgroundColor: isDark ? AppColors.darkDestructive : AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppSpacing.baseBorderRadius,
+        ),
+        margin: AppSpacing.baseMargin,
       ),
     );
   }
-}
-
-class ProfileErrorWidget extends StatelessWidget {
-  final String message;
-  const ProfileErrorWidget({super.key, required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 80,
-            color: theme.hintColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'حدث خطأ في تحميل البيانات',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            style: theme.textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () {
-              context.read<ProfileBloc>().add(GetProfileDataEvent());
-            },
-            icon: Icon(Icons.refresh, color: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
-            label: Text('إعادة المحاولة', style: theme.elevatedButtonTheme.style?.textStyle?.resolve({MaterialState.pressed})),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: theme.elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}),
-              foregroundColor: theme.elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProfileErrorSnackBar extends SnackBar {
-  ProfileErrorSnackBar({super.key, required String message})
-      : super(
-    content: Text(message),
-    backgroundColor: AppColors.error,
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-  );
 }

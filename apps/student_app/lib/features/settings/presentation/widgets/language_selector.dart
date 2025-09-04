@@ -4,7 +4,12 @@ import '../../../../widgets/responsive/responsive_helper.dart';
 import '../../../../widgets/modern_design/modern_effects.dart';
 
 class LanguageSelector extends StatefulWidget {
-  const LanguageSelector({super.key});
+  final Function(String) onLanguageSelected;
+  
+  const LanguageSelector({
+    super.key,
+    required this.onLanguageSelected,
+  });
 
   @override
   State<LanguageSelector> createState() => _LanguageSelectorState();
@@ -170,7 +175,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
               setState(() {
                 _selectedLanguage = language['name']!;
               });
-              // TODO: تطبيق تغيير اللغة
+              widget.onLanguageSelected(language['code']!);
               Navigator.pop(context);
             },
             borderRadius: BorderRadius.circular(16),

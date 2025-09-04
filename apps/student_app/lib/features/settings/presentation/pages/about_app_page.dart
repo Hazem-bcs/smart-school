@@ -104,9 +104,8 @@ class _AboutAppPageState extends State<AboutAppPage>
   }
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
-    
     return AppBarWidget(
-      title: 'About App',
+      title: 'عن التطبيق',
       leadingIcon: Icons.arrow_back_ios,
       onLeadingPressed: () => Navigator.pop(context),
       automaticallyImplyLeading: false,
@@ -173,7 +172,7 @@ class _AboutAppPageState extends State<AboutAppPage>
               ),
               SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 28, desktop: 32)),
               Text(
-                'Smart School',
+                'المدرسة الذكية',
                 style: TextStyle(
                   fontSize: ResponsiveHelper.getFontSize(context, mobile: 28, tablet: 30, desktop: 32),
                   fontWeight: FontWeight.w800,
@@ -196,7 +195,7 @@ class _AboutAppPageState extends State<AboutAppPage>
                   ),
                 ),
                 child: Text(
-                  'Version 1.0.0',
+                  'الإصدار 1.0.0',
                   style: TextStyle(
                     fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
                     color: AppColors.white.withOpacity(0.95),
@@ -206,7 +205,7 @@ class _AboutAppPageState extends State<AboutAppPage>
               ),
               SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 20, tablet: 24, desktop: 28)),
               Text(
-                'Empowering students with modern digital tools for better learning experience and academic success',
+                'تمكين الطلاب بأدوات رقمية حديثة لتجربة تعليمية أفضل ونجاح أكاديمي',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
@@ -234,7 +233,7 @@ class _AboutAppPageState extends State<AboutAppPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'App Information',
+            'معلومات التطبيق',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: ResponsiveHelper.getFontSize(context, mobile: 22, tablet: 24, desktop: 26),
@@ -245,15 +244,15 @@ class _AboutAppPageState extends State<AboutAppPage>
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 28, desktop: 32)),
           _buildDetailItem(
             icon: Icons.person_rounded,
-            title: 'Developer',
-            value: 'Smart School Team',
+            title: 'المطور',
+            value: 'فريق المدرسة الذكية',
             color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
             theme: theme,
             isDark: isDark,
           ),
           _buildDetailItem(
             icon: Icons.email_rounded,
-            title: 'Email',
+            title: 'البريد الإلكتروني',
             value: 'support@smartschool.com',
             color: isDark ? AppColors.darkSuccess : AppColors.success,
             theme: theme,
@@ -261,7 +260,7 @@ class _AboutAppPageState extends State<AboutAppPage>
           ),
           _buildDetailItem(
             icon: Icons.web_rounded,
-            title: 'Website',
+            title: 'الموقع الإلكتروني',
             value: 'www.smartschool.com',
             color: isDark ? AppColors.darkWarning : AppColors.warning,
             theme: theme,
@@ -269,8 +268,8 @@ class _AboutAppPageState extends State<AboutAppPage>
           ),
           _buildDetailItem(
             icon: Icons.copyright_rounded,
-            title: 'Copyright',
-            value: '© 2024 Smart School. All rights reserved.',
+            title: 'حقوق النشر',
+            value: '© 2024 المدرسة الذكية. جميع الحقوق محفوظة.',
             color: isDark ? AppColors.darkAccentPurple : AppColors.secondary,
             theme: theme,
             isDark: isDark,
@@ -370,7 +369,7 @@ class _AboutAppPageState extends State<AboutAppPage>
             vertical: ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 28, desktop: 32),
           ),
           child: Text(
-            'Key Features',
+            'المميزات الرئيسية',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -394,32 +393,32 @@ class _AboutAppPageState extends State<AboutAppPage>
             children: [
               _buildFeatureItem(
                 icon: Icons.assignment,
-                title: 'Assignment Management',
-                description: 'Create, assign, and track student assignments easily',
+                title: 'إدارة الواجبات',
+                description: 'إنشاء وتوزيع ومتابعة واجبات الطلاب بسهولة',
                 color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
                 theme: theme,
                 isDark: isDark,
               ),
               _buildFeatureItem(
                 icon: Icons.people,
-                title: 'Student Management',
-                description: 'Manage student profiles, attendance, and progress',
+                title: 'إدارة الطلاب',
+                description: 'إدارة ملفات الطلاب والحضور والتقدم',
                 color: isDark ? AppColors.darkSuccess : AppColors.success,
                 theme: theme,
                 isDark: isDark,
               ),
               _buildFeatureItem(
                 icon: Icons.notifications,
-                title: 'Smart Notifications',
-                description: 'Stay updated with real-time notifications and alerts',
+                title: 'الإشعارات الذكية',
+                description: 'البقاء محدثاً بالإشعارات والتنبيهات في الوقت الفعلي',
                 color: isDark ? AppColors.darkWarning : AppColors.warning,
                 theme: theme,
                 isDark: isDark,
               ),
               _buildFeatureItem(
                 icon: Icons.analytics,
-                title: 'Analytics & Reports',
-                description: 'Get insights into student performance and class statistics',
+                title: 'التحليلات والتقارير',
+                description: 'الحصول على رؤى حول أداء الطلاب وإحصائيات الفصل',
                 color: isDark ? AppColors.darkAccentPurple : AppColors.secondary,
                 theme: theme,
                 isDark: isDark,
@@ -523,14 +522,14 @@ class _AboutAppPageState extends State<AboutAppPage>
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
           Text(
-            'Get in Touch',
+            'تواصل معنا',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
           Text(
-            'We\'d love to hear from you. Contact us for support, feedback, or any questions.',
+            'نود أن نسمع منك. تواصل معنا للحصول على الدعم أو الملاحظات أو أي أسئلة.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.textTheme.bodySmall?.color,
@@ -542,10 +541,10 @@ class _AboutAppPageState extends State<AboutAppPage>
               Expanded(
                 child: _buildContactButton(
                   icon: Icons.support_agent,
-                  title: 'Support',
+                  title: 'الدعم',
                   color: isDark ? AppColors.darkAccentBlue : AppColors.primary,
                   onTap: () {
-                    // TODO: Open support
+                    // TODO: فتح الدعم
                   },
                 ),
               ),
@@ -553,10 +552,10 @@ class _AboutAppPageState extends State<AboutAppPage>
               Expanded(
                 child: _buildContactButton(
                   icon: Icons.feedback,
-                  title: 'Feedback',
+                  title: 'الملاحظات',
                   color: isDark ? AppColors.darkSuccess : AppColors.success,
                   onTap: () {
-                    // TODO: Open feedback
+                    // TODO: فتح الملاحظات
                   },
                 ),
               ),
@@ -565,10 +564,10 @@ class _AboutAppPageState extends State<AboutAppPage>
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
           _buildContactButton(
             icon: Icons.bug_report,
-            title: 'Report Bug',
+            title: 'الإبلاغ عن خطأ',
             color: isDark ? AppColors.darkDestructive : AppColors.error,
             onTap: () {
-              // TODO: Open bug report
+              // TODO: فتح الإبلاغ عن خطأ
             },
           ),
         ],

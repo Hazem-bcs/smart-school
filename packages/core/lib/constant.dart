@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 class Constants {
-  static String baseUrl = 'https://03a4dfe57407.ngrok-free.app'; // Default fallback URL
+  static String baseUrl = 'https://ade9535ec67d.ngrok-free.app'; // Default fallback URL
   
   // Initialize constants - call this in main before running the app
   static Future<void> init() async {
@@ -14,6 +14,7 @@ class Constants {
     try {
       final dio = Dio();
       final response = await dio.get('https://raw.githubusercontent.com/Hazem-bcs/smart-school/main/config.json');
+      print('Response: ${response.data}');
       if (response.statusCode == 200) {
         // Handle both string and Map responses
         Map<String, dynamic> data;

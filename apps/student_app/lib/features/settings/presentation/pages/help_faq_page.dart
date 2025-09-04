@@ -15,24 +15,24 @@ class _HelpFaqPageState extends State<HelpFaqPage>
     with TickerProviderStateMixin {
   final List<FAQItem> _faqItems = [
     FAQItem(
-      question: 'How do I create a new assignment?',
-      answer: 'To create a new assignment, go to the Assignments tab and tap the "+" button. Fill in the required details and submit.',
+      question: 'كيف أقوم بإنشاء واجب جديد؟',
+      answer: 'لإنشاء واجب جديد، اذهب إلى تبويب الواجبات واضغط على زر "+". املأ التفاصيل المطلوبة وأرسل.',
     ),
     FAQItem(
-      question: 'How can I track student attendance?',
-      answer: 'You can track attendance by going to your class dashboard and using the attendance feature to mark present/absent students.',
+      question: 'كيف يمكنني متابعة حضور الطلاب؟',
+      answer: 'يمكنك متابعة الحضور بالذهاب إلى لوحة تحكم الفصل واستخدام ميزة الحضور لتحديد الطلاب الحاضرين/الغائبين.',
     ),
     FAQItem(
-      question: 'How do I change my profile information?',
-      answer: 'Go to Settings > Profile to update your personal information, profile picture, and contact details.',
+      question: 'كيف أقوم بتغيير معلومات ملفي الشخصي؟',
+      answer: 'اذهب إلى الإعدادات > الملف الشخصي لتحديث معلوماتك الشخصية وصورة الملف الشخصي وتفاصيل الاتصال.',
     ),
     FAQItem(
-      question: 'How can I communicate with students?',
-      answer: 'Use the messaging feature in the Students tab to send announcements, reminders, or individual messages.',
+      question: 'كيف يمكنني التواصل مع الطلاب؟',
+      answer: 'استخدم ميزة الرسائل في تبويب الطلاب لإرسال إعلانات وتذكيرات أو رسائل فردية.',
     ),
     FAQItem(
-      question: 'How do I schedule online classes?',
-      answer: 'Use the Quick Actions section on the home page to schedule Zoom meetings or other online sessions.',
+      question: 'كيف أقوم بجدولة الفصول الدراسية عبر الإنترنت؟',
+      answer: 'استخدم قسم الإجراءات السريعة في الصفحة الرئيسية لجدولة اجتماعات Zoom أو جلسات أخرى عبر الإنترنت.',
     ),
   ];
 
@@ -127,11 +127,11 @@ class _HelpFaqPageState extends State<HelpFaqPage>
 
   PreferredSizeWidget _buildAppBar(ThemeData theme) {
     return AppBarWidget(
-      title: 'Help & FAQ',
+      title: 'المساعدة والأسئلة الشائعة',
       leadingIcon: Icons.arrow_back_ios,
       onLeadingPressed: () => Navigator.pop(context),
       automaticallyImplyLeading: false,
-      gradientType: GradientType.warning,
+      gradientType: GradientType.primary,
     );
   }
 
@@ -185,7 +185,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Need Help?',
+                    'هل تحتاج للمساعدة؟',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 20, tablet: 22, desktop: 24),
                       fontWeight: FontWeight.w600,
@@ -194,7 +194,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 4, tablet: 6, desktop: 8)),
                   Text(
-                    'Find answers to common questions and get support',
+                    'اعثر على إجابات للأسئلة الشائعة واحصل على الدعم',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
                       color: AppColors.white.withOpacity(0.9),
@@ -234,7 +234,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
           SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20)),
           Expanded(
             child: Text(
-              'Search for help...',
+              'البحث عن المساعدة...',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.textTheme.bodySmall?.color,
               ),
@@ -255,7 +255,7 @@ class _HelpFaqPageState extends State<HelpFaqPage>
             vertical: ResponsiveHelper.getSpacing(context, mobile: 24, tablet: 28, desktop: 32),
           ),
           child: Text(
-            'Frequently Asked Questions',
+            'الأسئلة الشائعة',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -367,14 +367,14 @@ class _HelpFaqPageState extends State<HelpFaqPage>
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
           Text(
-            'Still Need Help?',
+            'هل ما زلت تحتاج للمساعدة؟',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
           Text(
-            'Contact our support team for personalized assistance',
+            'تواصل مع فريق الدعم للحصول على مساعدة شخصية',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.textTheme.bodySmall?.color,
@@ -386,10 +386,10 @@ class _HelpFaqPageState extends State<HelpFaqPage>
               Expanded(
                 child: _buildContactButton(
                   icon: Icons.email,
-                  title: 'Email',
+                  title: 'البريد الإلكتروني',
                   color: isDark ? AppColors.darkAccentBlue : AppColors.info,
                   onTap: () {
-                    // TODO: Open email
+                    // TODO: فتح البريد الإلكتروني
                   },
                 ),
               ),
@@ -397,10 +397,10 @@ class _HelpFaqPageState extends State<HelpFaqPage>
               Expanded(
                 child: _buildContactButton(
                   icon: Icons.chat,
-                  title: 'Live Chat',
+                  title: 'الدردشة المباشرة',
                   color: isDark ? AppColors.darkSuccess : AppColors.success,
                   onTap: () {
-                    // TODO: Open live chat
+                    // TODO: فتح الدردشة المباشرة
                   },
                 ),
               ),

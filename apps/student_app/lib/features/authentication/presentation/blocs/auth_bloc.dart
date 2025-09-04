@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:auth/domain/usecases/cheakauthstatus_usecase.dart';
 import 'package:auth/domain/usecases/login_usecase.dart';
 import 'package:auth/domain/usecases/logout_usecase.dart';
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 
@@ -53,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
           (failure) {
         // في حالة الفشل، نصدر حالة الفشل مع رسالة الخطأ
-            print(failure);
+            // print(failure);
         emit(LoginFailure(message: failure.message));
       },
           (success) {

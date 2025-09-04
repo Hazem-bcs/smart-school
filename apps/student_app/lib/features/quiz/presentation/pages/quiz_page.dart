@@ -8,7 +8,6 @@ import 'package:core/widgets/index.dart';
 import '../../../../widgets/modern_design/modern_effects.dart' as modern_effects;
 import '../../../../widgets/app_bar_widget.dart';
 import '../blocs/home_work_bloc/homework_bloc.dart';
-import 'one_quiz_page.dart';
 
 class HomeworkPage extends StatefulWidget {
   const HomeworkPage({super.key});
@@ -489,14 +488,7 @@ class _HomeworkPageState extends State<HomeworkPage> with TickerProviderStateMix
                             onPressed: () {
                               final int? homeworkId = int.tryParse(homework.id);
                               if (homeworkId != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OneQuizPage(
-                                      questionId: homeworkId,
-                                    ),
-                                  ),
-                                );
+                                context.goToQuestionsWithInt(homeworkId);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
