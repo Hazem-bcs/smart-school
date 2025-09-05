@@ -95,7 +95,7 @@ class ActionButtons extends StatelessWidget {
                 ),
               )
             : Text(
-                'Save Changes',
+                'حفظ التغييرات',
                 style: TextStyle(
                   fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
                   color: isDark ? Colors.white : AppColors.primary,
@@ -148,7 +148,7 @@ class ActionButtons extends StatelessWidget {
           ),
         ),
         child: Text(
-          'Cancel',
+          'إلغاء',
           style: TextStyle(
             fontSize: ResponsiveHelper.getFontSize(context, mobile: 14, tablet: 16, desktop: 18),
             color: isDark ? Colors.white : AppColors.primary,

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:teacher_app/features/assignment/domain/entities/assignment.dart';
+import '../../domain/entities/assignment_entity.dart';
 import '../../domain/entities/class_entity.dart';
 import '../../domain/entities/notification_entity.dart';
 
@@ -16,7 +16,7 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
   final List<ClassEntity> classes;
-  final List<Assignment> assignments;
+  final List<AssignmentEntity> assignments;
   final List<NotificationEntity> notifications;
 
   const HomeLoaded({

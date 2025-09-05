@@ -64,50 +64,50 @@ class EditProfileForm extends StatelessWidget {
               ),
               CustomTextField(
                 controller: nameController,
-                labelText: 'Full Name',
+                labelText: 'الاسم الكامل',
                 isDark: isDark,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Name is required';
+                    return 'الاسم مطلوب';
                   }
                   return null;
                 },
               ),
               CustomTextField(
                 controller: emailController,
-                labelText: 'Email Address',
+                labelText: 'البريد الإلكتروني',
                 isDark: isDark,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Email is required';
+                    return 'البريد الإلكتروني مطلوب';
                   }
                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Please enter a valid email';
+                    return 'يرجى إدخال بريد إلكتروني صالح';
                   }
                   return null;
                 },
               ),
               CustomTextField(
                 controller: phoneController,
-                labelText: 'Phone Number',
+                labelText: 'رقم الجوال',
                 isDark: isDark,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Phone number is required';
+                    return 'رقم الجوال مطلوب';
                   }
                   return null;
                 },
               ),
               CustomTextField(
                 controller: bioController,
-                labelText: 'Bio',
+                labelText: 'نبذة تعريفية',
                 isDark: isDark,
                 maxLines: 4,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Bio is required';
+                    return 'النبذة مطلوبة';
                   }
                   return null;
                 },

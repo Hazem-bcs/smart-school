@@ -1,4 +1,4 @@
-import 'package:teacher_app/features/profile/data/models/profile_model.dart';
+// Domain entities must not depend on data models.
 
 class Profile {
   final String id;
@@ -19,17 +19,7 @@ class Profile {
     required this.professionalInfo,
   });
 
-    ProfileModel toModel() {
-    return ProfileModel(
-      id: id,
-      name: name,
-      bio: bio,
-      avatarUrl: avatarUrl,
-      contactInfoModel: contactInfo.toModel(),
-      socialMediaModel: socialMedia.map((sm) => sm.toModel()).toList(),
-      professionalInfoModel: professionalInfo.toModel(),
-    );
-  }
+  // Mapping to models is handled in the repository layer
 }
 
 class ContactInfo {
@@ -41,12 +31,7 @@ class ContactInfo {
     required this.phone,
   });
 
-  ContactInfoModel toModel() {
-    return ContactInfoModel(
-      email: email,
-      phone: phone,
-    );
-  }
+  // Mapping to models is handled in the repository layer
 }
 
 class SocialMedia {
@@ -60,13 +45,7 @@ class SocialMedia {
     required this.icon,
   });
 
-  SocialMediaModel toModel() {
-    return SocialMediaModel(
-      platform: platform,
-      url: url,
-      icon: icon,
-    );
-  }
+  // Mapping to models is handled in the repository layer
 }
 
 class ProfessionalInfo {
@@ -84,13 +63,5 @@ class ProfessionalInfo {
     required this.certifications,
   });
 
-  ProfessionalInfoModel toModel() {
-    return ProfessionalInfoModel(
-      subjectsTaught: subjectsTaught,
-      gradeLevels: gradeLevels,
-      department: department,
-      qualifications: qualifications,
-      certifications: certifications,
-    );
-  }
+  // Mapping to models is handled in the repository layer
 } 

@@ -51,7 +51,7 @@ class ScheduleMeetingErrorWidget extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Oops! Something went wrong',
+              'عذراً! حدث خطأ غير متوقع',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -74,7 +74,7 @@ class ScheduleMeetingErrorWidget extends StatelessWidget {
                 context.read<ZoomMeetingBloc>().add(LoadInitialData());
               },
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Try Again'),
+              label: const Text('أعد المحاولة'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: isDark ? const Color(0xFF6366F1) : const Color(0xFF5A67D8),
                 foregroundColor: Colors.white,

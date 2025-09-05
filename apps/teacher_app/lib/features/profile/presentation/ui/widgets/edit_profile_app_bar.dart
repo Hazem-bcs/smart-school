@@ -37,7 +37,7 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
-        'Edit Profile',
+        'تعديل الملف الشخصي',
         style: TextStyle(
           color: isDark ? AppColors.darkAccentBlue : theme.textTheme.headlineSmall?.color,
           fontWeight: FontWeight.bold,

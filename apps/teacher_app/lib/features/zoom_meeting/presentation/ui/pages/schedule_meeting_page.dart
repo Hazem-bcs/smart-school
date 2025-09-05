@@ -108,29 +108,24 @@ class _ScheduleMeetingPageState extends State<ScheduleMeetingPage>
 
   PreferredSizeWidget _buildAppBar(ThemeData theme, bool isDark) {
     return AppBar(
-      backgroundColor: isDark ? const Color(0xFF1A1F35) : Colors.white,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       elevation: 0,
-      shadowColor: Colors.transparent,
-      leading: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2A2F45) : const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(12),
-        ),
+      toolbarHeight: 48,
+      leading: Padding(
+        padding: const EdgeInsets.all(4.0),
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new,
-            color: isDark ? Colors.white : const Color(0xFF475569),
-            size: 20,
+            color: theme.iconTheme.color,
+            size: 18,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       title: Text(
-        'Schedule New Meeting',
+        'جدولة اجتماع جديد',
         style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.w700,
-          color: isDark ? Colors.white : const Color(0xFF1E293B),
         ),
       ),
       centerTitle: true,

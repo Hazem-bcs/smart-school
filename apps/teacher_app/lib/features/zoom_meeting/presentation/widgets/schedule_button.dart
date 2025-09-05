@@ -22,7 +22,7 @@ class ScheduleButton extends StatelessWidget {
         ],
       ),
       child: PrimaryCallToAction(
-        label: 'Schedule Meeting',
+        label: 'جدولة الاجتماع',
         icon: Icons.video_call_rounded,
       ),
     );

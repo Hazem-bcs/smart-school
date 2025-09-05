@@ -100,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage>
         onPressed: () => Navigator.of(context).pop(),
       ),
       title: Text(
-        'Profile',
+        'الملف الشخصي',
       ),
       centerTitle: true,
     );
@@ -115,9 +115,7 @@ class _ProfilePageState extends State<ProfilePage>
             valueColor: AlwaysStoppedAnimation<Color>(ProfileTheme.primary),
           ),
           SizedBox(height: 16),
-          Text(
-            'Loading profile...',
-          ),
+          Text('جاري تحميل الملف الشخصي...'),
         ],
       ),
     );
@@ -138,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage>
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            // Profile Header
+            // رأس الملف الشخصي
             ProfileHeader(
               profile: profile,
               onEditProfile: () {
@@ -146,19 +144,19 @@ class _ProfilePageState extends State<ProfilePage>
               },
             ),
             
-            // Contact Information Card
+            // بطاقة معلومات التواصل
             InfoCard(
-              title: 'Contact Information',
+              title: 'معلومات التواصل',
               items: [
                 InfoCardItem(
                   icon: 'email',
-                  primaryText: 'Email',
+                  primaryText: 'البريد الإلكتروني',
                   secondaryText: profile.contactInfo.email,
                   onTap: () => print(profile.contactInfo.email),
                 ),
                 InfoCardItem(
                   icon: 'phone',
-                  primaryText: 'Phone',
+                  primaryText: 'رقم الجوال',
                   secondaryText: profile.contactInfo.phone,
                   onTap: () {
                   },
@@ -166,10 +164,10 @@ class _ProfilePageState extends State<ProfilePage>
               ],
             ),
             
-            // Social Media Card
+            // بطاقة وسائل التواصل الاجتماعي
             if (profile.socialMedia.isNotEmpty)
               InfoCard(
-                title: 'Social Media',
+                title: 'وسائل التواصل الاجتماعي',
                 items: profile.socialMedia.map((social) => InfoCardItem(
                   icon: social.icon,
                   primaryText: social.platform,

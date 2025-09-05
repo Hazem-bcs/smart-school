@@ -11,7 +11,7 @@ class ProfileViewBloc extends Bloc<ProfileViewEvent, ProfileViewState> {
       emit(ProfileViewLoading());
       final result = await getProfileUseCase();
       result.fold(
-        (failure) => emit(ProfileViewError(failure.toString())),
+        (failure) => emit(ProfileViewError(failure.message)),
         (profile) => emit(ProfileViewLoaded(profile)),
       );
     });

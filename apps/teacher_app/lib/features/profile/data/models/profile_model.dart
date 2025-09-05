@@ -1,5 +1,4 @@
-
-import 'package:teacher_app/features/profile/domain/entities/profile.dart';
+// Models should not depend on Entity classes – keep this file data-layer only
 
 class ProfileModel {
   final String id;
@@ -20,17 +19,7 @@ class ProfileModel {
     required this.professionalInfoModel,
   });
 
-  Profile toEntity() {
-    return Profile(
-      id: id,
-      name: name,
-      bio: bio,
-      avatarUrl: avatarUrl,
-      contactInfo: contactInfoModel.toEntity(),
-      socialMedia: socialMediaModel.map((e) => e.toEntity()).toList(),
-      professionalInfo: professionalInfoModel.toEntity(),
-    );
-  }
+  // Mapping to entities is handled in the repository layer
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
@@ -82,12 +71,7 @@ class ContactInfoModel {
     };
   }
 
-  ContactInfo toEntity() {
-    return ContactInfo(
-      email: email,
-      phone: phone,
-    );
-  }
+  // Mapping to entities is handled in the repository layer
 }
 
 class SocialMediaModel {
@@ -117,13 +101,7 @@ class SocialMediaModel {
     };
   }
 
-  SocialMedia toEntity() {
-    return SocialMedia(
-      platform: platform,
-      url: url,
-      icon: icon,
-    );
-  }
+  // Mapping to entities is handled in the repository layer
 }
 
 class ProfessionalInfoModel {
@@ -167,15 +145,5 @@ class ProfessionalInfoModel {
     };
   }
 
-  ProfessionalInfo toEntity() {
-    return ProfessionalInfo(
-      subjectsTaught: subjectsTaught,
-      gradeLevels: gradeLevels,
-      department: department,
-      qualifications: qualifications,
-      certifications: certifications,
-    );
-  }
+  // Mapping to entities is handled in the repository layer
 }
-
-

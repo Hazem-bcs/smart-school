@@ -98,11 +98,11 @@ class _EditProfilePageState extends State<EditProfilePage>
               _isLoading = false;
             });
           } else if (state is ProfileEditSuccess) {
-            _showSnackBar('Profile updated successfully!');
+            _showSnackBar('تم تحديث الملف الشخصي بنجاح');
             context.read<ProfileViewBloc>().add(view_events.UpdateProfileData(state.updatedProfile));
             Navigator.of(context).pop();
           } else if (state is ProfileEditError) {
-            _showSnackBar('Error: ${state.message}');
+            _showSnackBar('خطأ: ${state.message}');
             setState(() {
               _isLoading = false;
             });
@@ -258,7 +258,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 16),
-          Text('Loading profile...'),
+          Text('جاري تحميل الملف الشخصي...'),
         ],
       ),
     );
@@ -275,7 +275,7 @@ class _EditProfilePageState extends State<EditProfilePage>
             color: Colors.red,
           ),
           const SizedBox(height: 16),
-          Text('Error loading profile'),
+          Text('حدث خطأ أثناء تحميل الملف الشخصي'),
           const SizedBox(height: 8),
           Text(message),
           const SizedBox(height: 24),
@@ -283,7 +283,7 @@ class _EditProfilePageState extends State<EditProfilePage>
             onPressed: () {
               context.read<ProfileEditBloc>().add(LoadProfile());
             },
-            child: const Text('Retry'),
+            child: const Text('إعادة المحاولة'),
           ),
         ],
       ),

@@ -5,7 +5,6 @@ import '../../domain/entities/meeting_option_entity.dart';
 import '../../domain/repositories/zoom_meeting_repository.dart';
 import '../data_sources/zoom_meeting_remote_data_source.dart';
 import '../models/zoom_meeting_model.dart';
-import '../models/meeting_option_model.dart';
 
 class ZoomMeetingRepositoryImpl implements ZoomMeetingRepository {
   final ZoomMeetingRemoteDataSource remoteDataSource;
@@ -38,5 +37,19 @@ class ZoomMeetingRepositoryImpl implements ZoomMeetingRepository {
       (failure) => Left(failure),
       (optionModels) => Right(optionModels.map((model) => model.toEntity()).toList()),
     );
+  }
+
+  @override
+  Future<Either<Failure, List<ZoomMeetingEntity>>> getScheduledMeetings() async {
+    final result = await remoteDataSource.getScheduledMeetings();
+    return result.fold(
+      (failure) => Left(failure),
+      (models) => Right(models.map((m) => m.toEntity()).toList()),
+    );
+  }
+
+  @override
+  Future<Either<Failure, String>> getJoinLink(String meetingId) async {
+    return remoteDataSource.getJoinLink(meetingId);
   }
 } 

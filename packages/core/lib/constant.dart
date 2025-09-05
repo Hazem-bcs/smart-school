@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 class Constants {
-  static String baseUrl = 'https://ade9535ec67d.ngrok-free.app'; // Default fallback URL
+  static String baseUrl = 'https://316038498bdf.ngrok-free.appp'; // Default fallback URL
   
   // Initialize constants - call this in main before running the app
   static Future<void> init() async {

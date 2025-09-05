@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import '../../domain/entities/class_entity.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/entities/notification_entity.dart';
@@ -13,42 +15,32 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<ClassEntity>> getClasses() async {
-    try {
-      final classModels = await remoteDataSource.getClasses();
-      return classModels.map((model) => _mapClassModelToEntity(model)).toList();
-    } catch (e) {
-      throw Exception('Failed to get classes: $e');
-    }
+  Future<Either<Failure, List<ClassEntity>>> getClasses() async {
+    final result = await remoteDataSource.getClasses();
+    return result.map(
+      (models) => models.map(_mapClassModelToEntity).toList(),
+    );
   }
 
   @override
-  Future<List<AssignmentEntity>> getAssignments() async {
-    try {
-      final assignmentModels = await remoteDataSource.getAssignments();
-      return assignmentModels.map((model) => _mapAssignmentModelToEntity(model)).toList();
-    } catch (e) {
-      throw Exception('Failed to get assignments: $e');
-    }
+  Future<Either<Failure, List<AssignmentEntity>>> getAssignments() async {
+    final result = await remoteDataSource.getAssignments();
+    return result.map(
+      (models) => models.map(_mapAssignmentModelToEntity).toList(),
+    );
   }
 
   @override
-  Future<List<NotificationEntity>> getNotifications() async {
-    try {
-      final notificationModels = await remoteDataSource.getNotifications();
-      return notificationModels.map((model) => _mapNotificationModelToEntity(model)).toList();
-    } catch (e) {
-      throw Exception('Failed to get notifications: $e');
-    }
+  Future<Either<Failure, List<NotificationEntity>>> getNotifications() async {
+    final result = await remoteDataSource.getNotifications();
+    return result.map(
+      (models) => models.map(_mapNotificationModelToEntity).toList(),
+    );
   }
 
   @override
-  Future<void> markNotificationAsRead(String notificationId) async {
-    try {
-      await remoteDataSource.markNotificationAsRead(notificationId);
-    } catch (e) {
-      throw Exception('Failed to mark notification as read: $e');
-    }
+  Future<Either<Failure, Unit>> markNotificationAsRead(String notificationId) async {
+    return remoteDataSource.markNotificationAsRead(notificationId);
   }
 
   // Mapping methods

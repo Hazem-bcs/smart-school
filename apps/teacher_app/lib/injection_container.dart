@@ -70,10 +70,13 @@ import 'features/assignment_submission/domain/usecases/get_student_submissions_u
 import 'features/zoom_meeting/domain/usecases/schedule_meeting_usecase.dart';
 import 'features/zoom_meeting/domain/usecases/get_available_classes_usecase.dart';
 import 'features/zoom_meeting/domain/usecases/get_meeting_options_usecase.dart';
+import 'features/zoom_meeting/domain/usecases/get_scheduled_meetings_usecase.dart';
+import 'features/zoom_meeting/domain/usecases/get_join_link_usecase.dart';
 import 'features/zoom_meeting/data/repositories/zoom_meeting_repository_impl.dart';
 import 'features/zoom_meeting/data/data_sources/zoom_meeting_remote_data_source.dart';
 import 'features/zoom_meeting/domain/repositories/zoom_meeting_repository.dart';
 import 'features/zoom_meeting/presentation/blocs/zoom_meeting_bloc.dart';
+import 'features/zoom_meeting/presentation/blocs/meetings_list_bloc.dart';
 
 // Schedule feature imports
 import 'features/schedule/domain/usecases/get_schedule_for_date_usecase.dart';
@@ -156,6 +159,9 @@ Future<void> setupDependencies() async {
     () => GetHomeClassesUseCase(getIt<HomeRepository>()),
   );
   getIt.registerLazySingleton(
+    () => GetAssignmentsUseCase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton(
     () => GetNotificationsUseCase(getIt<HomeRepository>()),
   );
 
@@ -175,7 +181,7 @@ Future<void> setupDependencies() async {
 
 
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
-    () => ProfileRemoteDataSourceImpl(),
+    () => ProfileRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   // Repository
@@ -358,6 +364,12 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton(
     () => GetMeetingOptionsUseCase(getIt<ZoomMeetingRepository>()),
   );
+  getIt.registerLazySingleton(
+    () => GetScheduledMeetingsUseCase(getIt<ZoomMeetingRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetJoinLinkUseCase(getIt<ZoomMeetingRepository>()),
+  );
 
   // BLoC
   getIt.registerFactory(
@@ -365,6 +377,12 @@ Future<void> setupDependencies() async {
       scheduleMeetingUseCase: getIt<ScheduleMeetingUseCase>(),
       getAvailableClassesUseCase: getIt<GetAvailableClassesUseCase>(),
       getMeetingOptionsUseCase: getIt<GetMeetingOptionsUseCase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => MeetingsListBloc(
+      getScheduledMeetingsUseCase: getIt<GetScheduledMeetingsUseCase>(),
+      getJoinLinkUseCase: getIt<GetJoinLinkUseCase>(),
     ),
   );
 

@@ -125,11 +125,11 @@ class ZoomMeetingBloc extends Bloc<ZoomMeetingEvent, ZoomMeetingState> {
     if (state is ZoomMeetingDataLoaded) {
       final currentState = state as ZoomMeetingDataLoaded;
       if (currentState.topic.trim().isEmpty) {
-        emit(ZoomMeetingError('Please enter a meeting topic'));
+        emit(ZoomMeetingError('الرجاء إدخال عنوان الاجتماع'));
         return;
       }
       if (currentState.selectedClasses.isEmpty) {
-        emit(ZoomMeetingError('Please select at least one class'));
+        emit(ZoomMeetingError('الرجاء اختيار فصل واحد على الأقل'));
         return;
       }
       emit(ZoomMeetingScheduling());

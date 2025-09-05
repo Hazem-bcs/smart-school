@@ -8,6 +8,8 @@ import 'package:teacher_app/features/new_assignment/presentation/ui/pages/new_as
 import 'package:teacher_app/features/profile/presentation/blocs/profile_edit_bloc.dart';
 import 'package:teacher_app/features/profile/presentation/blocs/profile_view_bloc.dart';
 import 'package:teacher_app/features/settings/presentation/pages/settings_page.dart';
+import 'package:teacher_app/features/zoom_meeting/presentation/blocs/meetings_list_bloc.dart';
+import 'package:teacher_app/features/zoom_meeting/presentation/ui/pages/meetings_list_page.dart';
 import '../../../features/auth/presentation/ui/pages/splash_page.dart';
 import '../../../features/auth/presentation/ui/pages/login_page.dart';
 import '../../../features/home/presentation/ui/pages/home_page.dart';
@@ -58,6 +60,7 @@ class AppRoutes {
   static const String assignments = '/assignments';
   static const String schedule = '/schedule';
   static const String assignmentSubmission = '/assignment-submission';
+  static const String scheduledMeetings = '/scheduled-meetings';
   
     // Route generator with BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -197,7 +200,15 @@ class AppRoutes {
           ),
           settings: settings,
         );
-        
+      
+      case scheduledMeetings:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<MeetingsListBloc>(),
+            child: const MeetingsListPage(),
+          ),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

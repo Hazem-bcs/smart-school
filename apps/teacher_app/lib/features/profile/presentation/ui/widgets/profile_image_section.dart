@@ -92,7 +92,7 @@ class ProfileImageSection extends StatelessWidget {
                   ),
                   SizedBox(width: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
                   Text(
-                    'Change Photo',
+                    'تغيير الصورة',
                     style: TextStyle(
                       fontSize: ResponsiveHelper.getFontSize(context, mobile: 16, tablet: 18, desktop: 20),
                       fontWeight: FontWeight.w600,

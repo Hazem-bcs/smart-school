@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import '../entities/assignment_entity.dart';
 import '../repositories/home_repository.dart';
 
@@ -6,7 +8,5 @@ class GetAssignmentsUseCase {
 
   GetAssignmentsUseCase(this.repository);
 
-  Future<List<AssignmentEntity>> call() async {
-    return await repository.getAssignments();
-  }
+  Future<Either<Failure, List<AssignmentEntity>>> call() async => repository.getAssignments();
 } 

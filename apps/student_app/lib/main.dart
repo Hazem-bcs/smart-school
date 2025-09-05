@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:core/blocs/theme/theme_bloc.dart';
 import 'package:core/blocs/theme/theme_event.dart';
 import 'package:core/blocs/theme/theme_state.dart';
+import 'package:core/constant.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

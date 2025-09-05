@@ -46,7 +46,7 @@ class DateTimeSection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Date & Time',
+                'التاريخ والوقت',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -60,7 +60,7 @@ class DateTimeSection extends StatelessWidget {
             children: [
               Expanded(
                 child: DateTimePickerField(
-                  label: 'Date',
+                  label: 'التاريخ',
                   icon: Icons.calendar_today_rounded,
                   value: selectedDate,
                   isDatePicker: true,
@@ -69,7 +69,7 @@ class DateTimeSection extends StatelessWidget {
               const SizedBox(width: 16),
               Expanded(
                 child: DateTimePickerField(
-                  label: 'Time',
+                  label: 'الوقت',
                   icon: Icons.access_time_rounded,
                   value: selectedTime,
                   isDatePicker: false,

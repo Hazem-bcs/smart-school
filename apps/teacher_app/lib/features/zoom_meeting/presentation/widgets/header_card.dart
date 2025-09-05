@@ -43,7 +43,7 @@ class ScheduleMeetingHeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Create New Meeting',
+                  'إنشاء اجتماع جديد',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -52,7 +52,7 @@ class ScheduleMeetingHeaderCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Schedule a Zoom meeting for your classes',
+                  'قم بجدولة اجتماع زوم لفصولك الدراسية',
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.white70 : const Color(0xFF64748B),

@@ -47,7 +47,7 @@ class OptionsSection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Meeting Options',
+                'خيارات الاجتماع',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

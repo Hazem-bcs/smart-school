@@ -46,7 +46,7 @@ class ClassesSection extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Invite Classes',
+                'دعوة الفصول',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

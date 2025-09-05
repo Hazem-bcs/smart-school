@@ -25,7 +25,7 @@ class ProfileHeader extends StatelessWidget {
           
           const SizedBox(height: 16),
           
-          // Name
+          // الاسم
           Text(
             profile.name,
             textAlign: TextAlign.center,
@@ -33,14 +33,14 @@ class ProfileHeader extends StatelessWidget {
           
           const SizedBox(height: 8),
           
-          // Title
+          // السيرة الذاتية
           Text(
             profile.bio,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           
-          // Edit Profile Button
+          // زر تعديل الملف
           _buildEditButton(context),
         ],
       ),
@@ -128,7 +128,7 @@ class ProfileHeader extends StatelessWidget {
           color: const Color(0xFF00B894),
         ),
       ),
-      label: const Text('Edit Profile'),
+      label: const Text('تعديل الملف الشخصي'),
       style: ProfileTheme.primaryButtonStyle(context),
     );
   }

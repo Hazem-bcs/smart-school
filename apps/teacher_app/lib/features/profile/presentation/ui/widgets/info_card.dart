@@ -25,7 +25,7 @@ class InfoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
+            // العنوان
             Text(
               title,
               style: ProfileTheme.title(context),

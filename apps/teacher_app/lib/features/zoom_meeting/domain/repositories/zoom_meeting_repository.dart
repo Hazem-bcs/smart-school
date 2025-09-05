@@ -7,4 +7,6 @@ abstract class ZoomMeetingRepository {
   Future<Either<Failure, ZoomMeetingEntity>> scheduleMeeting(ZoomMeetingEntity meeting);
   Future<Either<Failure, List<String>>> getAvailableClasses();
   Future<Either<Failure, List<MeetingOptionEntity>>> getMeetingOptions();
+  Future<Either<Failure, List<ZoomMeetingEntity>>> getScheduledMeetings();
+  Future<Either<Failure, String>> getJoinLink(String meetingId);
 } 

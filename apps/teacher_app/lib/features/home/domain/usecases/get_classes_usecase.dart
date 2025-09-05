@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import '../entities/class_entity.dart';
 import '../repositories/home_repository.dart';
 
@@ -6,7 +8,5 @@ class GetHomeClassesUseCase {
 
   GetHomeClassesUseCase(this.repository);
 
-  Future<List<ClassEntity>> call() async {
-    return await repository.getClasses();
-  }
+  Future<Either<Failure, List<ClassEntity>>> call() async => repository.getClasses();
 } 

@@ -48,7 +48,7 @@ class TopicCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Meeting Topic',
+                'موضوع الاجتماع',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -68,7 +68,7 @@ class TopicCard extends StatelessWidget {
               fontSize: 16,
             ),
             decoration: InputDecoration(
-              hintText: 'e.g., Chapter 5 Review Session',
+              hintText: 'مثال: مراجعة الفصل الخامس',
               hintStyle: TextStyle(
                 color: isDark ? Colors.white60 : const Color(0xFF94A3B8),
               ),
