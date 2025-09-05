@@ -15,7 +15,7 @@ class AssignmentsLoadingState extends StatelessWidget {
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
           Text(
-            'Loading assignments...',
+            'جاري تحميل الواجبات...',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: Colors.grey[600],
             ),

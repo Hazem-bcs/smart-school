@@ -15,20 +15,20 @@ class NewAssignmentAttachmentsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Attachments', icon: Icons.attach_file, iconColor: isDark ? AppColors.info : AppColors.info),
+        SectionTitle(title: 'المرفقات', icon: Icons.attach_file, iconColor: isDark ? AppColors.info : AppColors.info),
         DecoratedSectionContainer(
           isDark: isDark,
           child: Column(
             children: [
               ActionTile(
                 icon: Icons.cloud_download,
-                text: 'Add from Drive',
+                text: 'إضافة من Drive',
                 onTap: onAddFromDrive,
                 iconColor: isDark ? AppColors.info : AppColors.info,
               ),
               ActionTile(
                 icon: Icons.upload_file,
-                text: 'Upload File',
+                text: 'رفع ملف',
                 onTap: onUploadFile,
                 iconColor: isDark ? AppColors.success : AppColors.success,
               ),

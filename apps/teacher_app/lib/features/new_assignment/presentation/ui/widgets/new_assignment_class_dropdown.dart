@@ -17,7 +17,7 @@ class NewAssignmentClassDropdown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Target Classes/Students', icon: Icons.groups, iconColor: isDark ? AppColors.secondary : AppColors.secondary),
+        SectionTitle(title: 'الفصول/الطلاب المستهدفون', icon: Icons.groups, iconColor: isDark ? AppColors.secondary : AppColors.secondary),
         DecoratedSectionContainer(
           isDark: isDark,
           margin: EdgeInsets.only(
@@ -25,7 +25,7 @@ class NewAssignmentClassDropdown extends StatelessWidget {
           ),
           child: DropdownButtonFormField<String>(
             decoration: InputDecoration(
-              labelText: 'Select Classes/Students',
+              labelText: 'اختر الفصول/الطلاب',
               filled: true,
               fillColor: isDark ? Colors.transparent : Colors.grey[50],
               labelStyle: TextStyle(

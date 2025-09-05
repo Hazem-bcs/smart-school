@@ -19,7 +19,7 @@ class AssignmentsEmptyState extends StatelessWidget {
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
           ResponsiveText(
-            searchQuery.isNotEmpty ? 'No assignments found' : 'No assignments yet',
+            searchQuery.isNotEmpty ? 'لا توجد نتائج مطابقة' : 'لا توجد واجبات بعد',
             mobileSize: 18,
             tabletSize: 20,
             desktopSize: 22,
@@ -31,8 +31,8 @@ class AssignmentsEmptyState extends StatelessWidget {
           SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16)),
           ResponsiveText(
             searchQuery.isNotEmpty 
-                ? 'Try adjusting your search or filters'
-                : 'Create your first assignment to get started',
+                ? 'جرّب تعديل البحث أو عوامل التصفية'
+                : 'ابدأ بإنشاء أول واجب لك',
             mobileSize: 14,
             tabletSize: 16,
             desktopSize: 18,

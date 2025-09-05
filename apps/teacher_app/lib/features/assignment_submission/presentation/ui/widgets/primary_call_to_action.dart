@@ -32,7 +32,7 @@ class PrimaryCallToAction extends StatelessWidget {
                 )
               : Icon(isErrorState ? Icons.refresh : Icons.check_circle_outline),
           label: Text(
-            isErrorState ? 'إعادة المحاولة' : 'Mark as Graded',
+            isErrorState ? 'إعادة المحاولة' : 'وضع الواجب كمصحح',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

@@ -40,7 +40,7 @@ class AssignmentsSearchField extends StatelessWidget {
             child: TextField(
               controller: controller,
               decoration: const InputDecoration(
-                hintText: 'Search assignments',
+                hintText: 'ابحث في الواجبات',
                 border: InputBorder.none,
                 isDense: true,
               ),

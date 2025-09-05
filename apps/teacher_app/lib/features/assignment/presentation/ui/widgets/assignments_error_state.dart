@@ -44,7 +44,7 @@ class AssignmentsErrorState extends StatelessWidget {
                 ),
                 SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
                 Text(
-                  'Error loading assignments',
+                  'حدث خطأ أثناء تحميل الواجبات',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -73,7 +73,7 @@ class AssignmentsErrorState extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Retry'),
+                  label: const Text('إعادة المحاولة'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: Colors.white,
@@ -85,7 +85,7 @@ class AssignmentsErrorState extends StatelessWidget {
                 ),
                 SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24)),
                 Text(
-                  'Pull down to refresh',
+                  'اسحب للأسفل للتحديث',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[500],
                     fontStyle: FontStyle.italic,

@@ -34,7 +34,7 @@ class SecondaryActions extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Student ${state.currentStudentIndex + 1} of ${state.students.length}',
+            'الطالب ${state.currentStudentIndex + 1} من ${state.students.length}',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -52,7 +52,7 @@ class SecondaryActions extends StatelessWidget {
                     ? () => context.read<SubmissionBloc>().add(NavigateToPreviousStudent())
                     : null,
                 icon: Icon(Icons.navigate_before),
-                label: const Text('Previous'),
+                label: const Text('السابق'),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
                     color: state.hasPreviousStudent 
@@ -72,7 +72,7 @@ class SecondaryActions extends StatelessWidget {
                     ? () => context.read<SubmissionBloc>().add(NavigateToNextStudent())
                     : null,
                 icon: Icon(Icons.navigate_next),
-                label: const Text('Next'),
+                label: const Text('التالي'),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
                     color: state.hasNextStudent 

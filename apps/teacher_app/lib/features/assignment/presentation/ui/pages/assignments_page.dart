@@ -36,9 +36,9 @@ class _AssignmentsPageState extends State<AssignmentsPage>
 
   // Filter options
   final List<Map<String, dynamic>> _filterOptions = [
-    {'label': 'All', 'status': AssignmentStatus.all},
-    {'label': 'Ungraded', 'status': AssignmentStatus.ungraded},
-    {'label': 'Graded', 'status': AssignmentStatus.graded},
+    {'label': 'الكل', 'status': AssignmentStatus.all},
+    {'label': 'غير مصححة', 'status': AssignmentStatus.ungraded},
+    {'label': 'مصححة', 'status': AssignmentStatus.graded},
   ];
 
   @override
@@ -89,7 +89,7 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AssignmentsAppBar(
-        title: 'Assignments',
+        title: 'الواجبات',
         onAdd: () {
           context.goToNewAssignment();
         },

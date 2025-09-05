@@ -96,7 +96,7 @@ class _GradingFormState extends State<GradingForm> {
               children: [
                 Expanded(
                   child: Text(
-                    'Grade Assignment',
+                    'تصحيح الواجب',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -112,7 +112,7 @@ class _GradingFormState extends State<GradingForm> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'Grade: ${student.grade}/100',
+                      'الدرجة: ${student.grade}/100',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -172,7 +172,7 @@ class _GradingFormState extends State<GradingForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Current Grade: ${student.grade}/100',
+                      'الدرجة الحالية: ${student.grade}/100',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -182,7 +182,7 @@ class _GradingFormState extends State<GradingForm> {
                     if (student.feedback?.isNotEmpty == true) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Feedback: ${student.feedback}',
+                        'التعليق: ${student.feedback}',
                         style: TextStyle(
                           fontSize: 14,
                           color: isDark ? AppColors.darkSecondaryText : AppColors.gray600,
@@ -202,7 +202,7 @@ class _GradingFormState extends State<GradingForm> {
                     });
                   },
                   icon: const Icon(Icons.edit),
-                  label: const Text('Edit Grade'),
+                  label: const Text('تعديل الدرجة'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     side: BorderSide(
@@ -224,8 +224,8 @@ class _GradingFormState extends State<GradingForm> {
                 enabled: !student.isGraded || _isEditing || isErrorState,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Grade (0-100)',
-                  hintText: 'Enter grade...',
+                  labelText: 'الدرجة (0-100)',
+                  hintText: 'أدخل الدرجة...',
                   prefixIcon: Icon(
                     Icons.grade,
                     color: isDark ? AppColors.darkSecondaryText : AppColors.gray500,
@@ -263,11 +263,11 @@ class _GradingFormState extends State<GradingForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a grade';
+                    return 'يرجى إدخال الدرجة';
                   }
                   final grade = double.tryParse(value);
                   if (grade == null || grade < 0 || grade > 100) {
-                    return 'Grade must be between 0 and 100';
+                    return 'يجب أن تكون الدرجة بين 0 و 100';
                   }
                   return null;
                 },
@@ -281,8 +281,8 @@ class _GradingFormState extends State<GradingForm> {
                 maxLines: 4,
                 enabled: !student.isGraded || _isEditing || isErrorState,
                 decoration: InputDecoration(
-                  labelText: 'Comments',
-                  hintText: 'Add feedback or comments...',
+                  labelText: 'تعليقات',
+                  hintText: 'أضف ملاحظات أو تعليق...',
                   alignLabelWithHint: true,
                   filled: true,
                   fillColor: isDark ? AppColors.darkElevatedSurface : AppColors.gray50,
@@ -333,7 +333,7 @@ class _GradingFormState extends State<GradingForm> {
                           });
                         },
                         icon: const Icon(Icons.cancel),
-                        label: const Text('Cancel'),
+                        label: const Text('إلغاء'),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           side: BorderSide(
@@ -355,7 +355,7 @@ class _GradingFormState extends State<GradingForm> {
                           _commentsController.clear();
                         },
                         icon: const Icon(Icons.clear),
-                        label: const Text('Clear'),
+                        label: const Text('مسح'),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           side: BorderSide(
@@ -388,7 +388,7 @@ class _GradingFormState extends State<GradingForm> {
                         }
                       },
                       icon: Icon(_isEditing ? Icons.update : Icons.check),
-                      label: Text(_isEditing ? 'Update Grade' : 'Submit Grade'),
+                      label: Text(_isEditing ? 'تحديث الدرجة' : 'حفظ الدرجة'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDark ? AppColors.darkAccentBlue : AppColors.info,
                         foregroundColor: Colors.white,

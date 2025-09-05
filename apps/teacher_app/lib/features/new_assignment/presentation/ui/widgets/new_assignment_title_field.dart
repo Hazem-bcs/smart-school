@@ -10,8 +10,8 @@ class NewAssignmentTitleField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomTextFormField(
-      label: 'Title',
-      placeholder: 'Assignment Title',
+      label: 'العنوان',
+      placeholder: 'عنوان الواجب',
       controller: controller,
       validator: validator,
     );

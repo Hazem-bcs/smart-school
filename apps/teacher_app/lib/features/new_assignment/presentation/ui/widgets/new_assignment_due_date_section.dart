@@ -15,7 +15,7 @@ class NewAssignmentDueDateSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Due Date & Time', icon: Icons.schedule, iconColor: isDark ? AppColors.warning : AppColors.warning),
+        SectionTitle(title: 'تاريخ ووقت التسليم', icon: Icons.schedule, iconColor: isDark ? AppColors.warning : AppColors.warning),
         DecoratedSectionContainer(
           isDark: isDark,
           child: ActionTile(

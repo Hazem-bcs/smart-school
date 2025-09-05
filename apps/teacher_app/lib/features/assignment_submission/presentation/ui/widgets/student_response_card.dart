@@ -40,7 +40,7 @@ class StudentResponseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Student's Response", 
+              'إجابة الطالب', 
               style: TextStyle(
                 fontSize: 20, 
                 fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class StudentResponseCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Feedback:',
+                      'التعليق:',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

@@ -19,23 +19,23 @@ class NewAssignmentActionButtons extends StatelessWidget {
       child: ResponsiveLayout(
         mobile: Column(
           children: [
-            _buildActionButton(text: 'Save as Draft', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context),
+            _buildActionButton(text: 'حفظ كمسودة', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context),
             SizedBox(height: ResponsiveHelper.getSpacing(context)),
-            _buildActionButton(text: 'Publish', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context),
+            _buildActionButton(text: 'نشر', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context),
           ],
         ),
         tablet: Row(
           children: [
-            Expanded(child: _buildActionButton(text: 'Save as Draft', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context)),
+            Expanded(child: _buildActionButton(text: 'حفظ كمسودة', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context)),
-            Expanded(child: _buildActionButton(text: 'Publish', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context)),
+            Expanded(child: _buildActionButton(text: 'نشر', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context)),
           ],
         ),
         desktop: Row(
           children: [
-            Expanded(child: _buildActionButton(text: 'Save as Draft', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context)),
+            Expanded(child: _buildActionButton(text: 'حفظ كمسودة', onPressed: isLoading ? null : onSaveAsDraft, isDark: isDark, isPrimary: false, isLoading: isLoading, context: context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context)),
-            Expanded(child: _buildActionButton(text: 'Publish', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context)),
+            Expanded(child: _buildActionButton(text: 'نشر', onPressed: isLoading ? null : onPublish, isDark: isDark, isPrimary: true, isLoading: isLoading, context: context)),
           ],
         ),
       ),

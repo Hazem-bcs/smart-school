@@ -1,5 +1,6 @@
+import 'package:dartz/dartz.dart';
+import 'package:core/network/failures.dart';
 import 'package:teacher_app/features/new_assignment/data/data_sources/newAssignmentLocalDataSource.dart';
-
 import '../../domain/entities/new_assignment_entity.dart';
 import '../../domain/repositories/new_assignment_repository.dart';
 import '../models/new_assignment_model.dart';
@@ -11,7 +12,7 @@ class NewAssignmentRepositoryImpl implements NewAssignmentRepository {
   NewAssignmentRepositoryImpl(this.remoteDataSource,this.localDataSource);
 
   @override
-  Future<void> addNewAssignment(NewAssignmentEntity assignment) async {
+  Future<Either<Failure, Unit>> addNewAssignment(NewAssignmentEntity assignment) async {
     final model = NewAssignmentModel(
       title: assignment.title,
       description: assignment.description,
@@ -19,11 +20,11 @@ class NewAssignmentRepositoryImpl implements NewAssignmentRepository {
       dueDate: assignment.dueDate,
       points: assignment.points,
     );
-    await remoteDataSource.addNewAssignment(model);
+    return await remoteDataSource.addNewAssignment(model);
   }
 
   @override
-  Future<List<String>> getClasses() async {
+  Future<Either<Failure, List<String>>> getClasses() async {
     final teacherId = await localDataSource.getId();
     return await remoteDataSource.getClasses(teacherId ?? 0);
   }

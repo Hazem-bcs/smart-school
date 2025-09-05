@@ -36,7 +36,7 @@ class NewAssignmentAppBar extends StatelessWidget implements PreferredSizeWidget
         onPressed: onClose,
       ),
       title: ResponsiveText(
-        'New Assignment',
+        'واجب جديد',
         mobileSize: 18,
         tabletSize: 20,
         desktopSize: 22,

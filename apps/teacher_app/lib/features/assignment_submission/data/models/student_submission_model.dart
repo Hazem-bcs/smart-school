@@ -1,5 +1,3 @@
-import '../../domain/entities/student_submission.dart';
-
 class StudentSubmissionModel {
   final String id;
   final String studentName;
@@ -44,26 +42,4 @@ class StudentSubmissionModel {
         'submittedAt': submittedAt.toIso8601String(),
         'isGraded': isGraded,
       };
-
-  StudentSubmission toEntity() => StudentSubmission(
-        id: id,
-        studentName: studentName,
-        response: response,
-        images: images,
-        grade: grade,
-        feedback: feedback,
-        submittedAt: submittedAt,
-        isGraded: isGraded,
-      );
-
-  factory StudentSubmissionModel.fromEntity(StudentSubmission entity) => StudentSubmissionModel(
-        id: entity.id,
-        studentName: entity.studentName,
-        response: entity.response,
-        images: entity.images,
-        grade: entity.grade,
-        feedback: entity.feedback,
-        submittedAt: entity.submittedAt,
-        isGraded: entity.isGraded,
-      );
 } 

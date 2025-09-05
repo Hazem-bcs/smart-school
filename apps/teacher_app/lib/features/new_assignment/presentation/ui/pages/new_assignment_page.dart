@@ -7,6 +7,7 @@ import '../widgets/new_assignment_title_field.dart';
 import '../widgets/new_assignment_description_field.dart';
 import '../widgets/new_assignment_class_dropdown.dart';
 import '../widgets/new_assignment_points_field.dart';
+import 'package:core/widgets/unified_loading_indicator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/new_assignment_bloc.dart';
 import '../../blocs/new_assignment_state.dart';
@@ -39,8 +40,8 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
   // Form data
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  String? _selectedClass = 'Choose Target';
-  List<String> availableClasses = ['Choose Target'];
+  String? _selectedClass = 'اختر الصف المستهدف';
+  List<String> availableClasses = ['اختر الصف المستهدف'];
 
   @override
   void initState() {
@@ -86,41 +87,41 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
 
     String? validateTitle(String? value) {
       if (value == null || value.trim().isEmpty) {
-        return 'Title is required';
+        return 'العنوان مطلوب';
       }
       if (value.trim().length < 3) {
-        return 'Title must be at least 3 characters';
+        return 'العنوان يجب أن يكون 3 أحرف على الأقل';
       }
       return null;
     }
 
     String? validateDescription(String? value) {
       if (value == null || value.trim().isEmpty) {
-        return 'Description is required';
+        return 'الوصف مطلوب';
       }
       if (value.trim().length < 10) {
-        return 'Description must be at least 10 characters';
+        return 'الوصف يجب أن يكون 10 أحرف على الأقل';
       }
       return null;
     }
 
     String? validatePoints(String? value) {
       if (value == null || value.trim().isEmpty) {
-        return 'Points are required';
+        return 'الدرجات مطلوبة';
       }
       final points = int.tryParse(value);
       if (points == null || points <= 0) {
-        return 'Points must be a positive number';
+        return 'يجب أن تكون الدرجات رقماً موجباً';
       }
       if (points > 100 || points < 0) {
-        return 'Points cannot exceed 100';
+        return 'لا يمكن أن تتجاوز الدرجات 100';
       }
       return null;
     }
 
     String? validateClass(String? value) {
-      if (value == null || value.isEmpty || value == 'Choose Target') {
-        return 'Please select a target class';
+      if (value == null || value.isEmpty || value == 'اختر الصف المستهدف') {
+        return 'يرجى اختيار الصف المستهدف';
       }
       return null;
     }
@@ -128,10 +129,10 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
     return BlocListener<NewAssignmentBloc, NewAssignmentState>(
       listener: (context, state) {
         if (state is NewAssignmentSent) {
-          _showSnackBar('Assignment published successfully!');
+          _showSnackBar('تم نشر الواجب بنجاح!');
           Navigator.of(context).pop();
         } else if (state is NewAssignmentFailure) {
-          _showSnackBar('Error:  ${state.message}');
+          _showSnackBar('خطأ: ${state.message}');
         }
       },
       child: Scaffold(
@@ -199,10 +200,17 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
                       
                       BlocBuilder<NewAssignmentBloc, NewAssignmentState>(
                         builder: (context, state) {
-                          print('here');
-                          if(state is NewAssignmentClassesLoaded) {
-                            availableClasses =  ['Choose Target' , ...state.classes];
-                            }
+                          if (state is NewAssignmentLoading && availableClasses.length <= 1) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: ResponsiveHelper.getSpacing(context, mobile: 12, tablet: 16, desktop: 20),
+                              ),
+                              child: CommonLoadingStates.dataLoading(),
+                            );
+                          }
+                          if (state is NewAssignmentClassesLoaded) {
+                            availableClasses = ['اختر الصف المستهدف', ...state.classes];
+                          }
                           return NewAssignmentClassDropdown(
                             selectedClass: _selectedClass,
                             availableClasses: availableClasses,
@@ -238,11 +246,11 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
   // Helper methods
   String _getDueDateText() {
     if (_selectedDate == null) {
-      return 'Select Date & Time';
+      return 'اختر التاريخ والوقت';
     }
     final dateStr = '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}';
     if (_selectedTime != null) {
-      return '$dateStr at ${_selectedTime!.format(context)}';
+      return '$dateStr الساعة ${_selectedTime!.format(context)}';
     }
     return dateStr;
   }
@@ -251,11 +259,11 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
 
   // Event handlers
   void _onAddFromDrive() {
-    _showSnackBar('Google Drive integration coming soon!');
+    _showSnackBar('سيتم دعم Google Drive قريباً!');
   }
 
   void _onUploadFile() {
-    _showSnackBar('File upload feature coming soon!');
+    _showSnackBar('ميزة رفع الملفات قيد الإعداد!');
   }
 
   Future<void> _onSelectDateAndTime() async {
@@ -286,7 +294,7 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
       return;
     }
     // TODO: Implement save as draft logic
-    _showSnackBar('Save as draft feature coming soon!');
+    _showSnackBar('الحفظ كمسودة قيد الإعداد!');
   }
 
   Future<void> _onPublish() async {

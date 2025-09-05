@@ -14,10 +14,10 @@ class NewAssignmentPointsField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Maximum Grade', icon: Icons.star, iconColor: isDark ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.secondary),
+        SectionTitle(title: 'الدرجة القصوى', icon: Icons.star, iconColor: isDark ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.secondary),
         CustomTextFormField(
-          label: 'Points',
-          placeholder: 'e.g., 100',
+          label: 'الدرجات',
+          placeholder: 'مثال: 100',
           controller: controller,
           keyboardType: TextInputType.number,
           inputFormatters: [

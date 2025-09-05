@@ -14,7 +14,20 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
     final result = await remoteDataSource.getStudentSubmissions();
     return result.fold(
       (failure) => Left(failure),
-      (models) => Right(models.map((m) => m.toEntity()).toList()),
+      (models) => Right(models
+          .map(
+            (m) => StudentSubmission(
+              id: m.id,
+              studentName: m.studentName,
+              response: m.response,
+              images: m.images,
+              grade: m.grade,
+              feedback: m.feedback,
+              submittedAt: m.submittedAt,
+              isGraded: m.isGraded,
+            ),
+          )
+          .toList()),
     );
   }
 

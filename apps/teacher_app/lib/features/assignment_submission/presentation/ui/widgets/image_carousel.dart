@@ -49,7 +49,7 @@ class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProvider
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Text(
-              'Image ${initialIndex + 1} of ${images.length}',
+              'صورة ${initialIndex + 1} من ${images.length}',
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -210,7 +210,7 @@ class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProvider
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Tap to zoom',
+                                'اضغط للتكبير',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

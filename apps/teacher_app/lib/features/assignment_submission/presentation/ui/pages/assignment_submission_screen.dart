@@ -172,7 +172,7 @@ class _AssignmentSubmissionViewState extends State<_AssignmentSubmissionView> {
                     onPressed: () => Navigator.of(context).maybePop(),
                   ),
                   title: Text(
-                    'Assignment Submission',
+                    'تصحيح تسليمات الواجب',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -199,7 +199,7 @@ class _AssignmentSubmissionViewState extends State<_AssignmentSubmissionView> {
                     onPressed: () => Navigator.of(context).maybePop(),
                   ),
                   title: Text(
-                    'Assignment Submission',
+                    'تصحيح تسليمات الواجب',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   

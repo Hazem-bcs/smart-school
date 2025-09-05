@@ -251,7 +251,7 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<AssignmentRemoteDataSource>(
-    () => AssignmentRemoteDataSourceImpl(),
+    () => AssignmentRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   // Repository
@@ -278,7 +278,9 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<NewAssignmentRemoteDataSource>(
-    () => NewAssignmentRemoteDataSourceImpl(),
+    () => NewAssignmentRemoteDataSourceImpl(
+      dioClient: getIt<DioClient>(),
+    ),
   );
   getIt.registerLazySingleton<NewAssignmentLocalDataSource>(
     () => NewAssignmentLocalDataSourceImpl(prefs: getIt<SharedPreferences>()),
@@ -311,7 +313,7 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<SubmissionRemoteDataSource>(
-    () => SubmissionRemoteDataSource(),
+    () => SubmissionRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   // Repository

@@ -43,7 +43,7 @@ class StudentCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Student: ${student.studentName}', 
+                    'الطالب: ${student.studentName}', 
                     style: TextStyle(
                       fontSize: 24, 
                       fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class StudentCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'Graded',
+                      'تم التصحيح',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -71,7 +71,7 @@ class StudentCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Submitted: ${_formatDate(student.submittedAt)}', 
+              'أُرسل: ${_formatDate(student.submittedAt)}', 
               style: TextStyle(
                 color: isDark ? AppColors.darkSecondaryText : AppColors.lightSecondaryText
               )
@@ -79,7 +79,7 @@ class StudentCard extends StatelessWidget {
             if (student.isGraded && student.grade != null) ...[
               const SizedBox(height: 8),
               Text(
-                'Grade: ${student.grade}/100',
+                'الدرجة: ${student.grade}/100',
                 style: TextStyle(
                   color: isDark ? AppColors.darkAccentBlue : AppColors.info,
                   fontWeight: FontWeight.bold,
