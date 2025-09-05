@@ -99,6 +99,8 @@ class ScheduleModel {
         return ScheduleType.event;
       case 'break':
         return ScheduleType.breakTime;
+      case 'holiday':
+        return ScheduleType.holiday;
       default:
         return ScheduleType.classType;
     }

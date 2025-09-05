@@ -15,7 +15,7 @@ class ScheduleAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       title: Text(
-        'Weekly Schedule',
+        'الجدول الأسبوعي',
         style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.w600,
           color: isDark ? Colors.white : const Color(0xFF0E141B),

@@ -37,7 +37,7 @@ class SettingsSection extends StatelessWidget {
             vertical: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
           ),
           child: Text(
-            'Preferences',
+            'التفضيلات',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -60,8 +60,8 @@ class SettingsSection extends StatelessWidget {
             children: [
               ListTile(
                 leading: Icon(Icons.notifications, color: theme.iconTheme.color),
-                title: Text('Notifications', style: theme.textTheme.titleMedium),
-                subtitle: Text('Manage your notification preferences'),
+                title: Text('الإشعارات', style: theme.textTheme.titleMedium),
+                subtitle: Text('إدارة تفضيلات الإشعارات'),
                 trailing: Switch(
                   value: notificationsEnabled,
                   onChanged: onNotificationsChanged,
@@ -69,8 +69,8 @@ class SettingsSection extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.language, color: theme.iconTheme.color),
-                title: Text('Language', style: theme.textTheme.titleMedium),
-                subtitle: Text(isEnglish ? 'English' : 'العربية'),
+                title: Text('اللغة', style: theme.textTheme.titleMedium),
+                subtitle: Text(isEnglish ? 'الإنجليزية' : 'العربية'),
                 trailing: Icon(Icons.arrow_forward_ios, color: theme.iconTheme.color),
                 onTap: onLanguageToggle,
               ),
@@ -89,8 +89,8 @@ class SettingsSection extends StatelessWidget {
                       isDarkMode ? Icons.dark_mode : Icons.light_mode, 
                       color: theme.iconTheme.color
                     ),
-                    title: Text('Dark Mode', style: theme.textTheme.titleMedium),
-                    subtitle: Text(isDarkMode ? 'Enabled' : 'Disabled'),
+                    title: Text('الوضع الداكن', style: theme.textTheme.titleMedium),
+                    subtitle: Text(isDarkMode ? 'مفعّل' : 'معطّل'),
                     trailing: Switch(
                       value: isDarkMode,
                       onChanged: (_) {

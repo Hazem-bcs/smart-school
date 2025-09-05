@@ -95,6 +95,8 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
     final scheduleItems = _getScheduleItems();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final bool isFullHoliday = scheduleItems.isNotEmpty &&
+        scheduleItems.every((item) => (item['title'] as String).startsWith('عطلة'));
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,13 +107,38 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
             horizontal: ResponsiveHelper.getSpacing(context),
             vertical: ResponsiveHelper.getSpacing(context, mobile: 8, tablet: 12, desktop: 16),
           ),
-          child: Text(
-            _getDateString(),
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF0E141B),
-            ),
-          ),
+          child: isFullHoliday
+              ? Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF14532D) : const Color(0xFFD1FAE5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.celebration, color: isDark ? const Color(0xFF34D399) : const Color(0xFF10B981), size: 18),
+                          const SizedBox(width: 8),
+                          Text(
+                            'عطلة: ${_getDateString()}',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: isDark ? Colors.white : const Color(0xFF065F46),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  _getDateString(),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : const Color(0xFF0E141B),
+                  ),
+                ),
         ),
         // Schedule list
         Expanded(
@@ -147,7 +174,31 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
                       ],
                     ),
                   )
-                : ListView.builder(
+                : isFullHoliday
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.celebration, size: 80, color: isDark ? const Color(0xFF34D399) : const Color(0xFF10B981)),
+                            const SizedBox(height: 12),
+                            Text(
+                              'عطلة يوم كامل',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: isDark ? Colors.white : const Color(0xFF065F46),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'لا توجد حصص أو مهام مجدولة لهذا اليوم',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: isDark ? Colors.white70 : const Color(0xFF065F46),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
                     itemCount: scheduleItems.length,
                     itemBuilder: (context, index) {
                       final item = scheduleItems[index];
@@ -187,6 +238,16 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
     // إذا كانت هناك بيانات من Bloc، استخدمها
     if (widget.schedules.isNotEmpty) {
       return widget.schedules.map((schedule) {
+        if (schedule.type == ScheduleType.holiday) {
+          return {
+            'id': schedule.id,
+            'icon': Icons.celebration,
+            'title': 'عطلة: ${_getDateString()}',
+            'subtitle': 'لا توجد حصص اليوم',
+            'status': schedule.status,
+            'schedule': schedule,
+          };
+        }
         return {
           'id': schedule.id,
           'icon': _getIconForSubject(schedule.subject),

@@ -52,20 +52,21 @@ class ScheduleCard extends StatelessWidget {
   }
 
   Widget _buildIconContainer(ThemeData theme, bool isDark) {
+    final bool isHoliday = status == ScheduleStatus.upcoming && title.contains('عطلة');
     return Container(
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: isDark 
-            ? const Color(0xFF2A2A3E) 
-            : const Color(0xFFE7EDF3),
+        color: isHoliday
+            ? (isDark ? const Color(0xFF14532D) : const Color(0xFFD1FAE5))
+            : (isDark ? const Color(0xFF2A2A3E) : const Color(0xFFE7EDF3)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(
         icon,
-        color: isDark 
-            ? const Color(0xFF4A90E2)
-            : const Color(0xFF4A90E2),
+        color: isHoliday
+            ? (isDark ? const Color(0xFF34D399) : const Color(0xFF10B981))
+            : (isDark ? const Color(0xFF4A90E2) : const Color(0xFF4A90E2)),
         size: 24,
       ),
     );
@@ -99,8 +100,10 @@ class ScheduleCard extends StatelessWidget {
     
     switch (status) {
       case ScheduleStatus.upcoming:
-        statusIcon = Icons.schedule;
-        statusColor = isDark ? const Color(0xFF4A90E2) : const Color(0xFF4A90E2);
+        statusIcon = title.contains('عطلة') ? Icons.celebration : Icons.schedule;
+        statusColor = title.contains('عطلة')
+            ? (isDark ? const Color(0xFF34D399) : const Color(0xFF10B981))
+            : (isDark ? const Color(0xFF4A90E2) : const Color(0xFF4A90E2));
         break;
       case ScheduleStatus.ongoing:
         statusIcon = Icons.play_circle_outline;

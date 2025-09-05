@@ -38,6 +38,7 @@ import '../../../features/zoom_meeting/domain/usecases/get_meeting_options_useca
 import '../../../features/profile/domain/usecases/get_profile_usecase.dart';
 import '../../../features/profile/domain/usecases/update_profile_usecase.dart';
 import '../../../injection_container.dart' as di;
+import 'package:teacher_app/features/settings/presentation/blocs/settings_bloc.dart';
 import '../../features/auth/domain/usecases/check_auth_status_usecase.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
@@ -139,7 +140,10 @@ class AppRoutes {
         
       case AppRoutes.settings:
         return MaterialPageRoute(
-          builder: (_) => const SettingsPage(),
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<SettingsBloc>(),
+            child: const SettingsPage(),
+          ),
           settings: settings,
         );
         

@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:math' as math;
 import 'package:dartz/dartz.dart';
 import 'package:core/network/failures.dart';
+import 'package:core/network/dio_client.dart';
 import '../models/schedule_model.dart';
 
 abstract class ScheduleRemoteDataSource {
@@ -7,183 +10,139 @@ abstract class ScheduleRemoteDataSource {
 }
 
 class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
-  
-  // دالة مساعدة لطباعة معلومات الطلب
-  void _printRequestInfo(String methodName, dynamic data) {
-    print('🔵 [SCHEDULE] REQUEST: $methodName');
-    print('📤 Data sent: $data');
-    print('⏰ Timestamp: ${DateTime.now().toIso8601String()}');
-    print('---');
-  }
+  final DioClient dioClient;
 
-  // دالة مساعدة لطباعة معلومات الاستجابة
-  void _printResponseInfo(String methodName, dynamic data, bool isSuccess) {
-    print('🟢 [SCHEDULE] RESPONSE: $methodName');
-    print('📥 Data received: $data');
-    print('✅ Success: $isSuccess');
-    print('⏰ Timestamp: ${DateTime.now().toIso8601String()}');
-    print('---');
-  }
+  ScheduleRemoteDataSourceImpl({required this.dioClient});
 
-  // دالة مساعدة لطباعة معلومات الخطأ
-  void _printErrorInfo(String methodName, String errorMessage) {
-    print('🔴 [SCHEDULE] ERROR: $methodName');
-    print('❌ Error message: $errorMessage');
-    print('⏰ Timestamp: ${DateTime.now().toIso8601String()}');
-    print('---');
+  Either<Failure, List<ScheduleModel>> _parseWrappedList(
+    String jsonString,
+  ) {
+    try {
+      final Map<String, dynamic> decoded = jsonDecode(jsonString) as Map<String, dynamic>;
+      final int status = decoded['status'] is int ? decoded['status'] as int : 500;
+      if (status != 200) {
+        final String message = decoded['message']?.toString() ?? 'حدث خطأ في الخادم';
+        return Left(ServerFailure(message: message, statusCode: status));
+      }
+      final dynamic rawData = decoded['data'];
+      if (rawData is List) {
+        final items = rawData
+            .map((e) => ScheduleModel.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList();
+        return Right(items);
+      } else if (rawData is Map<String, dynamic>) {
+        // دعم شكل: { data: { items: [...], isHoliday: true, holidayTitle: '...' } }
+        final Map<String, dynamic> mapData = Map<String, dynamic>.from(rawData);
+        final bool isHoliday = mapData['isHoliday'] == true;
+        if (isHoliday) {
+          final String title = (mapData['holidayTitle']?.toString() ?? 'عطلة رسمية');
+          final ScheduleModel holiday = ScheduleModel.fromJson({
+            'id': 'holiday_${DateTime.now().millisecondsSinceEpoch}',
+            'title': title,
+            'description': 'لا توجد حصص اليوم',
+            'startTime': DateTime.now().toIso8601String(),
+            'endTime': DateTime.now().toIso8601String(),
+            'className': '',
+            'subject': '',
+            'teacherId': '',
+            'location': '',
+            'type': 'holiday',
+            'status': 'upcoming',
+          });
+          return Right([holiday]);
+        }
+        final List<dynamic> itemsList = (mapData['items'] as List<dynamic>? ?? []);
+        final items = itemsList
+            .map((e) => ScheduleModel.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList();
+        return Right(items);
+      }
+      return const Left(ValidationFailure(message: 'تنسيق البيانات غير صحيح'));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
   }
 
   @override
   Future<Either<Failure, List<ScheduleModel>>> getScheduleForDate(DateTime date) async {
-    // طباعة معلومات الطلب
-    _printRequestInfo('getScheduleForDate', {
-      'date': date.toIso8601String(),
-    });
-
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
-    
-    // Simulate random error (10% chance)
-    if (DateTime.now().millisecondsSinceEpoch % 10 == 0) {
-      final errorMessage = 'خطأ في الاتصال بالخادم';
-      _printErrorInfo('getScheduleForDate', errorMessage);
-      return Left(ServerFailure(message: errorMessage));
+    // ********************************************************
+    // API وهمي (JSON ثابت) وفق الاستجابة الموحدة { data, message, status }
+    // مبدّل عشوائي بين يوم عطلة كامل وقائمة دوام عادية
+    final bool isHolidayDay = math.Random().nextBool();
+    final String mockJson = isHolidayDay
+        ? '''
+    {
+      "data": {
+        "isHoliday": true,
+        "holidayTitle": "عطلة رسمية",
+        "items": []
+      },
+      "message": "تم تحميل الجدول بنجاح",
+      "status": 200
     }
-
-    try {
-      // Mock response - in real app, this would be an API call
-      final Map<String, dynamic> response = {
-        'success': true,
-        'statuscode': 200,
-        'data': _generateMockScheduleData(date),
-        'message': 'تم تحميل الجدول بنجاح',
-      };
-
-      if (response['success'] == true && response['statuscode'] == 200) {
-        final List<dynamic> schedulesData = response['data'] as List<dynamic>;
-        final schedules = schedulesData
-            .map((data) => ScheduleModel.fromJson(data as Map<String, dynamic>))
-            .toList();
-        
-        // طباعة معلومات الاستجابة الناجحة
-        _printResponseInfo('getScheduleForDate', {
-          'count': schedules.length,
-          'date': date.toIso8601String(),
-        }, true);
-        
-        return Right(schedules);
-      } else {
-        final errorMessage = response['message'] ?? 'خطأ غير معروف';
-        _printErrorInfo('getScheduleForDate', errorMessage);
-        return Left(ServerFailure(message: errorMessage));
-      }
-    } catch (e) {
-      final errorMessage = 'خطأ في تحليل البيانات: $e';
-      _printErrorInfo('getScheduleForDate', errorMessage);
-      return Left(ServerFailure(message: 'خطأ في تحليل البيانات'));
+    '''
+        : '''
+    {
+      "data": [
+        {
+          "id": "math101",
+          "title": "الرياضيات",
+          "description": "درس الرياضيات الأساسي",
+          "startTime": "2024-01-01T09:00:00.000Z",
+          "endTime": "2024-01-01T10:00:00.000Z",
+          "className": "الصف الأول",
+          "subject": "الرياضيات",
+          "teacherId": "teacher1",
+          "location": "الفصل 101",
+          "type": "class",
+          "status": "upcoming"
+        },
+        {
+          "id": "sci202",
+          "title": "العلوم",
+          "description": "درس العلوم التجريبي",
+          "startTime": "2024-01-01T10:30:00.000Z",
+          "endTime": "2024-01-01T11:30:00.000Z",
+          "className": "الصف الأول",
+          "subject": "العلوم",
+          "teacherId": "teacher2",
+          "location": "المختبر 201",
+          "type": "class",
+          "status": "upcoming"
+        }
+      ],
+      "message": "تم تحميل الجدول بنجاح",
+      "status": 200
     }
-  }
+    ''';
+    await Future.delayed(const Duration(milliseconds: 500));
+    final fake = _parseWrappedList(mockJson);
+    if (fake.isRight()) return fake;
+    // ********************************************************
 
-  List<Map<String, dynamic>> _generateMockScheduleData(DateTime date) {
-    final dayOfWeek = date.weekday;
-    
-    // Different schedules for different days
-    switch (dayOfWeek) {
-      case 1: // Monday
-        return [
-          {
-            'id': 'math101_${date.millisecondsSinceEpoch}',
-            'title': 'الرياضيات',
-            'description': 'درس الرياضيات الأساسي',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T09:00:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T10:00:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'الرياضيات',
-            'teacherId': 'teacher1',
-            'location': 'الفصل 101',
-            'type': 'lecture',
-            'status': 'upcoming',
-          },
-          {
-            'id': 'sci202_${date.millisecondsSinceEpoch}',
-            'title': 'العلوم',
-            'description': 'درس العلوم التجريبي',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T10:30:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T11:30:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'العلوم',
-            'teacherId': 'teacher2',
-            'location': 'المختبر 201',
-            'type': 'lab',
-            'status': 'upcoming',
-          },
-        ];
-      case 2: // Tuesday
-        return [
-          {
-            'id': 'his303_${date.millisecondsSinceEpoch}',
-            'title': 'التاريخ',
-            'description': 'درس التاريخ الإسلامي',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T09:00:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T10:00:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'التاريخ',
-            'teacherId': 'teacher3',
-            'location': 'الفصل 301',
-            'type': 'lecture',
-            'status': 'upcoming',
-          },
-        ];
-      case 3: // Wednesday
-        return [
-          {
-            'id': 'math101_${date.millisecondsSinceEpoch}',
-            'title': 'الرياضيات',
-            'description': 'درس الرياضيات المتقدم',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T08:30:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T09:30:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'الرياضيات',
-            'teacherId': 'teacher1',
-            'location': 'الفصل 101',
-            'type': 'lecture',
-            'status': 'completed',
-          },
-        ];
-      case 4: // Thursday
-        return [
-          {
-            'id': 'bio909_${date.millisecondsSinceEpoch}',
-            'title': 'الأحياء',
-            'description': 'درس الأحياء التجريبي',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T09:00:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T10:00:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'الأحياء',
-            'teacherId': 'teacher4',
-            'location': 'المختبر 401',
-            'type': 'lab',
-            'status': 'upcoming',
-          },
-        ];
-      case 5: // Friday
-        return [
-          {
-            'id': 'rel1111_${date.millisecondsSinceEpoch}',
-            'title': 'التربية الإسلامية',
-            'description': 'درس التربية الإسلامية',
-            'startTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T09:00:00.000Z',
-            'endTime': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T10:00:00.000Z',
-            'className': 'الصف الأول',
-            'subject': 'التربية الإسلامية',
-            'teacherId': 'teacher5',
-            'location': 'الفصل 501',
-            'type': 'lecture',
-            'status': 'upcoming',
-          },
-        ];
-      default: // Weekend
-        return [];
-    }
+    /*
+    // الكتلة الحقيقية لاستدعاء الـ API (قم بإلغاء التعليق عند جاهزية الـ back-end)
+    // final result = await dioClient.get('/schedule', options: Options(queryParameters: {
+    //   'date': date.toIso8601String(),
+    // }));
+    // return result.fold(
+    //   (failure) => Left(failure),
+    //   (response) {
+    //     final data = response.data as Map<String, dynamic>?;
+    //     final int status = data?['status'] is int ? data!['status'] as int : 500;
+    //     if (status != 200) {
+    //       final String message = data?['message']?.toString() ?? 'حدث خطأ غير متوقع';
+    //       return Left(ServerFailure(message: message, statusCode: status));
+    //     }
+    //     final List<dynamic> list = data?['data'] as List<dynamic>? ?? [];
+    //     final items = list
+    //         .map((e) => ScheduleModel.fromJson(Map<String, dynamic>.from(e as Map)))
+    //         .toList();
+    //     return Right(items);
+    //   },
+    // );
+    */
+
+    return fake; // fallback على الوهمي لحين الجاهزية
   }
 } 

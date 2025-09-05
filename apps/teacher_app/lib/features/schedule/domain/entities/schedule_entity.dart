@@ -49,6 +49,7 @@ enum ScheduleType {
   exam,
   event,
   breakTime,
+  holiday,
 }
 
 enum ScheduleStatus {

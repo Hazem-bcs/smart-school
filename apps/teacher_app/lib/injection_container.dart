@@ -215,7 +215,7 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Sources
   getIt.registerLazySingleton<SettingsRemoteDataSource>(
-    () => SettingsRemoteDataSourceImpl(),
+    () => SettingsRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
   getIt.registerLazySingleton<SettingsLocalDataSource>(
     () => SettingsLocalDataSourceImpl(
@@ -391,7 +391,7 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<ScheduleRemoteDataSource>(
-    () => ScheduleRemoteDataSourceImpl(),
+    () => ScheduleRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
 
   // Repository

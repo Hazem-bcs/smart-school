@@ -15,6 +15,15 @@ class LogoutModel extends LogoutEntity {
     );
   }
 
+  // Parse from wrapped { data, message, status }
+  factory LogoutModel.fromWrappedJson(Map<String, dynamic> data, String? message) {
+    return LogoutModel(
+      success: data['success'] ?? false,
+      message: message ?? data['message'],
+      userId: data['user_id'],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'success': success,
