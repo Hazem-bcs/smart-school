@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
 import '../../../../../core/responsive/responsive_widgets.dart';
 import '../widgets/auth_logo.dart';
@@ -94,15 +93,15 @@ class SplashContent extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return AuthTitle(
-      'app_title'.tr(),
+    return const AuthTitle(
+      'تطبيق المعلم',
       color: Colors.white,
     );
   }
 
   Widget _buildSubtitle(BuildContext context) {
-    return AuthSubtitle(
-      'Teacher App',
+    return const AuthSubtitle(
+      'تجربة تعليمية سهلة وسريعة',
       color: Colors.white70,
     );
   }

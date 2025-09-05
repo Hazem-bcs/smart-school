@@ -1,5 +1,3 @@
-import '../../domain/entities/user.dart';
-
 class UserModel {
   final String id;
   final String email;
@@ -117,21 +115,4 @@ class UserModel {
     );
   }
 
-  // Convert model to entity
-  User toEntity() {
-    return User(
-      id: id,
-      email: email,
-      name: name,
-      role: role,
-      avatar: avatar,
-      phone: phone,
-      department: department,
-      experienceYears: experienceYears,
-      qualification: qualification,
-      bio: bio,
-      createdAt: createdAt,
-      lastLoginAt: lastLoginAt,
-    );
-  }
 } 

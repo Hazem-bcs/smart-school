@@ -7,7 +7,7 @@ class CheckAuthStatusUseCase {
 
   CheckAuthStatusUseCase(this.repository);
 
-  Future<Either<Failure, void>> call() async {
+  Future<Either<Failure, bool>> call() async {
     return await repository.checkAuthStatus();
   }
 } 

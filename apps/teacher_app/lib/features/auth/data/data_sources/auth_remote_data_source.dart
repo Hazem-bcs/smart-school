@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:core/network/failures.dart';
 import 'package:core/network/dio_client.dart';
@@ -16,89 +17,200 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<Either<Failure, UserModel>> login(String email, String password) async {
-    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
+    // *****
+    // هنا API وهمي (JSON ثابت) وفق الاستجابة الموحدة { data, message, status }
+    // *****
     await Future.delayed(const Duration(milliseconds: 800));
-    // مثال على شكل الـ JSON المتوقع من السيرفر
-    final Map<String, dynamic> response = {
-      'success': true,
-      'statuscode': 200,
-      'data': {
-        'id': '1',
+    try {
+      final String fakeJson = jsonEncode({
+        'status': 200,
+        'message': 'تم تسجيل الدخول بنجاح',
+        'data': {
+          'id': '1',
           'name': 'معلم تجريبي',
           'email': email,
           'role': 'teacher',
-        'avatar': 'https://example.com/default-avatar.jpg',
+          'avatar': 'https://example.com/default-avatar.jpg',
           'phone': '+966501234567',
           'department': 'الرياضيات',
           'experience_years': 3,
           'qualification': 'بكالوريوس في الرياضيات',
           'bio': 'معلم رياضيات في المدرسة الثانوية',
-        'created_at': DateTime.now().toIso8601String(),
-        'last_login_at': DateTime.now().toIso8601String(),
+          'created_at': DateTime.now().toIso8601String(),
+          'last_login_at': DateTime.now().toIso8601String(),
         },
-      'message': 'تم تسجيل الدخول بنجاح',
-    };
+      });
 
-    // منطق معالجة الاستجابة
-    if (response['statuscode'] == 200) {
-      final user = UserModel.fromJson(response['data']);
-      return Right(user);
-    } else {
-      // يمكنك تخصيص أنواع الأخطاء حسب statuscode أو الرسالة
-      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+      final Map<String, dynamic> decoded = jsonDecode(fakeJson) as Map<String, dynamic>;
+      final int status = decoded['status'] is int ? decoded['status'] as int : 500;
+      if (status != 200) {
+        final String message = decoded['message']?.toString() ?? 'حدث خطأ غير متوقع';
+        return Left(ServerFailure(message: message, statusCode: status));
+      }
+      final Map<String, dynamic> data = Map<String, dynamic>.from(decoded['data'] as Map);
+      return Right(UserModel.fromJson(data));
+    } catch (e) {
+      return Left(UnknownFailure(message: 'حدث خطأ أثناء معالجة البيانات'));
     }
+
+    // هنا كتلة DioClient الحقيقية (معلّقة) بنفس الشكل دائماً
+    // try {
+    //   final result = await dioClient.post(
+    //     Constants.loginEndpoint,
+    //     data: {
+    //       'email': email,
+    //       'password': password,
+    //     },
+    //   );
+    //   return result.fold(
+    //     (failure) => Left(failure),
+    //     (response) {
+    //       try {
+    //         final Map<String, dynamic> body = response.data is String
+    //             ? jsonDecode(response.data as String)
+    //             : Map<String, dynamic>.from(response.data as Map);
+    //         final int status = body['status'] is int ? body['status'] as int : (response.statusCode ?? 500);
+    //         if (status != 200) {
+    //           final String message = body['message']?.toString() ?? 'حدث خطأ في الخادم';
+    //           return Left(ServerFailure(message: message, statusCode: status));
+    //         }
+    //         final Map<String, dynamic> data = Map<String, dynamic>.from(body['data'] as Map);
+    //         return Right(UserModel.fromJson(data));
+    //       } catch (_) {
+    //         return const Left(ValidationFailure(message: 'تنسيق الاستجابة غير صحيح'));
+    //       }
+    //     },
+    //   );
+    // } catch (e) {
+    //   return Left(UnknownFailure(message: 'تعذر تنفيذ الطلب'));
+    // }
   }
 
   @override
   Future<Either<Failure, UserModel>> checkAuthStatus(int userId) async {
-    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
+    // *****
+    // هنا API وهمي (JSON ثابت) وفق الاستجابة الموحدة { data, message, status }
+    // *****
     await Future.delayed(const Duration(milliseconds: 500));
-    // مثال على شكل الـ JSON المتوقع من السيرفر
-    final Map<String, dynamic> response = {
-      'success': true,
-      'statuscode': 200,
-      'data': {
-        'id': '1',
+    try {
+      final String fakeJson = jsonEncode({
+        'status': 200,
+        'message': 'تم التحقق من حالة المصادقة',
+        'data': {
+          'id': userId.toString(),
           'name': 'معلم تجريبي',
           'email': 'teacher@example.com',
           'role': 'teacher',
-        'avatar': 'https://example.com/default-avatar.jpg',
+          'avatar': 'https://example.com/default-avatar.jpg',
           'phone': '+966501234567',
           'department': 'الرياضيات',
           'experience_years': 3,
           'qualification': 'بكالوريوس في الرياضيات',
           'bio': 'معلم رياضيات في المدرسة الثانوية',
-        'created_at': DateTime.now().toIso8601String(),
-        'last_login_at': DateTime.now().toIso8601String(),
-      },
-      'message': 'تم التحقق من حالة المصادقة بنجاح',
-    };
+          'created_at': DateTime.now().toIso8601String(),
+          'last_login_at': DateTime.now().toIso8601String(),
+        },
+      });
 
-    // منطق معالجة الاستجابة
-    if (response['statuscode'] == 200) {
-      final user = UserModel.fromJson(response['data']);
-      return Right(user);
-    } else {
-      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+      final Map<String, dynamic> decoded = jsonDecode(fakeJson) as Map<String, dynamic>;
+      final int status = decoded['status'] is int ? decoded['status'] as int : 500;
+      if (status != 200) {
+        final String message = decoded['message']?.toString() ?? 'حدث خطأ غير متوقع';
+        return Left(ServerFailure(message: message, statusCode: status));
+      }
+      final Map<String, dynamic> data = Map<String, dynamic>.from(decoded['data'] as Map);
+      return Right(UserModel.fromJson(data));
+    } catch (e) {
+      return Left(UnknownFailure(message: 'حدث خطأ أثناء معالجة البيانات'));
     }
+
+    // هنا كتلة DioClient الحقيقية (معلّقة) بنفس الشكل دائماً
+    // try {
+    //   final result = await dioClient.get(
+    //     Constants.checkAuthEndpoint,
+    //     queryParameters: {
+    //       'user_id': userId,
+    //     },
+    //   );
+    //   return result.fold(
+    //     (failure) => Left(failure),
+    //     (response) {
+    //       try {
+    //         final Map<String, dynamic> body = response.data is String
+    //             ? jsonDecode(response.data as String)
+    //             : Map<String, dynamic>.from(response.data as Map);
+    //         final int status = body['status'] is int ? body['status'] as int : (response.statusCode ?? 500);
+    //         if (status != 200) {
+    //           final String message = body['message']?.toString() ?? 'حدث خطأ في الخادم';
+    //           return Left(ServerFailure(message: message, statusCode: status));
+    //         }
+    //         final Map<String, dynamic> data = Map<String, dynamic>.from(body['data'] as Map);
+    //         return Right(UserModel.fromJson(data));
+    //       } catch (_) {
+    //         return const Left(ValidationFailure(message: 'تنسيق الاستجابة غير صحيح'));
+    //       }
+    //     },
+    //   );
+    // } catch (e) {
+    //   return Left(UnknownFailure(message: 'تعذر تنفيذ الطلب'));
+    // }
   }
 
   @override
   Future<Either<Failure, void>> logout(int userId) async {
-    // ملاحظة: الكود التالي وهمي فقط، عند الربط مع الـ backend استبدله بطلب فعلي
+    // *****
+    // هنا API وهمي (JSON ثابت) وفق الاستجابة الموحدة { data, message, status }
+    // *****
     await Future.delayed(const Duration(milliseconds: 300));
-    // مثال على شكل الـ JSON المتوقع من السيرفر
-    final Map<String, dynamic> response = {
-      'success': true,
-      'statuscode': 200,
-      'message': 'تم تسجيل الخروج بنجاح',
-    };
+    try {
+      final String fakeJson = jsonEncode({
+        'status': 200,
+        'message': 'تم تسجيل الخروج بنجاح',
+        'data': {
+          'success': true,
+          'user_id': userId,
+        },
+      });
 
-    // منطق معالجة الاستجابة
-    if (response['statuscode'] == 200) {
+      final Map<String, dynamic> decoded = jsonDecode(fakeJson) as Map<String, dynamic>;
+      final int status = decoded['status'] is int ? decoded['status'] as int : 500;
+      if (status != 200) {
+        final String message = decoded['message']?.toString() ?? 'حدث خطأ غير متوقع';
+        return Left(ServerFailure(message: message, statusCode: status));
+      }
       return const Right(null);
-    } else {
-      return Left(ServerFailure(message: response['message'] ?? 'خطأ غير معروف'));
+    } catch (e) {
+      return Left(UnknownFailure(message: 'حدث خطأ أثناء معالجة البيانات'));
     }
+
+    // هنا كتلة DioClient الحقيقية (معلّقة) بنفس الشكل دائماً
+    // try {
+    //   final result = await dioClient.post(
+    //     Constants.logoutEndpoint,
+    //     data: {
+    //       'user_id': userId,
+    //     },
+    //   );
+    //   return result.fold(
+    //     (failure) => Left(failure),
+    //     (response) {
+    //       try {
+    //         final Map<String, dynamic> body = response.data is String
+    //             ? jsonDecode(response.data as String)
+    //             : Map<String, dynamic>.from(response.data as Map);
+    //         final int status = body['status'] is int ? body['status'] as int : (response.statusCode ?? 500);
+    //         if (status != 200) {
+    //           final String message = body['message']?.toString() ?? 'حدث خطأ في الخادم';
+    //           return Left(ServerFailure(message: message, statusCode: status));
+    //         }
+    //         return const Right(null);
+    //       } catch (_) {
+    //         return const Left(ValidationFailure(message: 'تنسيق الاستجابة غير صحيح'));
+    //       }
+    //     },
+    //   );
+    // } catch (e) {
+    //   return Left(UnknownFailure(message: 'تعذر تنفيذ الطلب'));
+    // }
   }
 } 

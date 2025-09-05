@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../../../../core/routing/navigation_extension.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
@@ -73,10 +72,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildTitle() {
-    return AuthTitle('auth.sign_in'.tr());
+    return AuthTitle('تسجيل الدخول');
   }
 
   Widget _buildSubtitle() {
-    return AuthSubtitle('Welcome back, Teacher!');
+    return const AuthSubtitle('مرحباً بعودتك يا معلمنا العزيز');
   }
 } 

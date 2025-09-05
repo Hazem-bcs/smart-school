@@ -39,9 +39,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
-    await logoutUseCase();
-    await Future.delayed(Duration(seconds: 2));
-    emit(AuthUnauthenticated());
+    final result = await logoutUseCase();
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (_) => emit(AuthUnauthenticated()),
+    );
   }
 
   Future<void> _onCheckAuthStatus(
@@ -52,7 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await checkAuthStatusUseCase();
     result.fold(
       (failure) => emit(AuthUnauthenticated()),
-      (_) => emit(AuthAuthenticated()),
+      (ok) => emit(AuthAuthenticated()),
     );
   }
 } 

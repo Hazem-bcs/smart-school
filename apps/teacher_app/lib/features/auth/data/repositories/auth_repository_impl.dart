@@ -25,7 +25,21 @@ class AuthRepositoryImpl implements AuthRepository {
       (failure) => Left(failure),
       (userModel) async {
         await localDataSource.saveId(int.parse(userModel.id));
-        return Right(userModel.toEntity());
+        final user = User(
+          id: userModel.id,
+          email: userModel.email,
+          name: userModel.name,
+          role: userModel.role,
+          avatar: userModel.avatar,
+          phone: userModel.phone,
+          department: userModel.department,
+          experienceYears: userModel.experienceYears,
+          qualification: userModel.qualification,
+          bio: userModel.bio,
+          createdAt: userModel.createdAt,
+          lastLoginAt: userModel.lastLoginAt,
+        );
+        return Right(user);
       },
     );
   }
@@ -34,7 +48,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, bool>> checkAuthStatus() async {
     final userId = await localDataSource.getUserId();
     if (userId == null) {
-      return Left(UnAuthenticated(message: 'user is not logged in'));
+      return Left(UnAuthenticated(message: 'غير مسجل دخول'));
     }
     return Right(true);
   }
@@ -43,10 +57,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> logout() async {
     final userId = await localDataSource.getUserId();
     if (userId == null) {
-      return Left(UnAuthenticated(message: 'user is not logged in'));
+      return Left(UnAuthenticated(message: 'غير مسجل دخول'));
     }
-    await remoteDataSource.logout(userId);
-    await localDataSource.clearUserId();
-    return Right(null);
+    final remote = await remoteDataSource.logout(userId);
+    final either = await remote.fold<Future<Either<Failure, void>>>(
+      (failure) async => Left(failure),
+      (_) async {
+        await localDataSource.clearUserId();
+        return const Right(null);
+      },
+    );
+    return either;
   }
 } 

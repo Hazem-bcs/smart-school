@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import '../../blocs/auth_bloc.dart';
 import '../../../../../core/routing/navigation_extension.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
@@ -128,7 +127,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Widget _buildTitle() {
     return ResponsiveText(
-      'app_title'.tr(),
+      'تطبيق المعلم',
       mobileSize: 24,
       tabletSize: 28,
       desktopSize: 32,
@@ -142,7 +141,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Widget _buildSubtitle() {
     return ResponsiveText(
-      'Teacher App',
+      'تجربة تعليمية سهلة وسريعة',
       mobileSize: 14,
       tabletSize: 16,
       desktopSize: 18,
