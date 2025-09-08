@@ -12,11 +12,18 @@ class SubjectListBloc extends Bloc<SubjectListEvent, SubjectListState> {
   }
 
   Future<void> _onGetSubjectListEvent(GetSubjectListEvent event , Emitter<SubjectListState> emit) async {
+    debugPrint('SubjectListBloc: start GetSubjectListEvent');
     emit(SubjectListLoading());
     final result = await getSubjectLListUseCase();
     result.fold(
-          (fail) => emit(SubjectListFailure(message: fail.message)),
-          (subjectList) => emit(SubjectListLoaded(subjectEntityList: subjectList)),
+          (fail) {
+            debugPrint('SubjectListBloc: failure -> ${fail.message} (${fail.statusCode})');
+            emit(SubjectListFailure(message: fail.message));
+          },
+          (subjectList) {
+            debugPrint('SubjectListBloc: success -> count=${subjectList.length}');
+            emit(SubjectListLoaded(subjectEntityList: subjectList));
+          },
     );
   }
 }

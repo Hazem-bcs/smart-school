@@ -38,9 +38,13 @@ class TeacherModel {
   });
 
   factory TeacherModel.fromJson(Map<String, dynamic> json) {
+    final dynamic nameField = json['Name'] ?? json['name'];
+    final String parsedName = nameField is Map<String, dynamic>
+        ? (nameField['ar'] ?? nameField['en'] ?? '')
+        : (nameField?.toString() ?? '');
     return TeacherModel(
       id: _parseId(json['id']),
-      name: _validateName(json['name']),
+      name: _validateName(parsedName),
       email: _validateEmail(json['email']),
       password: json['password'],
       specializationId: _parseInt(json['Specialization_id']),
@@ -109,8 +113,8 @@ class TeacherModel {
   }
 
   static String _validateName(dynamic name) {
-    if (name is String) return name.trim();
-    return 'Unknown Teacher';
+    if (name is String && name.trim().isNotEmpty) return name.trim();
+    return 'مدرس غير معروف';
   }
 
   static String _validateEmail(dynamic email) {
@@ -129,8 +133,8 @@ class TeacherModel {
   }
 
   static String _validatePhone(dynamic phone) {
-    if (phone is String) return phone.trim();
-    return 'No phone available';
+    if (phone is String && phone.trim().isNotEmpty) return phone.trim();
+    return '';
   }
 
   static String _validateAddress(dynamic address) {
@@ -140,7 +144,7 @@ class TeacherModel {
 
   static String _validateImage(dynamic image) {
     if (image is String && image.isNotEmpty) return image.trim();
-    return 'assets/images/user.png'; // Default image
+    return ''; // Let UI show icon fallback
   }
 
   static List<SubjectModel> _parseSubjects(dynamic subjects) {

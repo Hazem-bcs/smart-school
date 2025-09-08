@@ -13,11 +13,18 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
   }
 
   Future<void> _onGetSubject(GetSubjectDetailsEvent event, Emitter<SubjectState> emit) async {
+    debugPrint('SubjectBloc: start GetSubjectDetailsEvent id=${event.id}');
     emit(SubjectLoading());
     final result = await getSubjectUseCase(event.id);
     result.fold(
-      (fail) => emit(SubjectFailure(message: fail.message)),
-      (subject) => emit(SubjectLoaded(subjectEntity: subject)),
+      (fail) {
+        debugPrint('SubjectBloc: failure -> ${fail.message} (${fail.statusCode})');
+        emit(SubjectFailure(message: fail.message));
+      },
+      (subject) {
+        debugPrint('SubjectBloc: success -> id=${subject.id}, name=${subject.name}');
+        emit(SubjectLoaded(subjectEntity: subject));
+      },
     );
   }
 }

@@ -20,12 +20,17 @@ class SubjectRepositoryImpl extends SubjectRepository {
     if(await networkInfo.isConnected) {
       final result = await remoteDataSource.getSubject(id);
       return result.fold(
-            (failure) => Left(failure),
-            (subjectModel) => Right(subjectModel.toEntity()),
+            (failure) {
+              // Repository: pass-through failure
+              return Left(failure);
+            },
+            (subjectModel) {
+              final entity = subjectModel.toEntity();
+              return Right(entity);
+            },
       );
-    }
-    else {
-      return Left(ConnectionFailure(message: 'connection failure'));
+    } else {
+      return Left(ConnectionFailure(message: 'لا يوجد اتصال بالإنترنت'));
     }
   }
 
@@ -36,11 +41,13 @@ class SubjectRepositoryImpl extends SubjectRepository {
       final result = await remoteDataSource.getSubjectList(studentId ?? 0);
       return result.fold(
             (failure) => Left(failure),
-            (subjectModelList) => Right(subjectModelList.map((e) => e.toEntity()).toList(),),
+            (subjectModelList) {
+              final list = subjectModelList.map((e) => e.toEntity()).toList();
+              return Right(list);
+            },
       );
-    }
-    else {
-      return Left(ConnectionFailure(message: 'connection failure'));
+    } else {
+      return Left(ConnectionFailure(message: 'لا يوجد اتصال بالإنترنت'));
     }
   }
 }

@@ -17,6 +17,7 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
   @override
   Future<Either<Failure, UserModel>> getStudentProfile(int studentId) async {
     try {
+      print('getStudentProfile');
       final response = await dioClient.post(
         Constants.getStudentProfiel,
         data: {
@@ -41,6 +42,7 @@ class SettingsRemoteDataSourceImpl implements SettingsRemoteDataSource {
         },
       );
     } catch (e) {
+      print('getStudentProfile error: $e');
       return Left(ServerFailure(message: "حدث خطأ غير متوقع: ${e.toString()}"));
     }
   }

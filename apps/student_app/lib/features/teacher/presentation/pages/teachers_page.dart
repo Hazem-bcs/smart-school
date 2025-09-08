@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:core/widgets/unified_loading_indicator.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/routing/navigation_extension.dart';
 import '../blocs/teacher_list_bloc.dart';
@@ -26,7 +27,7 @@ class _TeachersPageState extends State<TeachersPage> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBarWidget(
-        title: "Teachers",
+        title: "المعلمون",
         actions: [
           AppBarActions.refresh(
             onPressed: () {
@@ -39,7 +40,7 @@ class _TeachersPageState extends State<TeachersPage> {
       body: BlocBuilder<TeacherListBloc, TeacherListState>(
         builder: (context, state) {
           if (state is TeacherListInitial || state is TeacherListLoading) {
-            return const Center(child: AppLoadingWidget());
+            return CommonLoadingStates.dataLoading();
           }
           if (state is TeacherListError) {
             return RefreshIndicator(
@@ -131,7 +132,7 @@ class _TeachersPageState extends State<TeachersPage> {
                     child: TeacherProfileCard(
                       imageUrl: teacher.imageUrl,
                       name: teacher.name,
-                      subject: "Math",
+                      subject: teacher.subjects.isNotEmpty ? teacher.subjects.first.name : 'بدون تخصّص',
                       onTap: () {
                         context.goToTeacherDetails(teacher.id);
                       },

@@ -2,6 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:core/network/dio_client.dart';
 import '../injection_container.dart' as di;
@@ -53,11 +56,18 @@ class NotificationService {
 
 
     final dioClient = di.getIt<DioClient>();
+    final deviceInfo = await _collectDeviceInfo();
     final payload = {
       'token': token,
       'platform': defaultTargetPlatform.name,
       'app': 'teacher_app',
       'timestamp': DateTime.now().toIso8601String(),
+      'deviceId': deviceInfo['deviceId'] ?? 'unknown',
+      'deviceType': deviceInfo['deviceType'] ?? defaultTargetPlatform.name,
+      'deviceModel': deviceInfo['model'] ?? deviceInfo['device'] ?? deviceInfo['name'] ?? 'unknown',
+      'manufacturer': deviceInfo['manufacturer'] ?? deviceInfo['brand'] ?? deviceInfo['vendor'] ?? 'unknown',
+      'osVersion': deviceInfo['osVersion'] ?? deviceInfo['systemVersion'] ?? deviceInfo['version'] ?? deviceInfo['platform'] ?? 'unknown',
+      'device': deviceInfo,
     };
 
     final result = await dioClient.post(url, data: payload);
@@ -73,6 +83,146 @@ class NotificationService {
         }
       },
     );
+  }
+
+  static Future<String> _getOrCreateDeviceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final existing = prefs.getString('device_id');
+    if (existing != null && existing.isNotEmpty) return existing;
+    final newId = const Uuid().v4();
+    await prefs.setString('device_id', newId);
+    return newId;
+  }
+
+  static Future<Map<String, dynamic>> _collectDeviceInfo() async {
+    final plugin = DeviceInfoPlugin();
+    final deviceId = await _getOrCreateDeviceId();
+
+    try {
+      if (kIsWeb) {
+        final info = await plugin.webBrowserInfo;
+        return {
+          'deviceId': deviceId,
+          'deviceType': 'web',
+          'browserName': describeEnum(info.browserName),
+          'appName': info.appName,
+          'appVersion': info.appVersion,
+          'userAgent': info.userAgent,
+          'vendor': info.vendor,
+          'osVersion': info.platform,
+        };
+      }
+
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        try {
+          final info = await plugin.androidInfo;
+          return {
+            'deviceId': deviceId,
+            'deviceType': 'android',
+            'brand': info.brand,
+            'manufacturer': info.manufacturer,
+            'model': info.model,
+            'device': info.device,
+            'product': info.product,
+            'sdkInt': info.version.sdkInt,
+            'osVersion': info.version.release,
+            'isPhysicalDevice': info.isPhysicalDevice,
+          };
+        } catch (_) {
+          await Future.delayed(const Duration(milliseconds: 150));
+          try {
+            final info = await plugin.androidInfo;
+            return {
+              'deviceId': deviceId,
+              'deviceType': 'android',
+              'brand': info.brand,
+              'manufacturer': info.manufacturer,
+              'model': info.model,
+              'device': info.device,
+              'product': info.product,
+              'sdkInt': info.version.sdkInt,
+              'osVersion': info.version.release,
+              'isPhysicalDevice': info.isPhysicalDevice,
+            };
+          } catch (_) {}
+        }
+      }
+
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        try {
+          final info = await plugin.iosInfo;
+          return {
+            'deviceId': deviceId,
+            'deviceType': 'ios',
+            'name': info.name,
+            'model': info.model,
+            'systemName': info.systemName,
+            'systemVersion': info.systemVersion,
+            'isPhysicalDevice': info.isPhysicalDevice,
+            'identifierForVendor': info.identifierForVendor,
+          };
+        } catch (_) {
+          await Future.delayed(const Duration(milliseconds: 150));
+          try {
+            final info = await plugin.iosInfo;
+            return {
+              'deviceId': deviceId,
+              'deviceType': 'ios',
+              'name': info.name,
+              'model': info.model,
+              'systemName': info.systemName,
+              'systemVersion': info.systemVersion,
+              'isPhysicalDevice': info.isPhysicalDevice,
+              'identifierForVendor': info.identifierForVendor,
+            };
+          } catch (_) {}
+        }
+      }
+
+      if (defaultTargetPlatform == TargetPlatform.windows) {
+        final info = await plugin.windowsInfo;
+        return {
+          'deviceId': deviceId,
+          'deviceType': 'windows',
+          'computerName': info.computerName,
+          'numberOfCores': info.numberOfCores,
+          'systemMemoryInMegabytes': info.systemMemoryInMegabytes,
+          'osVersion': '${info.majorVersion}.${info.minorVersion}.${info.buildNumber}',
+        };
+      }
+      if (defaultTargetPlatform == TargetPlatform.macOS) {
+        final info = await plugin.macOsInfo;
+        return {
+          'deviceId': deviceId,
+          'deviceType': 'macos',
+          'model': info.model,
+          'arch': info.arch,
+          'osVersion': info.osRelease,
+          'computerName': info.computerName,
+        };
+      }
+      if (defaultTargetPlatform == TargetPlatform.linux) {
+        final info = await plugin.linuxInfo;
+        return {
+          'deviceId': deviceId,
+          'deviceType': 'linux',
+          'name': info.name,
+          'version': info.version,
+          'prettyName': info.prettyName,
+          'machineId': info.machineId,
+          'osVersion': info.versionId,
+        };
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Teacher device info read failed: $e');
+      }
+    }
+
+    return {
+      'deviceId': deviceId,
+      'deviceType': defaultTargetPlatform.name,
+    };
   }
 
   static Future<void> _showflutterNotification(RemoteMessage message) async {

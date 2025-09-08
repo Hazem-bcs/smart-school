@@ -2,6 +2,7 @@ import 'package:core/data/models/subject_model.dart';
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:core/constant.dart';
 
 abstract class SubjectRemoteDataSource {
   Future<Either<Failure, SubjectModel>> getSubject(int id);
@@ -14,111 +15,70 @@ class SubjectRemoteDataSourceImpl implements SubjectRemoteDataSource {
 
   SubjectRemoteDataSourceImpl({required this.dioClient});
 
-
-  SubjectModel _getDummySubjectById(int id) {
-    final List<SubjectModel> allSubjects = [
-      SubjectModel(
-        id: 1,
-        name: 'رياضيات',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. أحمد محمود', 'د. سارة فؤاد'],
-        notes: ['دروس أسبوعياً 5', 'يجب إحضار الآلة الحاسبة العلمية'],
-      ),
-      SubjectModel(
-        id: 2,
-        name: 'علوم',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['د. سارة فؤاد'],
-        notes: ['مختبر عملي كل أسبوعين'],
-      ),
-      SubjectModel(
-        id: 3,
-        name: 'عربي',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. محمد علي'],
-        notes: ['قراءات إضافية مطلوبة'],
-      ),
-      SubjectModel(
-        id: 4,
-        name: 'جغرافيا',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. ليلى حسن'],
-        notes: ['مشروع بحث في نهاية الفصل'],
-      ),
-    ];
-    // إيجاد المادة باستخدام المعرف أو إرجاع قيمة افتراضية في حالة عدم العثور عليها
-    return allSubjects.firstWhere(
-      (subject) => subject.id == id,
-      orElse: () => allSubjects.first,
-    );
-  }
-
   @override
   Future<Either<Failure, SubjectModel>> getSubject(int id) async {
-    // try {
-    //   final response = await dioClient.post(
-    //     Constants.getSubjectEndpoint,
-    //     data: {'id': id},
-    //   );
-    //   return Right(SubjectModel.fromJson(response.data));
-    // } on DioException catch (e) {
-    //   return Left(handleDioException(e));
-    // } catch (e) {
-    //   return Left(UnknownFailure(message: 'Unknown error occurred'));
-    // }
-    return Right(_getDummySubjectById(id));
+    try {
+      // RemoteDataSource: request subject details
+      // Expects: { data: { subject_name, teacher_name, grade, classroom }, message, status }
+      print('getSubject: $id');
+      final responseEither = await dioClient.post(
+        Constants.getSubjectEndpoint,
+        data: {'subject_id': id},
+      );
+      return responseEither.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            // Log response at debug time
+            // ignore: avoid_print
+            print('SubjectRemoteDataSource.getSubject: status=${response.statusCode}, data=${response.data}');
+            final Map<String, dynamic> data = response.data['data'] as Map<String, dynamic>;
+            final model = SubjectModel.fromDetailJson(data, id: id);
+            return Right(model);
+          } catch (e) {
+            try {
+              final Map<String, dynamic> raw = response.data['data'] as Map<String, dynamic>;
+              final model = SubjectModel.fromJson(raw);
+              return Right(model);
+            } catch (_) {
+              return Left(UnknownFailure(message: 'تنسيق الاستجابة غير صالح'));
+            }
+          }
+        },
+      );
+    } catch (e) {
+      return Left(UnknownFailure(message: 'خطأ غير معروف: ${e.toString()}'));
+    }
   }
 
   @override
   Future<Either<Failure, List<SubjectModel>>> getSubjectList(int id) async {
-    // try {
-    //   final response = await dioClient.post(
-    //     Constants.getSubjectListEndpoint,
-    //     data: {'id': id},
-    //   );
-    //   return Right(response.data);
-    // } on DioException catch (e) {
-    //   return Left(handleDioException(e));
-    // } catch (e) {
-    //   return Left(UnknownFailure(message: 'Unknown error occurred'));
-    // }
-    return Right([
-      SubjectModel(
-        id: 1,
-        name: 'رياضيات',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. أحمد محمود'],
-        notes: ['دروس أسبوعياً 5'],
-      ),
-      SubjectModel(
-        id: 2,
-        name: 'علوم',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['د. سارة فؤاد'],
-        notes: ['مختبر عملي كل أسبوعين'],
-      ),
-      SubjectModel(
-        id: 3,
-        name: 'عربي',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. محمد علي'],
-        notes: ['قراءات إضافية مطلوبة'],
-      ),
-      SubjectModel(
-        id: 4,
-        name: 'جغرافيا',
-        image:
-            'https://cbx-prod.b-cdn.net/COLOURBOX60175808.jpg?width=800&height=800&quality=70',
-        teachers: ['أ. ليلى حسن'],
-        notes: ['مشروع بحث في نهاية الفصل'],
-      ),
-    ]);
+    try {
+      // RemoteDataSource: request subject list for student
+      // Expects: { data: [ { id, name, grade, classroom, teacher }, ... ], message, status }
+      final responseEither = await dioClient.post(
+        Constants.getSubjectListEndpoint,
+        data: {'id': id},
+      );
+      return responseEither.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            // ignore: avoid_print
+            print('SubjectRemoteDataSource.getSubjectList: status=${response.statusCode}, data_count=${(response.data['data'] as List?)?.length}');
+            final List<dynamic> list = response.data['data'] as List<dynamic>;
+            final models = list
+                .whereType<Map<String, dynamic>>()
+                .map((e) => SubjectModel.fromListJson(e))
+                .toList();
+            return Right(models);
+          } catch (e) {
+            return Left(UnknownFailure(message: 'تنسيق قائمة المواد غير صالح'));
+          }
+        },
+      );
+    } catch (e) {
+      return Left(UnknownFailure(message: 'خطأ غير معروف: ${e.toString()}'));
+    }
   }
 }

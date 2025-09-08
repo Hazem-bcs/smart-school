@@ -4,7 +4,7 @@ import 'package:smart_school/features/subject/presentation/blocs/subject_list/su
 import 'package:smart_school/routing/navigation_extension.dart';
 import '../../../../widgets/app_exports.dart';
 import 'package:core/theme/constants/app_strings.dart';
-import 'package:core/theme/constants/app_colors.dart';
+import 'package:core/widgets/unified_loading_indicator.dart';
 
 class SubjectsPage extends StatefulWidget {
   const SubjectsPage({Key? key}) : super(key: key);
@@ -18,6 +18,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
 
   @override
   void initState() {
+    debugPrint('SubjectsPage:initState -> dispatch GetSubjectListEvent');
     context.read<SubjectListBloc>().add(GetSubjectListEvent());
     super.initState();
   }
@@ -35,6 +36,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
         actions: [
           AppBarActions.refresh(
             onPressed: () {
+              debugPrint('SubjectsPage:AppBar refresh tapped -> dispatch GetSubjectListEvent');
               context.read<SubjectListBloc>().add(GetSubjectListEvent());
             },
             isDark: Theme.of(context).brightness == Brightness.dark,
@@ -44,21 +46,23 @@ class _SubjectsPageState extends State<SubjectsPage> {
       body: BlocBuilder<SubjectListBloc, SubjectListState>(
         builder: (context, state) {
           if (state is SubjectListLoading || state is SubjectListInitial) {
-            return AppLoadingWidget();
+            return CommonLoadingStates.dataLoading();
           }
           if (state is SubjectListFailure) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error: ${state.message}'),
-                  ElevatedButton(
+                  Text('حدث خطأ: ${state.message}'),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
                     onPressed: () {
                       context.read<SubjectListBloc>().add(
                         GetSubjectListEvent(),
                       );
                     },
-                    child: const Text('Retry'),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('إعادة المحاولة'),
                   ),
                 ],
               ),
@@ -70,14 +74,16 @@ class _SubjectsPageState extends State<SubjectsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('No subjects found. Please try again later.'),
-                    ElevatedButton(
+                    const Text('لا توجد مواد حالياً، حاول لاحقاً.'),
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
                       onPressed: () {
                         context.read<SubjectListBloc>().add(
                           GetSubjectListEvent(),
                         );
                       },
-                      child: const Text('Retry'),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('تحديث'),
                     ),
                   ],
                 ),
@@ -85,6 +91,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
             }
             return RefreshIndicator(
               onRefresh: () async {
+                debugPrint('SubjectsPage:RefreshIndicator -> dispatch GetSubjectListEvent');
                 context.read<SubjectListBloc>().add(GetSubjectListEvent());
               },
               child: GridView.builder(
@@ -101,6 +108,7 @@ class _SubjectsPageState extends State<SubjectsPage> {
                   return AppSubjectCard(
                     subject: subject,
                     onTap: () {
+                      debugPrint('SubjectsPage:Tap subject id=${subject.id}, name=${subject.name}');
                       context.goToSubjectDetails(subject.id);
                     },
                   );

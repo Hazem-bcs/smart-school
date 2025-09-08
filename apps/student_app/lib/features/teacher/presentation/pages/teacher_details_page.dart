@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
+import 'package:core/widgets/unified_loading_indicator.dart';
 import 'package:teacher_feat/domain/teacher_entity.dart';
 import 'package:smart_school/features/teacher/presentation/blocs/teacher_details_bloc.dart';
 
@@ -25,13 +26,82 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
     super.initState();
   }
 
+  Widget _buildHeader(TeacherEntity teacher, ThemeData theme) {
+    final colors = _gradientFor(teacher.name);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          AppAvatarWidget(imageUrl: teacher.imageUrl, radius: 32),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  teacher.name,
+                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _pill(icon: Icons.phone_android, label: teacher.phone.isNotEmpty ? teacher.phone : 'لا يوجد هاتف'),
+                    _pill(icon: Icons.location_on, label: teacher.address.isNotEmpty ? teacher.address : 'لا يوجد عنوان'),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Color> _gradientFor(String name) {
+    final palettes = <List<Color>>[
+      [const Color(0xFF7B61FF), const Color(0xFF5E2EFF)],
+      [const Color(0xFF00C6FF), const Color(0xFF0072FF)],
+      [const Color(0xFFFF6CAB), const Color(0xFF7366FF)],
+      [const Color(0xFFFFA726), const Color(0xFFFF7043)],
+      [const Color(0xFF42E695), const Color(0xFF3BB2B8)],
+    ];
+    final index = name.hashCode.abs() % palettes.length;
+    return palettes[index];
+  }
+
+  Widget _pill({required IconData icon, required String label}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.18),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: 14),
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: AppStrings.teacherDetails,
+        title: 'تفاصيل المعلم',
         actions: [
           AppBarActions.refresh(
             onPressed: () {
@@ -48,7 +118,7 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
         builder: (context, state) {
           if (state is TeacherDetailsInitial ||
               state is TeacherDetailsLoading) {
-            return const Center(child: AppLoadingWidget());
+            return const Center(child: SmartSchoolLoading(message: 'جاري تحميل بيانات المعلم...'));
           }
           if (state is TeacherDetailsError) {
             return RefreshIndicator(
@@ -127,6 +197,8 @@ class _TeacherPageState extends State<TeacherDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          _buildHeader(loadedTeacher, theme),
+                          const SizedBox(height: 24),
                           _buildInfoCardsSection(loadedTeacher, theme),
                           const SizedBox(height: 32),
                           _buildBioSection(loadedTeacher, theme),

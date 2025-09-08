@@ -3,37 +3,58 @@ import '../../domain/entities/subject_entity.dart';
 class SubjectModel {
   final int id;
   final String name;
-  final String image;
-  final List<String> teachers;
-  final List<String> notes;
+  final String grade;
+  final String classroom;
+  final String? teacher;
 
   SubjectModel({
     required this.id,
     required this.name,
-    required this.image,
-    required this.teachers,
-    required this.notes,
+    required this.grade,
+    required this.classroom,
+    this.teacher,
   });
 
-  // من JSON إلى Model
+  // مرن: يدعم صيغ متنوعة قادمة من باك-إند مختلف
   factory SubjectModel.fromJson(Map<String, dynamic> json) {
     return SubjectModel(
-      id: json['id'],
-      name: json['name'],
-      image: json['image'],
-      teachers: List<String>.from(json['teachers']),
-      notes: List<String>.from(json['notes']),
+      id: (json['id'] ?? 0) is int ? json['id'] : int.tryParse('${json['id']}') ?? 0,
+      name: (json['name'] ?? json['subject_name'] ?? 'غير معروف') as String,
+      grade: (json['grade'] ?? '') as String,
+      classroom: (json['classroom'] ?? '') as String,
+      teacher: (json['teacher'] ?? json['teacher_name']) as String?,
     );
   }
 
-  // من Model إلى JSON
+  // من JSON (قائمة المواد)
+  factory SubjectModel.fromListJson(Map<String, dynamic> json) {
+    return SubjectModel(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      grade: json['grade'] as String,
+      classroom: json['classroom'] as String,
+      teacher: json['teacher'] as String?,
+    );
+  }
+
+  // من JSON (تفاصيل مادة)
+  factory SubjectModel.fromDetailJson(Map<String, dynamic> json, {required int id}) {
+    return SubjectModel(
+      id: id,
+      name: (json['subject_name'] ?? json['name']) as String,
+      grade: (json['grade']) as String,
+      classroom: (json['classroom']) as String,
+      teacher: (json['teacher_name'] ?? json['teacher']) as String?,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'image': image,
-      'teachers': teachers,
-      'notes': notes,
+      'grade': grade,
+      'classroom': classroom,
+      'teacher': teacher,
     };
   }
 
@@ -41,9 +62,9 @@ class SubjectModel {
     return SubjectEntity(
       id: id,
       name: name,
-      image: image,
-      teachers: teachers,
-      notes: notes,
+      grade: grade,
+      classroom: classroom,
+      teacher: teacher,
     );
   }
 }
