@@ -79,6 +79,7 @@ class HomePage extends StatelessWidget {
                         onCreateAssignment: () => Navigator.of(context).pushNamed('/new-assignment'),
                         onScheduleZoom: () => Navigator.of(context).pushNamed('/schedule-zoom'),
                         onViewScheduledMeetings: () => Navigator.of(context).pushNamed('/scheduled-meetings'),
+                        onOpenAchievements: () => Navigator.of(context).pushNamed('/achievements'),
                       ),
                       SizedBox(height: ResponsiveHelper.getSpacing(context, mobile: 80, tablet: 100, desktop: 120)),
                     ],

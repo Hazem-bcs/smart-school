@@ -7,6 +7,7 @@ import 'package:auth/injection_container.dart' as auth_di;
 import 'package:password/injection_container.dart' as password_di;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teacher_app/core/local_data_source.dart';
+import 'package:teacher_app/features/achievements/presentation/blocs/achievements_bloc.dart';
 import 'package:teacher_app/features/assignment_submission/domain/usecases/mark_assignment_as_graded_usecase.dart';
 import 'package:teacher_app/features/new_assignment/data/data_sources/newAssignmentLocalDataSource.dart';
 import 'package:teacher_app/features/new_assignment/domain/usecases/get_classes_use_case.dart';
@@ -84,6 +85,14 @@ import 'features/schedule/data/repositories/schedule_repository_impl.dart';
 import 'features/schedule/data/data_sources/schedule_remote_data_source.dart';
 import 'features/schedule/domain/repositories/schedule_repository.dart';
 import 'features/schedule/presentation/blocs/schedule_bloc.dart';
+
+// Achievements feature imports
+import 'features/achievements/data/data_sources/achievements_remote_data_source.dart';
+import 'features/achievements/data/repositories/achievements_repository_impl.dart';
+import 'features/achievements/domain/repositories/achievements_repository.dart';
+import 'features/achievements/domain/usecases/get_students_usecase.dart';
+import 'features/achievements/domain/usecases/get_achievements_usecase.dart';
+import 'features/achievements/domain/usecases/grant_achievement_usecase.dart';
 
 // Core BLoCs imports
 import 'package:core/blocs/sensitive_connectivity/connectivity_bloc.dart';
@@ -410,6 +419,49 @@ Future<void> setupDependencies() async {
   getIt.registerFactory(
     () => ScheduleBloc(
       getScheduleForDateUseCase: getIt<GetScheduleForDateUseCase>(),
+    ),
+  );
+
+  // ========================================
+  // ACHIEVEMENTS FEATURE DEPENDENCIES
+  // ========================================
+  // Data Source
+  getIt.registerLazySingleton<AchievementsRemoteDataSource>(
+    () => AchievementsRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
+  );
+
+  // Repository
+  getIt.registerLazySingleton<AchievementsRepository>(
+    () => AchievementsRepositoryImpl(
+      remoteDataSource: getIt<AchievementsRemoteDataSource>(),
+    ),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(
+    () => GetStudentsUseCase(getIt<AchievementsRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetAvailableAchievementsUseCase(getIt<AchievementsRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GetStudentAchievementsUseCase(getIt<AchievementsRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => GrantAchievementUseCase(getIt<AchievementsRepository>()),
+  );
+  getIt.registerLazySingleton(
+    () => RevokeAchievementUseCase(getIt<AchievementsRepository>()),
+  );
+
+  // BLoC
+  getIt.registerFactory(
+    () => AchievementsBloc(
+      getStudentsUseCase: getIt<GetStudentsUseCase>(),
+      getAvailableAchievementsUseCase: getIt<GetAvailableAchievementsUseCase>(),
+      getStudentAchievementsUseCase: getIt<GetStudentAchievementsUseCase>(),
+      grantAchievementUseCase: getIt<GrantAchievementUseCase>(),
+      revokeAchievementUseCase: getIt<RevokeAchievementUseCase>(),
     ),
   );
 

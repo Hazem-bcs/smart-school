@@ -50,7 +50,7 @@ dependencies:
   dartz: ^0.10.1
   image_picker: ^1.0.7
   flutter_screenutil: ^5.9.3
-  
+  flutter_svg: ^1.1.6
   # Monorepo packages
   core:
     path: ../../packages/core

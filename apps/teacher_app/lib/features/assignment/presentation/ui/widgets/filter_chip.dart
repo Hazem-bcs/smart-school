@@ -23,7 +23,6 @@ class _FilterChipState extends State<FilterChip>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _colorAnimation;
 
   @override
   void initState() {
@@ -41,13 +40,6 @@ class _FilterChipState extends State<FilterChip>
       curve: Curves.easeInOut,
     ));
 
-    _colorAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
 
     if (widget.isSelected) {
       _animationController.forward();

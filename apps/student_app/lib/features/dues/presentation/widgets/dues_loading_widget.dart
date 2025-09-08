@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:core/widgets/index.dart';
-import 'package:core/theme/index.dart';
 
 /// Widget لحالة التحميل في صفحة المستحقات
 class DuesLoadingWidget extends StatelessWidget {

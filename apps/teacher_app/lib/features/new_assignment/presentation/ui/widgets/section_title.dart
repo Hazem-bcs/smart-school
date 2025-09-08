@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/responsive/responsive_helper.dart';
-import '../../../../../core/responsive/responsive_widgets.dart';
 import 'package:core/theme/constants/app_colors.dart';
 
 class SectionTitle extends StatefulWidget {

@@ -70,4 +70,21 @@ extension NavigationExtension on BuildContext {
   void pushReplacementAllNamed(String routeName, {Object? arguments}) {
     Navigator.of(this).pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }
+
+  // Navigate to students list page
+  void goToStudentsList() {
+    Navigator.pushNamed(this, AppRoutes.studentsList);
+  }
+
+  // Navigate to student achievements page
+  void goToStudentAchievements(String studentId, String studentName) {
+    Navigator.pushNamed(
+      this,
+      AppRoutes.studentAchievements,
+      arguments: {
+        'studentId': studentId,
+        'studentName': studentName,
+      },
+    );
+  }
 } 

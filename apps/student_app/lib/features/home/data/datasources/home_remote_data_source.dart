@@ -118,46 +118,46 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         return const Left(ServerFailure(message: 'فشل في تحميل الإنجازات'));
       }
 
-      const String fakeJson = '''
-      [
-        {
-          "id": "1",
-          "title": "طالب مجتهد",
-          "description": "أكمل 10 واجبات متتالية",
-          "icon_path": "assets/svg/achievement1.svg",
-          "is_unlocked": true,
-          "points": 100,
-          "unlocked_at": "2024-01-15T10:30:00Z"
-        },
-        {
-          "id": "2",
-          "title": "حضور مثالي",
-          "description": "حضر 20 يوم متتالي",
-          "icon_path": "assets/svg/achievement2.svg",
-          "is_unlocked": true,
-          "points": 150,
-          "unlocked_at": "2024-01-20T08:15:00Z"
-        },
-        {
-          "id": "3",
-          "title": "متفوق دراسي",
-          "description": "حصل على 95% في الاختبار",
-          "icon_path": "assets/svg/achievement3.svg",
-          "is_unlocked": false,
-          "points": 200,
-          "unlocked_at": null
-        },
-        {
-          "id": "4",
-          "title": "قارئ نشط",
-          "description": "اقرأ 5 موارد تعليمية",
-          "icon_path": "assets/svg/achievement4.svg",
-          "is_unlocked": false,
-          "points": 75,
-          "unlocked_at": null
-        }
-      ]
-      ''';
+        const String fakeJson = '''
+        [
+          {
+            "id": "1",
+            "title": "طالب مجتهد",
+            "description": "أكمل 10 واجبات متتالية",
+            "icon_path": "assets/svg/achievement1.svg",
+            "is_unlocked": true,
+            "points": 100,
+            "unlocked_at": "2024-01-15T10:30:00Z"
+          },
+          {
+            "id": "2",
+            "title": "حضور مثالي",
+            "description": "حضر 20 يوم متتالي",
+            "icon_path": "assets/svg/achievement2.svg",
+            "is_unlocked": true,
+            "points": 150,
+            "unlocked_at": "2024-01-20T08:15:00Z"
+          },
+          {
+            "id": "3",
+            "title": "متفوق دراسي",
+            "description": "حصل على 95% في الاختبار",
+            "icon_path": "assets/svg/achievement3.svg",
+            "is_unlocked": false,
+            "points": 200,
+            "unlocked_at": null
+          },
+          {
+            "id": "4",
+            "title": "قارئ نشط",
+            "description": "اقرأ 5 موارد تعليمية",
+            "icon_path": "assets/svg/achievement4.svg",
+            "is_unlocked": false,
+            "points": 75,
+            "unlocked_at": null
+          }
+        ]
+        ''';
 
       final List<dynamic> jsonList = json.decode(fakeJson);
       final List<AchievementModel> achievements = jsonList

@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import '../../domain/repositories/assignment_repository.dart';
 import '../../domain/entities/assignment.dart';
 import '../data_sources/remote/assignment_remote_data_source.dart';
-import '../models/assignment_model.dart';
 
 class AssignmentRepositoryImpl implements AssignmentRepository {
   final AssignmentRemoteDataSource remoteDataSource;

@@ -26,6 +26,10 @@ import '../../../features/zoom_meeting/presentation/ui/pages/schedule_meeting_pa
 import 'package:password/presentation/pages/change_password_page.dart';
 import 'package:password/presentation/blocs/password_bloc.dart';
 import '../../../features/auth/presentation/blocs/auth_bloc.dart';
+import '../../../features/achievements/presentation/ui/pages/achievements_home_page.dart';
+import '../../../features/achievements/presentation/ui/pages/students_list_page.dart';
+import '../../../features/achievements/presentation/ui/pages/student_achievements_page.dart';
+import '../../../features/achievements/presentation/blocs/achievements_bloc.dart';
 
 import '../../../features/home/presentation/blocs/home_bloc.dart';
 import '../../../features/home/domain/usecases/get_classes_usecase.dart';
@@ -62,6 +66,9 @@ class AppRoutes {
   static const String schedule = '/schedule';
   static const String assignmentSubmission = '/assignment-submission';
   static const String scheduledMeetings = '/scheduled-meetings';
+  static const String achievements = '/achievements';
+  static const String studentsList = '/students-list';
+  static const String studentAchievements = '/student-achievements';
   
     // Route generator with BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -213,6 +220,38 @@ class AppRoutes {
           ),
           settings: settings,
         );
+        
+      case achievements:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<AchievementsBloc>(),
+            child: const AchievementsHomePage(),
+          ),
+          settings: settings,
+        );
+        
+      case studentsList:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<AchievementsBloc>(),
+            child: const StudentsListPage(),
+          ),
+          settings: settings,
+        );
+        
+      case studentAchievements:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<AchievementsBloc>(),
+            child: StudentAchievementsPage(
+              studentId: args['studentId'],
+              studentName: args['studentName'],
+            ),
+          ),
+          settings: settings,
+        );
+        
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

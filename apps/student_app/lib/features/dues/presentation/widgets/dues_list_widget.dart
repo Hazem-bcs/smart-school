@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dues/domain/entities/due_entity.dart';
-import 'package:core/theme/index.dart';
 import 'dues_card.dart';
 
 /// Widget لقائمة المستحقات

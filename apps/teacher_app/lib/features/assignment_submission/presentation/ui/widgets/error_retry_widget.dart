@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/theme/index.dart';
 import '../../blocs/submission_bloc.dart';
-import '../../blocs/submission_state.dart';
 import '../../blocs/submission_event.dart';
 
 class ErrorRetryWidget extends StatelessWidget {

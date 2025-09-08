@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:smart_school/widgets/app_exports.dart';
-import 'package:core/widgets/index.dart';
 import 'package:core/theme/index.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import '../blocs/dues_bloc.dart';

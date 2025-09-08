@@ -127,6 +127,12 @@ class AppColors {
   
   /// Light theme destructive color
   static const Color lightDestructive = Color(0xFFFF3B30);
+  
+  /// Light theme accent green - Modern emerald
+  static const Color accentGreen = Color(0xFF10B981);
+  
+  /// Light theme destructive - Vibrant red
+  static const Color destructive = Color(0xFFEF4444);
 
   // ==================== DARK THEME COLORS ====================
   /// Dark theme background color - Deep modern dark
@@ -174,6 +180,12 @@ class AppColors {
   
   /// Dark theme warning orange - Vibrant amber
   static const Color darkWarning = Color(0xFFFBBF24);
+  
+  /// Dark theme accent green - Modern emerald
+  static const Color darkAccentGreen = Color(0xFF34D399);
+  
+  /// Dark theme error - Vibrant red
+  static const Color darkError = Color(0xFFEF4444);
 
   // ==================== GLASSMORPHISM COLORS ====================
   /// Glassmorphism overlay light

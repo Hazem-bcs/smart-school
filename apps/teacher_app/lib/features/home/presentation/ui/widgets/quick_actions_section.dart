@@ -7,12 +7,14 @@ class QuickActionsSection extends StatelessWidget {
   final VoidCallback onCreateAssignment;
   final VoidCallback onScheduleZoom;
   final VoidCallback? onViewScheduledMeetings;
+  final VoidCallback? onOpenAchievements;
 
   const QuickActionsSection({
     super.key,
     required this.onCreateAssignment,
     required this.onScheduleZoom,
     this.onViewScheduledMeetings,
+    this.onOpenAchievements,
   });
 
   @override
@@ -60,6 +62,15 @@ class QuickActionsSection extends StatelessWidget {
                     icon: Icons.list_alt,
                   ),
                 ],
+                if (onOpenAchievements != null) ...[
+                  SizedBox(height: ResponsiveHelper.getSpacing(context)),
+                  QuickActionButton(
+                    text: 'منح الإنجازات',
+                    onPressed: onOpenAchievements,
+                    isPrimary: false,
+                    icon: Icons.workspace_premium,
+                  ),
+                ],
               ],
             ),
             tablet: Row(
@@ -92,6 +103,17 @@ class QuickActionsSection extends StatelessWidget {
                     ),
                   ),
                 ],
+                if (onOpenAchievements != null) ...[
+                  SizedBox(width: ResponsiveHelper.getSpacing(context)),
+                  Expanded(
+                    child: QuickActionButton(
+                      text: 'منح الإنجازات',
+                      onPressed: onOpenAchievements,
+                      isPrimary: false,
+                      icon: Icons.workspace_premium,
+                    ),
+                  ),
+                ],
               ],
             ),
             desktop: Row(
@@ -121,6 +143,17 @@ class QuickActionsSection extends StatelessWidget {
                       onPressed: onViewScheduledMeetings,
                       isPrimary: false,
                       icon: Icons.list_alt,
+                    ),
+                  ),
+                ],
+                if (onOpenAchievements != null) ...[
+                  SizedBox(width: ResponsiveHelper.getSpacing(context)),
+                  Expanded(
+                    child: QuickActionButton(
+                      text: 'منح الإنجازات',
+                      onPressed: onOpenAchievements,
+                      isPrimary: false,
+                      icon: Icons.workspace_premium,
                     ),
                   ),
                 ],
