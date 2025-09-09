@@ -23,7 +23,7 @@ class ProfileEditBloc extends Bloc<ProfileEditEvent, ProfileEditState> {
 
     on<SaveProfile>((event, emit) async {
       emit(ProfileEditLoading());
-      final result = await updateProfileUseCase(event.profile);
+      final result = await updateProfileUseCase(event.profile, imageFile: event.imageFile);
       result.fold(
         (failure) => emit(ProfileEditError(failure.message)),
         (updatedProfile) => emit(ProfileEditSuccess(updatedProfile)),

@@ -37,4 +37,5 @@ Future<void> setupProfileDependencies(GetIt getIt) async {
   // --------------------------  U S E C A S E S   -----------------------------------
 
   getIt.registerFactory(() => GetUserProfileUseCase(getIt<ProfileRepository>()));
+  getIt.registerFactory(() => UpdateUserProfileUseCase(getIt<ProfileRepository>()));
 }

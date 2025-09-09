@@ -49,4 +49,6 @@ Future<void> setupNotificationDependencies(GetIt getIt) async {
   getIt.registerFactory(() => ClearNotificationsUseCase(getIt<NotificationRepository>()));
   getIt.registerFactory(() => MarkAllAsReadUseCase(getIt<NotificationRepository>()));
 
+
+
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:teacher_app/features/profile/domain/entities/profile.dart';
+import 'dart:io';
 
 abstract class ProfileEditEvent extends Equatable {
   @override
@@ -10,7 +11,8 @@ class LoadProfile extends ProfileEditEvent {}
 
 class SaveProfile extends ProfileEditEvent {
   final Profile profile;
-  SaveProfile(this.profile);
+  final File? imageFile;
+  SaveProfile(this.profile, {this.imageFile});
   @override
-  List<Object?> get props => [profile];
+  List<Object?> get props => [profile, imageFile?.path];
 } 

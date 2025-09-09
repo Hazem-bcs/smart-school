@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:core/domain/entities/user_entity.dart';
 import 'package:core/network/failures.dart';
 import 'package:core/network/network_info.dart';
@@ -25,5 +26,31 @@ class ProfileRepositoryImpl extends ProfileRepository {
            (userModel) => Right(userModel.toEntity()),
      );
 
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateUserProfile({
+    required String name,
+    required String email,
+    required String phone,
+    required String address,
+    File? imageFile,
+  }) async {
+    final studentId = await localDataSource.getId();
+    if (studentId == null) {
+      return const Left(UnAuthenticated(message: 'المستخدم غير مسجل الدخول'));
+    }
+    final result = await remoteDataSource.updateProfileData(
+      studentId: studentId,
+      name: name,
+      email: email,
+      phone: phone,
+      address: address,
+      imageFile: imageFile,
+    );
+    return result.fold(
+      (failure) => Left(failure),
+      (userModel) => Right(userModel.toEntity()),
+    );
   }
 }

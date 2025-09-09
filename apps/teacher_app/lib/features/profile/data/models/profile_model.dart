@@ -24,9 +24,9 @@ class ProfileModel {
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
       id: json['id'] ?? '',
-      name: json['name'] ?? '',
+      name: json['name_ar'] ?? '',
       bio: json['bio'] ?? '',
-      avatarUrl: json['avatarUrl'] ?? '',
+      avatarUrl: json['image_url'] ?? '',
       contactInfoModel: ContactInfoModel.fromJson(json['contactInfo'] ?? {}),
       socialMediaModel: (json['socialMedia'] as List<dynamic>?)
           ?.map((item) => SocialMediaModel.fromJson(item as Map<String, dynamic>))

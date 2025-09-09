@@ -17,7 +17,7 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   @override
   Future<String?> getUserId() async {
     try {
-      String? userId = sharedPreferences.getString(cachedUserId);  
+      String? userId = sharedPreferences.getString('user_id');  
       return userId;
     } catch (e) {
       throw CacheFailure(message: "فشل في جلب معرف المستخدم: ${e.toString()}");
@@ -38,6 +38,11 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
     try {
       // Always store as string to ensure consistency
       await sharedPreferences.setString(cachedUserId, userId);
+      // Optionally also store as int if numeric for cross-feature compatibility
+      final int? asInt = int.tryParse(userId);
+      if (asInt != null) {
+        await sharedPreferences.setInt(cachedUserId, asInt);
+      }
     } catch (e) {
       throw CacheFailure(message: "فشل في حفظ معرف المستخدم: ${e.toString()}");
     }

@@ -178,8 +178,8 @@ class _EditProfilePageState extends State<EditProfilePage>
         ),
       );
 
-      // Send to Bloc
-      context.read<ProfileEditBloc>().add(SaveProfile(profile));
+      // Send to Bloc with optional image file
+      context.read<ProfileEditBloc>().add(SaveProfile(profile, imageFile: _selectedImage));
     } catch (e) {
       _showSnackBar('Error preparing profile data: $e');
       setState(() {

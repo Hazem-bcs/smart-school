@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:core/network/failures.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import '../../domain/entities/class_entity.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/entities/notification_entity.dart';
@@ -11,12 +12,13 @@ import '../models/notification_model.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource remoteDataSource;
-
-  HomeRepositoryImpl(this.remoteDataSource);
+  final LocalDataSource localDataSource;
+  HomeRepositoryImpl(HomeRemoteDataSource homeRemoteDataSource, {required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, List<ClassEntity>>> getClasses() async {
-    final result = await remoteDataSource.getClasses();
+    final teacherId = await localDataSource.getUserId() ?? 0;
+    final result = await remoteDataSource.getClasses(teacherId);
     return result.map(
       (models) => models.map(_mapClassModelToEntity).toList(),
     );

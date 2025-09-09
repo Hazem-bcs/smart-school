@@ -1,4 +1,5 @@
 import 'package:core/domain/entities/user_entity.dart';
+import 'package:core/constant.dart';
 
 class UserModel {
   final int? id;
@@ -50,12 +51,18 @@ class UserModel {
         throw Exception('لا يوجد بيانات مستخدم في الاستجابة');
       }
       final userData = data.first as Map<String, dynamic>;
+      final dynamic rawImage = userData['profile_photo_url'] ?? userData['image'] ?? userData['avatar'] ?? userData['photo'];
+      final String? resolvedPhotoUrl = rawImage == null
+          ? null
+          : (rawImage.toString().startsWith('http')
+              ? rawImage.toString()
+              : (rawImage.toString().isEmpty ? null : Constants.baseUrl + rawImage.toString()));
       return UserModel(
         id: userData['id'] as int?,
         name: userData['name'] as String?,
         email: userData['email'] as String? ?? '',
         password: '', 
-        profilePhotoUrl: null,
+        profilePhotoUrl: resolvedPhotoUrl,
         token: null,
         gender: userData['gender'] as String?,
         nationality: userData['nationality'] as String?,
@@ -71,12 +78,18 @@ class UserModel {
     }
 
     if (data is Map<String, dynamic>) {
+      final dynamic rawImage = data['profile_photo_url'] ?? data['image'] ?? data['avatar'] ?? data['photo'];
+      final String? resolvedPhotoUrl = rawImage == null
+          ? null
+          : (rawImage.toString().startsWith('http')
+              ? rawImage.toString()
+              : (rawImage.toString().isEmpty ? null : Constants.baseUrl + rawImage.toString()));
       return UserModel(
         id: data['id'] as int?,
         name: data['name'] as String?,
         email: data['email'] as String? ?? '',
         password: '',
-        profilePhotoUrl: null,
+        profilePhotoUrl: resolvedPhotoUrl,
         token: null,
         gender: data['gender'] as String?,
         nationality: data['nationality'] as String?,

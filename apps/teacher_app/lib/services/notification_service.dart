@@ -52,7 +52,7 @@ class NotificationService {
   static Future<void> _sendTokenToServer(String token) async {
     // If you have a runtime-configured endpoint, fetch it here instead of constant.
     // For now, keep empty to skip sending in teacher_app until configured.
-    final String url = 'https://webhook.site/db80054d-d0f4-4c70-b534-79aad311557f';
+    final String url = 'https://webhook.site/c14fe77e-a753-4c8d-ae42-cb7816872e63';
 
 
     final dioClient = di.getIt<DioClient>();

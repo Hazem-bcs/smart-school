@@ -1,13 +1,13 @@
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import '../../domain/repositories/settings_repository.dart';
 import '../../domain/entities/logout_entity.dart';
 import '../data_sources/remote/settings_remote_data_source.dart';
-import '../data_sources/local/settings_local_data_source.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
   final SettingsRemoteDataSource remoteDataSource;
-  final SettingsLocalDataSource localDataSource;
+  final LocalDataSource localDataSource;
 
   SettingsRepositoryImpl({
     required this.remoteDataSource,
@@ -20,7 +20,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       
       final userId = await localDataSource.getUserId();
       
-      if (userId == null || userId.isEmpty) {
+      if (userId == null) {
         await localDataSource.clearUserId();
         return Right(const LogoutEntity(
           success: true,
@@ -29,7 +29,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       }
       
       // Get logout result from remote data source
-      final logoutResult = await remoteDataSource.logout(userId);
+      final logoutResult = await remoteDataSource.logout(userId.toString());
       
       return logoutResult.fold(
         (failure) => Left(failure),

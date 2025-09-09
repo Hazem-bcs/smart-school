@@ -143,6 +143,30 @@ class _ProfilePageState extends State<ProfilePage>
                 context.goToEditProfile();
               },
             ),
+            // إحصائيات سريعة
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildStatItem(
+                      icon: Icons.book,
+                      label: 'المواد',
+                      value: profile.professionalInfo.subjectsTaught.length.toString(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatItem(
+                      icon: Icons.people,
+                      label: 'الفصول',
+                      value: profile.professionalInfo.gradeLevels.length.toString(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
             
             // بطاقة معلومات التواصل
             InfoCard(
@@ -163,6 +187,55 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
               ],
             ),
+            
+            // بطاقة المعلومات المهنية
+            InfoCard(
+              title: 'المعلومات المهنية',
+              items: [
+                if (profile.professionalInfo.department.isNotEmpty)
+                  InfoCardItem(
+                    icon: 'building',
+                    primaryText: 'القسم',
+                    secondaryText: profile.professionalInfo.department,
+                  ),
+                if (profile.professionalInfo.qualifications.isNotEmpty)
+                  InfoCardItem(
+                    icon: 'graduation_cap',
+                    primaryText: 'المؤهلات',
+                    secondaryText: profile.professionalInfo.qualifications,
+                  ),
+                if (profile.professionalInfo.certifications.isNotEmpty)
+                  InfoCardItem(
+                    icon: 'certificate',
+                    primaryText: 'الشهادات',
+                    secondaryText: profile.professionalInfo.certifications,
+                  ),
+              ],
+            ),
+            
+            // بطاقة المواد التي يدرسها
+            if (profile.professionalInfo.subjectsTaught.isNotEmpty)
+              InfoCard(
+                title: 'المواد التي يدرسها',
+                items: profile.professionalInfo.subjectsTaught
+                    .map((s) => InfoCardItem(
+                          icon: 'book_open',
+                          primaryText: s,
+                        ))
+                    .toList(),
+              ),
+            
+            // بطاقة الفصول/المستويات
+            if (profile.professionalInfo.gradeLevels.isNotEmpty)
+              InfoCard(
+                title: 'الفصول الدراسية',
+                items: profile.professionalInfo.gradeLevels
+                    .map((g) => InfoCardItem(
+                          icon: 'users',
+                          primaryText: g,
+                        ))
+                    .toList(),
+              ),
             
             // بطاقة وسائل التواصل الاجتماعي
             if (profile.socialMedia.isNotEmpty)
@@ -204,9 +277,7 @@ class _ProfilePageState extends State<ProfilePage>
                   color: Colors.red[400],
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Error loading profile',
-                ),
+                Text('حدث خطأ أثناء تحميل الملف الشخصي'),
                 const SizedBox(height: 8),
                 Text(
                   message,
@@ -217,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage>
                   onPressed: () {
                     context.read<ProfileViewBloc>().add(LoadProfile());
                   },
-                  child: const Text('Retry'),
+                  child: const Text('إعادة المحاولة'),
                 ),
               ],
             ),
@@ -242,12 +313,61 @@ class _ProfilePageState extends State<ProfilePage>
           height: MediaQuery.of(context).size.height - 200,
           child: const Center(
             child: Text(
-              'Welcome to your profile\nPull down to load profile data',
+              'مرحبًا بك في ملفك الشخصي\nاسحب للأسفل لتحميل البيانات',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: ProfileTheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: ProfileTheme.primary, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

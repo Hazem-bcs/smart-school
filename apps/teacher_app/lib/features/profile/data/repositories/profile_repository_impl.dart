@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:core/network/failures.dart';
 import 'package:teacher_app/core/local_data_source.dart';
@@ -26,9 +27,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Either<Failure, Profile>> updateProfile(Profile profile) async {
+  Future<Either<Failure, Profile>> updateProfile(Profile profile, {File? imageFile}) async {
     final model = _mapEntityToModel(profile);
-    final result = await remoteDataSource.updateProfile(model);
+    final userId = await localDataSource.getUserId();
+    if (userId == null) {
+      return const Left(UnAuthenticated(message: 'المستخدم غير مسجل الدخول'));
+    }
+    final result = await remoteDataSource.updateProfile(
+      userId: userId,
+      profileModel: model,
+      imagePath: imageFile?.path,
+    );
     return result.map(_mapModelToEntity);
   }
 

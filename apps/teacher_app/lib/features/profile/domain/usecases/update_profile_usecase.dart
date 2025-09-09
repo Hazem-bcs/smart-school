@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
 import '../repositories/profile_repository.dart';
@@ -8,7 +9,7 @@ class UpdateProfileUseCase {
 
   UpdateProfileUseCase(this.repository);
 
-  Future<Either<Failure, Profile>> call(Profile profile) async {
-    return await repository.updateProfile(profile);
+  Future<Either<Failure, Profile>> call(Profile profile, {File? imageFile}) async {
+    return await repository.updateProfile(profile, imageFile: imageFile);
   }
 } 
