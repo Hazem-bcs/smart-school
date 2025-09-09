@@ -9,6 +9,11 @@ import 'data/data_sources/notification_remote_data_source.dart';
 import 'data/notification_repository_impl.dart';
 import 'domain/notification_repositoty.dart';
 import 'domain/use_cases/get_notification_list_use_case.dart';
+import 'domain/use_cases/add_notification_use_case.dart';
+import 'domain/use_cases/mark_as_read_use_case.dart';
+import 'domain/use_cases/delete_notification_use_case.dart';
+import 'domain/use_cases/clear_notifications_use_case.dart';
+import 'domain/use_cases/mark_all_as_read_use_case.dart';
 
 
 Future<void> setupNotificationDependencies(GetIt getIt) async {
@@ -38,5 +43,10 @@ Future<void> setupNotificationDependencies(GetIt getIt) async {
   // --------------------------  U S E C A S E S   -----------------------------------
 
   getIt.registerFactory(() => GetNotificationListUseCase(getIt<NotificationRepository>()));
+  getIt.registerFactory(() => AddNotificationUseCase(getIt<NotificationRepository>()));
+  getIt.registerFactory(() => MarkAsReadUseCase(getIt<NotificationRepository>()));
+  getIt.registerFactory(() => DeleteNotificationUseCase(getIt<NotificationRepository>()));
+  getIt.registerFactory(() => ClearNotificationsUseCase(getIt<NotificationRepository>()));
+  getIt.registerFactory(() => MarkAllAsReadUseCase(getIt<NotificationRepository>()));
 
 }

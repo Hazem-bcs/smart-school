@@ -6,10 +6,16 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:core/network/dio_client.dart';
+import 'package:smart_school/widgets/app_exports.dart';
 import '../injection_container.dart' as di;
 import 'package:uuid/uuid.dart';
 
 import '../../../firebase_options.dart';
+import 'package:notification/domain/entities/notification_entity.dart';
+import 'package:notification/domain/use_cases/add_notification_use_case.dart';
+import 'package:notification/injection_container.dart' as notif_di;
+import 'package:core/injection_container.dart' as core_di;
+import '../features/notification/presintation/bloc/notification_bloc.dart' as notif_bloc;
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -22,30 +28,54 @@ class NotificationService {
 
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    if (kDebugMode) {
+      print('[FCM][BG] handler start. id=${message.messageId}, data=${message.data}');
+    }
 
     await _initilizeLocalNotifications();
     await _showflutterNotification(message);
+    await _persistIncomingMessage(message);
+    if (kDebugMode) {
+      print('[FCM][BG] handler done.');
+    }
   }
 
   // initialize local notifications and firebase messaging
   static Future<void> initializeNotification() async {
+    if (kDebugMode) {
+      print('[FCM] initializeNotification()');
+    }
     // request permission
     await _firebaseMessaging.requestPermission();
+    if (kDebugMode) {
+      print('[FCM] permission requested');
+    }
 
     // listen for token refresh and re-send to server
     _firebaseMessaging.onTokenRefresh.listen((String newToken) async {
+      if (kDebugMode) {
+        print('[FCM] onTokenRefresh -> $newToken');
+      }
       await _sendTokenToServer(newToken);
     });
 
     // called when message is received when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (kDebugMode) {
+        print('[FCM] onMessage id=${message.messageId}, data=${message.data}');
+      }
       await _showflutterNotification(message);
+      await _persistIncomingMessage(message);
+      _dispatchBlocAdd(message);
     });
 
     // called when app is brought to foreground from background by tapping the notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       print("App opened by notification: ${message.data}");
+      await _persistIncomingMessage(message);
+      _dispatchBlocAdd(message);
     });
 
     // get and print FCM token (for sending target message)
@@ -53,6 +83,9 @@ class NotificationService {
 
     // initilize local notifications
     await _initilizeLocalNotifications();
+    if (kDebugMode) {
+      print('[FCM] local notifications initialized');
+    }
 
     // check if app is lanched by tapping the notification
     await _getInitialNotification();
@@ -272,6 +305,9 @@ class NotificationService {
     );
 
     //show notification
+    if (kDebugMode) {
+      print('[LocalNotif] show -> title="$title" body="$body"');
+    }
     await FlutterLocalNotificationsPlugin().show(
       0,
       title,
@@ -300,6 +336,119 @@ class NotificationService {
 
     if (message != null) {
       print("App launched from terminated state via notification: ${message.data}");
+      await _persistIncomingMessage(message);
+      _dispatchBlocAdd(message);
+    } else {
+      if (kDebugMode) {
+        print('[FCM] getInitialMessage -> null');
+      }
   }
+  }
+
+  static Future<void> _persistIncomingMessage(RemoteMessage message) async {
+    try {
+      await _ensureDependencies();
+      if (kDebugMode) {
+        print('[Persist] start. rawData=${message.data}');
+      }
+      final RemoteNotification? notif = message.notification;
+      final Map<String, dynamic> data = message.data;
+
+      final String id = data['id']?.toString().isNotEmpty == true
+          ? data['id'].toString()
+          : (message.messageId ?? const Uuid().v4());
+
+      final String title = notif?.title ?? data['title']?.toString() ?? 'إشعار جديد';
+      final String body = notif?.body ?? data['body']?.toString() ?? '';
+      final DateTime sentTime = DateTime.tryParse(data['sentTime']?.toString() ?? '') ?? DateTime.now();
+      final String? imageUrl = data['imageUrl']?.toString();
+      final String? deepLink = data['deepLink']?.toString();
+
+      final entity = NotificationEntity(
+        id: id,
+        title: title,
+        body: body,
+        sentTime: sentTime,
+        isRead: false,
+        imageUrl: imageUrl,
+        deepLink: deepLink,
+      );
+
+      if (kDebugMode) {
+        print('[Persist] entity -> {id:$id, title:$title, body:$body, sentTime:$sentTime}');
+      }
+      final addUseCase = di.getIt<AddNotificationUseCase>();
+      final result = await addUseCase(entity);
+      result.fold(
+        (failure) {
+          if (kDebugMode) {
+            print('[Persist][FAIL] ${failure.message}');
+          }
+        },
+        (_) {
+          if (kDebugMode) {
+            print('[Persist][OK] saved');
+          }
+        },
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to persist incoming notification: $e');
+      }
+    }
+  }
+
+  static Future<void> _ensureDependencies() async {
+    final getIt = di.getIt;
+    if (!getIt.isRegistered<SharedPreferences>()) {
+      if (kDebugMode) {
+        print('[DI] SharedPreferences not registered -> setting up core');
+      }
+      await core_di.setupCoreDependencies(getIt);
+    }
+    if (!getIt.isRegistered<AddNotificationUseCase>()) {
+      if (kDebugMode) {
+        print('[DI] AddNotificationUseCase not registered -> setting up notification');
+      }
+      await notif_di.setupNotificationDependencies(getIt);
+    }
+    if (kDebugMode) {
+      print('[DI] ready: prefs=${getIt.isRegistered<SharedPreferences>()}, addUC=${getIt.isRegistered<AddNotificationUseCase>()}');
+    }
+  }
+
+  static void _dispatchBlocAdd(RemoteMessage message) {
+    try {
+      final RemoteNotification? notif = message.notification;
+      final Map<String, dynamic> data = message.data;
+      final String id = data['id']?.toString().isNotEmpty == true
+          ? data['id'].toString()
+          : (message.messageId ?? const Uuid().v4());
+      final String title = notif?.title ?? data['title']?.toString() ?? 'إشعار جديد';
+      final String body = notif?.body ?? data['body']?.toString() ?? '';
+      final DateTime sentTime = DateTime.tryParse(data['sentTime']?.toString() ?? '') ?? DateTime.now();
+      final String? imageUrl = data['imageUrl']?.toString();
+      final String? deepLink = data['deepLink']?.toString();
+
+      final entity = NotificationEntity(
+        id: id,
+        title: title,
+        body: body,
+        sentTime: sentTime,
+        isRead: false,
+        imageUrl: imageUrl,
+        deepLink: deepLink,
+      );
+
+      final bloc = di.getIt<notif_bloc.NotificationBloc>();
+      bloc.add(notif_bloc.AddNotificationEvent(notification: entity));
+      if (kDebugMode) {
+        print('[BLOC] AddNotificationEvent dispatched for id=$id');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[BLOC][EX] dispatch add -> $e');
+      }
+    }
   }
 }

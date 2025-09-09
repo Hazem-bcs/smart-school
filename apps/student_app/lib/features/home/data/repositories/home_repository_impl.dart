@@ -5,6 +5,7 @@ import '../../domain/entities/home_stats_entity.dart';
 import '../../domain/entities/quick_action_entity.dart';
 import '../../domain/entities/achievement_entity.dart';
 import '../../domain/entities/promo_entity.dart';
+import '../../domain/entities/attendance_trend_entity.dart';
 import '../datasources/home_remote_data_source.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
@@ -30,5 +31,10 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<Either<Failure, List<PromoEntity>>> getPromos() async {
     return await remoteDataSource.getPromos();
+  }
+
+  @override
+  Future<Either<Failure, AttendanceTrendEntity>> getAttendanceTrend(DateTime startDate) async {
+    return await remoteDataSource.getAttendanceTrend(startDate: startDate);
   }
 }

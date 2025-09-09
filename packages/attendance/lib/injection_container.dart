@@ -3,14 +3,19 @@ import 'package:get_it/get_it.dart';
 import 'package:core/network/network_info.dart';
 import 'data/attendance_repository_impl.dart';
 import 'data/data_sources/attendance_remote_data_source.dart';
+import 'data/data_sources/attendance_local_data_source.dart';
 import 'domain/attendance_repository.dart';
 import 'domain/usecases/get_monthly_attendance_use_case.dart';
 import 'domain/usecases/get_attendance_details_use_case.dart';
 import 'presentation/blocs/attendance_bloc.dart';
 import 'presentation/blocs/attendance_details_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> setupAttendanceDependencies(GetIt getIt) async {
   // Data sources
+  getIt.registerLazySingleton<AttendanceLocalDataSource>(
+    () => AttendanceLocalDataSourceImpl(prefs: getIt<SharedPreferences>()),
+  );
   getIt.registerLazySingleton<AttendanceRemoteDataSource>(
     () => AttendanceRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
@@ -19,6 +24,7 @@ Future<void> setupAttendanceDependencies(GetIt getIt) async {
   getIt.registerLazySingleton<AttendanceRepository>(
     () => AttendanceRepositoryImpl(
       remoteDataSource: getIt<AttendanceRemoteDataSource>(),
+      localDataSource: getIt<AttendanceLocalDataSource>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
   );

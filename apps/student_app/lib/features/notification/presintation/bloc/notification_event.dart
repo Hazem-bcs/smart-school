@@ -13,3 +13,25 @@ class UpdateNotificationEvent extends NotificationEvent {
 
 }
 
+class AddNotificationEvent extends NotificationEvent {
+  final NotificationEntity notification;
+
+  AddNotificationEvent({required this.notification});
+}
+
+class MarkAsReadEvent extends NotificationEvent {
+  final String id;
+
+  MarkAsReadEvent({required this.id});
+}
+
+class DeleteNotificationEvent extends NotificationEvent {
+  final String id;
+
+  DeleteNotificationEvent({required this.id});
+}
+
+class ClearNotificationsEvent extends NotificationEvent {}
+
+class MarkAllAsReadEvent extends NotificationEvent {}
+

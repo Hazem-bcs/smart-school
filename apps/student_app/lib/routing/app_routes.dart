@@ -210,10 +210,7 @@ class AppRoutes {
         
       case notifications:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => di.getIt<NotificationBloc>(),
-            child: const NotificationPage(),
-          ),
+          builder: (_) => const NotificationPage(),
           settings: settings,
         );
         

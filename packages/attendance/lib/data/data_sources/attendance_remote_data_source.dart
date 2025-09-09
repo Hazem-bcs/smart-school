@@ -1,9 +1,12 @@
 import 'package:core/network/dio_client.dart';
+import 'package:core/network/failures.dart';
+import 'package:core/constant.dart';
+import 'package:dartz/dartz.dart';
 import '../models/attendance_model.dart';
 
 abstract class AttendanceRemoteDataSource {
-  Future<List<MonthlyAttendanceModel>> getMonthlyAttendance(int year);
-  Future<AttendanceModel> getAttendanceDetails(int year, int month);
+  Future<Either<Failure, List<MonthlyAttendanceModel>>> getMonthlyAttendance(int studentId, int year);
+  Future<Either<Failure, AttendanceModel>> getAttendanceDetails(int studentId, int year, int month);
 }
 
 class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
@@ -12,92 +15,60 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
   const AttendanceRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<List<MonthlyAttendanceModel>> getMonthlyAttendance(int year) async {
+  Future<Either<Failure, List<MonthlyAttendanceModel>>> getMonthlyAttendance(int studentId, int year) async {
     try {
-      // TODO: Replace with actual API endpoint
-      // final response = await dio.get('/attendance/monthly/$year');
-      // return (response.data as List)
-      //     .map((json) => MonthlyAttendanceModel.fromJson(json))
-      //     .toList();
+      // TODO: Replace with real API when available
+      await Future.delayed(const Duration(milliseconds: 400));
 
-      // Mock data for now
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // محاكاة استجابة السيرفر باستخدام fromJson
       final mockJson = [
-        {
-          "monthName": "يناير",
-          "attendanceCount": 15,
-          "absenceCount": 16,
-          "monthNumber": 1
-        },
-        {
-          "monthName": "فبراير",
-          "attendanceCount": 20,
-          "absenceCount": 8,
-          "monthNumber": 2
-        },
-        {
-          "monthName": "مارس",
-          "attendanceCount": 22,
-          "absenceCount": 9,
-          "monthNumber": 3
-        },
-        {
-          "monthName": "أبريل",
-          "attendanceCount": 24,
-          "absenceCount": 6,
-          "monthNumber": 4
-        },
-        {
-          "monthName": "مايو",
-          "attendanceCount": 25,
-          "absenceCount": 6,
-          "monthNumber": 5
-        },
-        {
-          "monthName": "يونيو",
-          "attendanceCount": 25,
-          "absenceCount": 5,
-          "monthNumber": 6
-        },
-        {
-          "monthName": "يوليو",
-          "attendanceCount": 26,
-          "absenceCount": 5,
-          "monthNumber": 7
-        },
+        {"monthName": "يناير",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 1},
+        {"monthName": "فبراير",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 2},
+        {"monthName": "مارس",    "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 3},
+        {"monthName": "أبريل",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 4},
+        {"monthName": "مايو",    "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 5},
+        {"monthName": "يونيو",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 6},
+        {"monthName": "يوليو",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 7},
+        {"monthName": "أغسطس",  "attendanceCount": 0,  "absenceCount": 0,  "monthNumber": 8},
+        {"monthName": "سبتمبر", "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 9},
+        {"monthName": "أكتوبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 10},
+        {"monthName": "نوفمبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 11},
+        {"monthName": "ديسمبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 12},
       ];
-
-      return mockJson
-          .map<MonthlyAttendanceModel>(
-              (json) => MonthlyAttendanceModel.fromJson(json))
+      final list = mockJson
+          .map<MonthlyAttendanceModel>((json) => MonthlyAttendanceModel.fromJson(json))
           .toList();
+      return Right(list);
     } catch (e) {
-      throw Exception('Failed to load monthly attendance: $e');
+      return Left(UnknownFailure(message: 'Failed to load monthly attendance: ${e.toString()}'));
     }
   }
 
   @override
-  Future<AttendanceModel> getAttendanceDetails(int year, int month) async {
+  Future<Either<Failure, AttendanceModel>> getAttendanceDetails(int studentId, int year, int month) async {
     try {
-      // TODO: Replace with actual API endpoint
-      // final response = await dio.get('/attendance/details/$year/$month');
-      // return AttendanceModel.fromJson(response.data);
-
-      // Mock data for now
-      await Future.delayed(const Duration(milliseconds: 500));
-      final Map<String, dynamic> mockJson = {
-        "year": 2025,
-        "month": 1,
-        "attendanceCount": 25,
-        "absenceCount": 3,
-        "presentDays": [1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 29, 30],
-        "absentDays": [5, 13, 27],
-      };
-      return AttendanceModel.fromJson(mockJson);
+      final responseEither = await dioClient.post(
+        Constants.getAttendanceDetailsEndpoint,
+        data: {
+          'student_id': studentId,
+          'year': year,
+          'month': month,
+        },
+      );
+      return responseEither.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            final data = response.data;
+            final Map<String, dynamic> json = data is Map<String, dynamic> ? data : <String, dynamic>{};
+            final model = AttendanceModel.fromJson(json);
+            return Right(model);
+          } catch (e) {
+            return Left(UnknownFailure(message: 'Invalid attendance details format'));
+          }
+        },
+      );
     } catch (e) {
-      throw Exception('Failed to load attendance details: $e');
+      return Left(UnknownFailure(message: 'Failed to load attendance details: ${e.toString()}'));
     }
   }
 }

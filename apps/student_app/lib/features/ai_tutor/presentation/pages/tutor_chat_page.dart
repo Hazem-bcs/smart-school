@@ -39,6 +39,9 @@ class _TutorChatViewState extends State<TutorChatView> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final appBarHeight = kToolbarHeight + mediaQuery.padding.top;
     const composerHeight = 0.0;
 
@@ -47,11 +50,11 @@ class _TutorChatViewState extends State<TutorChatView> with TickerProviderStateM
       backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(appBarHeight),
-        child: const _GlassAppBar(title: 'المدرس الذكي 🤖'),
+        child: _GlassAppBar(title: 'المدرس الذكي 🤖', colorScheme: colorScheme, isDark: isDark),
       ),
       body: Stack(
         children: [
-          _AnimatedPastelBackground(animation: _bgPulseController),
+          _AnimatedPastelBackground(animation: _bgPulseController, colorScheme: colorScheme, isDark: isDark),
           Positioned.fill(
             top: appBarHeight,
             bottom: composerHeight + mediaQuery.padding.bottom,
@@ -92,6 +95,8 @@ class _TutorChatViewState extends State<TutorChatView> with TickerProviderStateM
                     currentUser: _user,
                     aiUser: _aiTutor,
                     onMessageSend: (message) => context.read<ChatBloc>().add(SendMessageEvent(message: message)),
+                    colorScheme: colorScheme,
+                    isDark: isDark,
                   );
                 },
               ),
@@ -101,7 +106,7 @@ class _TutorChatViewState extends State<TutorChatView> with TickerProviderStateM
             Positioned(
               left: 16,
               bottom: composerHeight + mediaQuery.padding.bottom + 12,
-              child: const _TypingIndicatorChip(),
+              child: _TypingIndicatorChip(colorScheme: colorScheme, isDark: isDark),
             ),
           // Custom input removed to keep a single composer (Chat's built-in)
           
@@ -140,7 +145,9 @@ class _TutorChatViewState extends State<TutorChatView> with TickerProviderStateM
 
 class _GlassAppBar extends StatelessWidget {
   final String title;
-  const _GlassAppBar({required this.title});
+  final ColorScheme colorScheme;
+  final bool isDark;
+  const _GlassAppBar({required this.title, required this.colorScheme, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +160,9 @@ class _GlassAppBar extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.18),
+              color: colorScheme.surface.withOpacity(isDark ? 0.18 : 0.14),
               border: Border(
-                bottom: BorderSide(color: Colors.white.withOpacity(0.25), width: 1),
+                bottom: BorderSide(color: colorScheme.onSurface.withOpacity(0.20), width: 1),
               ),
             ),
             child: Row(
@@ -166,8 +173,8 @@ class _GlassAppBar extends StatelessWidget {
                   height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF7C4DFF), Color(0xFF00BCD4)],
+                    gradient: LinearGradient(
+                      colors: [colorScheme.primary, colorScheme.secondary],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -179,27 +186,23 @@ class _GlassAppBar extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: TextStyle(color: colorScheme.onSurface, fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const Spacer(),
                 Container(
                   margin: const EdgeInsets.only(right: 12),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.18),
+                    color: colorScheme.surface.withOpacity(isDark ? 0.18 : 0.14),
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: Colors.white.withOpacity(0.25), width: 1),
+                    border: Border.all(color: colorScheme.onSurface.withOpacity(0.20), width: 1),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.bolt, color: Colors.white, size: 16),
-                      SizedBox(width: 6),
-                      Text('AI', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+                      Icon(Icons.bolt, color: colorScheme.onSurface, size: 16),
+                      const SizedBox(width: 6),
+                      Text('AI', style: TextStyle(color: colorScheme.onSurface, fontSize: 12, fontWeight: FontWeight.w600)),
                     ],
                   ),
                 ),
@@ -214,7 +217,9 @@ class _GlassAppBar extends StatelessWidget {
 
 class _AnimatedPastelBackground extends StatelessWidget {
   final Animation<double> animation;
-  const _AnimatedPastelBackground({required this.animation});
+  final ColorScheme colorScheme;
+  final bool isDark;
+  const _AnimatedPastelBackground({required this.animation, required this.colorScheme, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -223,18 +228,31 @@ class _AnimatedPastelBackground extends StatelessWidget {
       builder: (context, _) {
         final t = animation.value;
         return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFB3E5FC), Color(0xFFE1BEE7), Color(0xFFC8E6C9)],
-            ),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1A1B3A) : null,
           ),
           child: Stack(
             children: [
-              _blurCircle(Offset(60 + 10 * t, 140 - 8 * t), 140, Colors.white.withOpacity(0.25)),
-              _blurCircle(Offset(250 - 8 * t, 420 + 10 * t), 180, Colors.white.withOpacity(0.18)),
-              _blurCircle(Offset(-40 + 6 * t, 600 - 6 * t), 160, Colors.white.withOpacity(0.15)),
+              Positioned.fill(
+                child: isDark
+                    ? const SizedBox.shrink()
+                    : DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              colorScheme.surfaceVariant,
+                              colorScheme.primary.withOpacity(0.20),
+                              colorScheme.secondary.withOpacity(0.20),
+                            ],
+                          ),
+                        ),
+                      ),
+              ),
+              _blurCircle(Offset(60 + 10 * t, 140 - 8 * t), 140, isDark ? Colors.white.withOpacity(0.06) : colorScheme.onSurface.withOpacity(0.18)),
+              _blurCircle(Offset(250 - 8 * t, 420 + 10 * t), 180, isDark ? Colors.white.withOpacity(0.05) : colorScheme.onSurface.withOpacity(0.14)),
+              _blurCircle(Offset(-40 + 6 * t, 600 - 6 * t), 160, isDark ? Colors.white.withOpacity(0.04) : colorScheme.onSurface.withOpacity(0.12)),
             ],
           ),
         );
@@ -261,7 +279,9 @@ class _AnimatedPastelBackground extends StatelessWidget {
 }
 
 class _TypingIndicatorChip extends StatefulWidget {
-  const _TypingIndicatorChip();
+  final ColorScheme colorScheme;
+  final bool isDark;
+  const _TypingIndicatorChip({required this.colorScheme, required this.isDark});
   @override
   State<_TypingIndicatorChip> createState() => _TypingIndicatorChipState();
 }
@@ -290,13 +310,13 @@ class _TypingIndicatorChipState extends State<_TypingIndicatorChip> with SingleT
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.25),
+            color: widget.colorScheme.surface.withOpacity(widget.isDark ? 0.20 : 0.16),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.35), width: 1),
+            border: Border.all(color: widget.colorScheme.onSurface.withOpacity(0.22), width: 1),
           ),
           child: Row(
             children: [
-              const Icon(Icons.psychology, color: Colors.white, size: 16),
+              Icon(Icons.psychology, color: widget.colorScheme.onSurface, size: 16),
               const SizedBox(width: 8),
               AnimatedBuilder(
                 animation: _controller,
@@ -310,7 +330,7 @@ class _TypingIndicatorChipState extends State<_TypingIndicatorChip> with SingleT
                         width: 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(opacity),
+                          color: widget.colorScheme.onSurface.withOpacity(opacity),
                           shape: BoxShape.circle,
                         ),
                       );
@@ -333,12 +353,16 @@ class _GlassChatSurface extends StatelessWidget {
   final types.User currentUser;
   final types.User aiUser;
   final ValueChanged<String> onMessageSend;
+  final ColorScheme colorScheme;
+  final bool isDark;
 
   const _GlassChatSurface({
     required this.chatController,
     required this.currentUser,
     required this.aiUser,
     required this.onMessageSend,
+    required this.colorScheme,
+    required this.isDark,
   });
 
   @override
@@ -351,18 +375,33 @@ class _GlassChatSurface extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: colorScheme.surface.withOpacity(isDark ? 0.10 : 0.08),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.25), width: 1),
+              border: Border.all(color: colorScheme.onSurface.withOpacity(0.20), width: 1),
             ),
-            child: Chat(
-              onMessageSend: onMessageSend,
-              currentUserId: currentUser.id,
-              resolveUser: (types.UserID id) async {
-                if (id == currentUser.id) return currentUser;
-                return aiUser;
-              },
-              chatController: chatController,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                brightness: isDark ? Brightness.dark : Brightness.light,
+                colorScheme: colorScheme,
+                scaffoldBackgroundColor: Colors.transparent,
+                canvasColor: Colors.transparent,
+                cardColor: colorScheme.surface.withOpacity(isDark ? 0.20 : 0.10),
+                dividerColor: colorScheme.onSurface.withOpacity(0.12),
+                iconTheme: Theme.of(context).iconTheme.copyWith(color: colorScheme.onSurface),
+                textTheme: Theme.of(context).textTheme.apply(
+                      bodyColor: colorScheme.onSurface,
+                      displayColor: colorScheme.onSurface,
+                    ),
+              ),
+              child: Chat(
+                onMessageSend: onMessageSend,
+                currentUserId: currentUser.id,
+                resolveUser: (types.UserID id) async {
+                  if (id == currentUser.id) return currentUser;
+                  return aiUser;
+                },
+                chatController: chatController,
+              ),
             ),
           ),
         ),

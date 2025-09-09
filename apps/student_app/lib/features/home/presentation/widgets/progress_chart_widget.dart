@@ -3,14 +3,21 @@ import '../../domain/entities/home_stats_entity.dart';
 
 class ProgressChartWidget extends StatelessWidget {
   final HomeStatsEntity stats;
+  final DateTime trendStartDate;
+  final List<int> trendCodes; // 0 عطلة, 1 غياب, 2 حضور
 
   const ProgressChartWidget({
     super.key,
     required this.stats,
+    required this.trendStartDate,
+    required this.trendCodes,
   });
 
   @override
   Widget build(BuildContext context) {
+    final attendancePercents = _buildAttendanceStepPercentages();
+    final dayLabels = _buildDayLabelsFromStart();
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
@@ -56,26 +63,19 @@ class ProgressChartWidget extends StatelessWidget {
           const SizedBox(height: 20),
           SizedBox(
             height: 200,
+            width: double.infinity,
             child: CustomPaint(
               painter: ProgressChartPainter(
-                attendanceData: _generateAttendanceData(),
+                attendanceData: attendancePercents,
                 homeworkData: _generateHomeworkData(),
               ),
             ),
           ),
           const SizedBox(height: 16),
-          // إضافة أسماء الأيام
+          // إضافة أسماء الأيام ديناميكيًا
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildDayLabel('الأحد'),
-              _buildDayLabel('الاثنين'),
-              _buildDayLabel('الثلاثاء'),
-              _buildDayLabel('الأربعاء'),
-              _buildDayLabel('الخميس'),
-              _buildDayLabel('الجمعة'),
-              _buildDayLabel('السبت'),
-            ],
+            children: dayLabels.map(_buildDayLabel).toList(),
           ),
           const SizedBox(height: 16),
           Row(
@@ -91,6 +91,52 @@ class ProgressChartWidget extends StatelessWidget {
     );
   }
 
+  List<double> _buildAttendanceStepPercentages() {
+    final List<double> result = [];
+    int y = 0; // 0..7
+    for (final c in trendCodes) {
+      if (c == 2) {
+        y = (y + 1).clamp(0, 7);
+      } else if (c == 1) {
+        y = (y - 1).clamp(0, 7);
+      } else {
+        // 0 عطلة: لا تغيير على y
+      }
+      result.add((y / 7) * 100.0);
+    }
+    return result;
+  }
+
+  List<String> _buildDayLabelsFromStart() {
+    final days = <String>[];
+    for (int i = 0; i < 7; i++) {
+      final d = trendStartDate.add(Duration(days: i));
+      days.add(_arabicDayName(d.weekday));
+    }
+    return days;
+  }
+
+  String _arabicDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.sunday:
+        return 'الأحد';
+      case DateTime.monday:
+        return 'الاثنين';
+      case DateTime.tuesday:
+        return 'الثلاثاء';
+      case DateTime.wednesday:
+        return 'الأربعاء';
+      case DateTime.thursday:
+        return 'الخميس';
+      case DateTime.friday:
+        return 'الجمعة';
+      case DateTime.saturday:
+        return 'السبت';
+      default:
+        return '';
+    }
+  }
+
   Widget _buildDayLabel(String day) {
     return Text(
       day,
@@ -102,29 +148,16 @@ class ProgressChartWidget extends StatelessWidget {
     );
   }
 
-  List<double> _generateAttendanceData() {
-    // بيانات واقعية للحضور خلال الأسبوع
-    return [
-      stats.attendancePercentage * 0.95, // الأحد
-      stats.attendancePercentage * 0.98, // الاثنين
-      stats.attendancePercentage * 0.92, // الثلاثاء
-      stats.attendancePercentage * 0.96, // الأربعاء
-      stats.attendancePercentage * 0.94, // الخميس
-      stats.attendancePercentage * 0.90, // الجمعة
-      stats.attendancePercentage * 0.88, // السبت
-    ];
-  }
-
   List<double> _generateHomeworkData() {
-    // بيانات واقعية للواجبات خلال الأسبوع
+    // تبقى ثابتة من data source الحالي
     return [
-      stats.homeworkCompletionRate * 0.85, // الأحد
-      stats.homeworkCompletionRate * 0.92, // الاثنين
-      stats.homeworkCompletionRate * 0.88, // الثلاثاء
-      stats.homeworkCompletionRate * 0.95, // الأربعاء
-      stats.homeworkCompletionRate * 0.90, // الخميس
-      stats.homeworkCompletionRate * 0.82, // الجمعة
-      stats.homeworkCompletionRate * 0.78, // السبت
+      stats.homeworkCompletionRate * 0.85,
+      stats.homeworkCompletionRate * 0.92,
+      stats.homeworkCompletionRate * 0.88,
+      stats.homeworkCompletionRate * 0.95,
+      stats.homeworkCompletionRate * 0.10,
+      stats.homeworkCompletionRate * 0.82,
+      stats.homeworkCompletionRate * 0.78,
     ];
   }
 
@@ -154,7 +187,7 @@ class ProgressChartWidget extends StatelessWidget {
 }
 
 class ProgressChartPainter extends CustomPainter {
-  final List<double> attendanceData;
+  final List<double> attendanceData; // step-based cumulative (0..100)
   final List<double> homeworkData;
 
   ProgressChartPainter({
@@ -164,17 +197,15 @@ class ProgressChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // رسم الشبكة
+    // رسم الشبكة: 7 مربعات رأسية (0..7) و7 فواصل زمنية
     _drawGrid(canvas, size);
-    
-    // رسم خط الحضور
-    _drawLine(canvas, size, attendanceData, const Color(0xFF7B61FF), 3.0);
-    
-    // رسم خط الواجبات
-    _drawLine(canvas, size, homeworkData, Colors.orange, 3.0);
-    
-    // رسم نقاط البيانات
+
+    // حضور: منحنى سلس
+    _drawSmoothCurve(canvas, size, attendanceData, const Color(0xFF7B61FF), 3.0);
     _drawDataPoints(canvas, size, attendanceData, const Color(0xFF7B61FF));
+
+    // واجبات: خط ناعم كما هو
+    _drawLine(canvas, size, homeworkData, Colors.orange, 3.0);
     _drawDataPoints(canvas, size, homeworkData, Colors.orange);
   }
 
@@ -183,9 +214,9 @@ class ProgressChartPainter extends CustomPainter {
       ..color = Colors.grey.withOpacity(0.2)
       ..strokeWidth = 1.0;
 
-    // خطوط أفقية
-    for (int i = 0; i <= 5; i++) {
-      final y = size.height * (i / 5);
+    // 7 خطوط أفقية (0..7)
+    for (int i = 0; i <= 7; i++) {
+      final double y = size.height * (i / 7);
       canvas.drawLine(
         Offset(0, y),
         Offset(size.width, y),
@@ -193,9 +224,9 @@ class ProgressChartPainter extends CustomPainter {
       );
     }
 
-    // خطوط رأسية
+    // 7 فواصل زمنية (7 أيام)
     for (int i = 0; i <= 6; i++) {
-      final x = size.width * (i / 6);
+      final double x = size.width * (i / 6);
       canvas.drawLine(
         Offset(x, 0),
         Offset(x, size.height),
@@ -204,6 +235,7 @@ class ProgressChartPainter extends CustomPainter {
     }
   }
 
+  // خط ناعم (للواجبات)
   void _drawLine(Canvas canvas, Size size, List<double> data, Color color, double strokeWidth) {
     if (data.isEmpty) return;
 
@@ -215,11 +247,12 @@ class ProgressChartPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round;
 
     final path = Path();
-    final width = size.width / (data.length - 1);
+    final bool hasMultiplePoints = data.length > 1;
+    final double stepX = hasMultiplePoints ? (size.width / (data.length - 1)) : 0;
     
     for (int i = 0; i < data.length; i++) {
-      final x = i * width;
-      final y = size.height - (data[i] / 100) * size.height;
+      final double x = hasMultiplePoints ? (i * stepX) : (size.width / 2);
+      final double y = size.height - (data[i] / 100) * size.height;
       
       if (i == 0) {
         path.moveTo(x, y);
@@ -228,6 +261,52 @@ class ProgressChartPainter extends CustomPainter {
       }
     }
     
+    canvas.drawPath(path, paint);
+  }
+
+  // منحنى سلس باستخدام Catmull-Rom إلى Bezier
+  void _drawSmoothCurve(Canvas canvas, Size size, List<double> data, Color color, double strokeWidth) {
+    if (data.isEmpty) return;
+
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final int n = data.length;
+    final double stepX = n > 1 ? (size.width / (n - 1)) : 0;
+
+    // تحويل النقاط إلى Offsets
+    List<Offset> pts = List.generate(n, (i) {
+      final double x = n > 1 ? (i * stepX) : (size.width / 2);
+      final double y = size.height - (data[i] / 100) * size.height;
+      return Offset(x, y);
+    });
+
+    final path = Path();
+    path.moveTo(pts.first.dx, pts.first.dy);
+
+    for (int i = 0; i < n - 1; i++) {
+      final Offset p0 = i == 0 ? pts[i] : pts[i - 1];
+      final Offset p1 = pts[i];
+      final Offset p2 = pts[i + 1];
+      final Offset p3 = i + 2 < n ? pts[i + 2] : pts[i + 1];
+
+      // Catmull-Rom to Bezier control points
+      final Offset c1 = Offset(
+        p1.dx + (p2.dx - p0.dx) / 6.0,
+        p1.dy + (p2.dy - p0.dy) / 6.0,
+      );
+      final Offset c2 = Offset(
+        p2.dx - (p3.dx - p1.dx) / 6.0,
+        p2.dy - (p3.dy - p1.dy) / 6.0,
+      );
+
+      path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, p2.dx, p2.dy);
+    }
+
     canvas.drawPath(path, paint);
   }
 
@@ -241,16 +320,15 @@ class ProgressChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
-    final width = size.width / (data.length - 1);
+    final bool hasMultiplePoints = data.length > 1;
+    final double stepX = hasMultiplePoints ? (size.width / (data.length - 1)) : 0;
     
     for (int i = 0; i < data.length; i++) {
-      final x = i * width;
-      final y = size.height - (data[i] / 100) * size.height;
+      final double x = hasMultiplePoints ? (i * stepX) : (size.width / 2);
+      final double y = size.height - (data[i] / 100) * size.height;
       
-      // رسم دائرة خارجية بيضاء
-      canvas.drawCircle(Offset(x, y), 6, strokePaint);
-      // رسم دائرة داخلية ملونة
-      canvas.drawCircle(Offset(x, y), 4, paint);
+      canvas.drawCircle(Offset(x, y), 6.0, strokePaint);
+      canvas.drawCircle(Offset(x, y), 4.0, paint);
     }
   }
 

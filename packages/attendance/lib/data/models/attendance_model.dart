@@ -11,13 +11,22 @@ class AttendanceModel extends AttendanceEntity {
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic v) => v is int ? v : int.tryParse('$v') ?? 0;
+    List<int> parseIntList(dynamic v) {
+      if (v == null) return <int>[];
+      if (v is List) {
+        return v.map((e) => parseInt(e)).toList();
+      }
+      return <int>[];
+    }
+
     return AttendanceModel(
-      year: json['year'] as int,
-      month: json['month'] as int,
-      attendanceCount: json['attendanceCount'] as int,
-      absenceCount: json['absenceCount'] as int,
-      presentDays: List<int>.from(json['presentDays'] as List),
-      absentDays: List<int>.from(json['absentDays'] as List),
+      year: parseInt(json['year']),
+      month: parseInt(json['month']),
+      attendanceCount: parseInt(json['attendanceCount']),
+      absenceCount: parseInt(json['absenceCount']),
+      presentDays: parseIntList(json['presentDays']),
+      absentDays: parseIntList(json['absentDays']),
     );
   }
 
@@ -53,11 +62,12 @@ class MonthlyAttendanceModel extends MonthlyAttendanceEntity {
   });
 
   factory MonthlyAttendanceModel.fromJson(Map<String, dynamic> json) {
+    int parseInt(dynamic v) => v is int ? v : int.tryParse('$v') ?? 0;
     return MonthlyAttendanceModel(
-      monthName: json['monthName'] as String,
-      attendanceCount: json['attendanceCount'] as int,
-      absenceCount: json['absenceCount'] as int,
-      monthNumber: json['monthNumber'] as int,
+      monthName: (json['monthName'] ?? json['month_name'] ?? '') as String,
+      attendanceCount: parseInt(json['attendanceCount'] ?? json['present_days'] ?? json['present'] ?? 0),
+      absenceCount: parseInt(json['absenceCount'] ?? json['absent_days'] ?? json['absent'] ?? 0),
+      monthNumber: parseInt(json['monthNumber'] ?? json['month'] ?? 0),
     );
   }
 

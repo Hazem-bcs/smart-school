@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notification/domain/entities/notification_entity.dart';
 import 'package:smart_school/widgets/app_bar_widget.dart';
-import 'package:core/widgets/index.dart';
 
 import '../widgets/index.dart';
 import '../bloc/notification_bloc.dart';
@@ -28,11 +27,7 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   void _markAsRead(NotificationEntity notification) {
-    context.read<NotificationBloc>().add(
-      UpdateNotificationEvent(
-        updatedNotification: notification.copyWith(isRead: true),
-      ),
-    );
+    context.read<NotificationBloc>().add(MarkAsReadEvent(id: notification.id));
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -66,6 +61,16 @@ class _NotificationPageState extends State<NotificationPage> {
           AppBarActions.refresh(
             onPressed: _loadNotifications,
             isDark: Theme.of(context).brightness == Brightness.dark,
+          ),
+          IconButton(
+            tooltip: 'وضع علامة الكل كمقروء',
+            onPressed: () => context.read<NotificationBloc>().add(MarkAllAsReadEvent()),
+            icon: const Icon(Icons.done_all),
+          ),
+          IconButton(
+            tooltip: 'حذف الكل',
+            onPressed: () => context.read<NotificationBloc>().add(ClearNotificationsEvent()),
+            icon: const Icon(Icons.delete_sweep),
           ),
         ],
       ),

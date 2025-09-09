@@ -211,9 +211,14 @@ Future<void> setupDependencies() async {
   );
 
   // ---------------- Notification Feature ----------------
-  getIt.registerFactory(
+  getIt.registerLazySingleton(
     () => NotificationBloc(
       getNotificationListUseCase: getIt<GetNotificationListUseCase>(),
+      addNotificationUseCase: getIt(),
+      markAsReadUseCase: getIt(),
+      deleteNotificationUseCase: getIt(),
+      clearNotificationsUseCase: getIt(),
+      markAllAsReadUseCase: getIt(),
     ),
   );
 

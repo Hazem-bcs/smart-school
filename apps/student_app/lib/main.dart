@@ -22,6 +22,7 @@ import 'widgets/app_exports.dart';
 // Routing imports
 import 'routing/index.dart';
 import 'features/authentication/presentation/pages/splash_page.dart';
+import 'features/notification/presintation/bloc/notification_bloc.dart' as notif;
 
 /// Main entry point of the Smart School application
 void main() async {
@@ -33,8 +34,6 @@ void main() async {
 Future<void> _initializeApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // get base url from github 
-  // Constants.init();
   // Initialize localization
   await EasyLocalization.ensureInitialized();
   
@@ -96,6 +95,10 @@ class AppWithProviders extends StatelessWidget {
         BlocProvider(
           create: (context) => OnboardingCubit(di.getIt<AuthRepository>())
             ..checkOnboardingStatus(),
+        ),
+        // NotificationBloc as a global singleton so it can receive app-wide events
+        BlocProvider<notif.NotificationBloc>(
+          create: (_) => di.getIt<notif.NotificationBloc>(),
         ),
         
         // Note: NotificationBloc removed from global providers

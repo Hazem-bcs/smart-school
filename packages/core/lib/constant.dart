@@ -14,6 +14,9 @@ class Constants {
   static String getAllSubjects = '/api/show_subjects';
   static String getOneSubject = '/api/show_one_subject';
   // Quizzes
-  static String getAllQuiz = '/api/show_quizzes';
-  static String getOneQuiz = '/api/show_one_quiz';
+  static String getAllQuiz = '/api/show_quizz_section';
+  static String getOneQuiz = '/api/showquizz';
+  // Attendance
+  static String getAttendanceDetailsEndpoint = '/api/attendance-summary';
+  static String getAttendanceSummaryEndpoint = '';
 }

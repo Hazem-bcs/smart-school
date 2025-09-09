@@ -13,12 +13,14 @@ class HomeLoaded extends HomeState {
   final List<QuickActionEntity> quickActions;
   final List<AchievementEntity> achievements;
   final List<PromoEntity> promos;
+  final AttendanceTrendEntity attendanceTrend;
 
   const HomeLoaded({
     required this.stats,
     required this.quickActions,
     required this.achievements,
     required this.promos,
+    required this.attendanceTrend,
   });
 }
 

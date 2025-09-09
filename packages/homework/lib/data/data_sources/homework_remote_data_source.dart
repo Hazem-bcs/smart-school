@@ -1,6 +1,7 @@
 import 'package:core/network/dio_client.dart';
 import 'package:core/network/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:core/constant.dart';
 
 import '../models/homework_model.dart';
 import '../models/question_model.dart';
@@ -23,59 +24,46 @@ class HomeworkRemoteDataSourceImpl implements HomeworkRemoteDataSource {
   @override
   Future<Either<Failure, List<HomeworkModel>>> getHomeworks(int studentId,
   ) async {
-    // try {
-    //   final response = await dioClient.post(
-    //     Constants.getHomeWorkListEndpoint,
-    //     data: {'token': token},
-    //   );
-    //   final List<dynamic> res = response.data;
-    //   final List<HomeworkModel> homeWorkModelList = [];
-    //   for(int i =0; i<res.length; i++) {
-    //     final ele = HomeworkModel.fromJson(res[i]);
-    //     homeWorkModelList.add(ele);
-    //   }
-    //   return Right(homeWorkModelList);
-    // } on DioException catch (e) {
-    //   return Left(handleDioException(e));
-    // } catch (e) {
-    //   return Left(UnknownFailure(message: 'Unknown error occurred'));
-    // }
-
-    // For now, dummy data
-    print("Fetching data from API...");
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-    final List<Map<String, dynamic>> dummyJson = [
-      {
-        "id": "1",
-        "title": "حل مسائل الفصل الخامس",
-        "subject": "رياضيات",
-        "assignedDate": DateTime.now().toIso8601String(),
-        "dueDate":
-            DateTime.now().add(const Duration(days: 3)).toIso8601String(),
-        "status": "pending",
-      },
-      {
-        "id": "2",
-        "title": "كتابة مقال عن رحلة",
-        "subject": "لغة عربية",
-        "assignedDate":
-            DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
-        "dueDate":
-            DateTime.now().add(const Duration(days: 1)).toIso8601String(),
-        "status": "pending",
-      },
-      {
-        "id": "3",
-        "title": "مراجعة الدرس الأول",
-        "subject": "علوم",
-        "assignedDate":
-            DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-        "dueDate":
-            DateTime.now().subtract(const Duration(days: 1)).toIso8601String(),
-        "status": "completed",
-      },
-    ];
-    return Right(dummyJson.map((json) => HomeworkModel.fromMap(json)).toList());
+    // ignore: avoid_print
+    print('HomeworkRemoteDataSource.getHomeworks -> studentId=$studentId');
+    try {
+      final responseEither = await dioClient.post(
+        Constants.getAllQuiz,
+        data: {'id': studentId},
+      );
+      print('HomeworkRemotesddsfsdfsdfdsDataSource.getHomeworks -> responseEither=$responseEither');
+      return responseEither.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            final List<dynamic> data = response.data['data'] as List<dynamic>;
+            // ignore: avoid_print
+            print('HomeworkRemoteDataSource.getHomeworks: fetched=${data.length}');
+            final list = data.whereType<Map<String, dynamic>>().map((item) {
+              final nameField = item['name'];
+              final title = (nameField is Map<String, dynamic>)
+                  ? (nameField['ar'] ?? nameField['en'] ?? 'اختبار')
+                  : (nameField?.toString() ?? 'اختبار');
+              final createdAt = DateTime.tryParse(item['created_at']?.toString() ?? '');
+              final updatedAt = DateTime.tryParse(item['updated_at']?.toString() ?? '');
+              return HomeworkModel(
+                id: item['id'].toString(),
+                title: title,
+                subject: _mapSubjectIdToName(item['subject_id']),
+                assignedDate: createdAt ?? DateTime.now(),
+                dueDate: updatedAt ?? DateTime.now(),
+                status: HomeworkStatus.pending,
+              );
+            }).toList();
+            return Right(list);
+          } catch (e) {
+            return Left(UnknownFailure(message: 'تنسيق قائمة الاختبارات غير صالح'));
+          }
+        },
+      );
+    } catch (e) {
+      return Left(UnknownFailure(message: 'خطأ غير معروف: ${e.toString()}'));
+    }
   }
 
   @override
@@ -101,35 +89,55 @@ class HomeworkRemoteDataSourceImpl implements HomeworkRemoteDataSource {
   Future<Either<Failure, List<QuestionModel>>> getQuestionList(
     int homeWorkId,
   ) async {
-    return Right([
-      QuestionModel(
-        questionNumber: 1,
-        question: 'What is the programming language of Flutter?',
-        options: ['dart', '++c', 'java script'],
-        marks: 3,
-        correctAnswer: 'dart',
-      ),
-      QuestionModel(
-        questionNumber: 2,
-        question: 'Flutter is developed by Google.',
-        options: ['dart', '++c', 'java script'],
-        correctAnswer: 'dart',
-        marks: 9,
-      ),
-      QuestionModel(
-        questionNumber: 3,
-        question: 'What is the programming language of Flutter?',
-        options: ['dart', '++c', 'java script'],
-        marks: 3,
-        correctAnswer: 'dart',
-      ),
-      QuestionModel(
-        questionNumber: 4,
-        question: 'Flutter is developed by Google.',
-        correctAnswer: 'java script',
-        options: ['dart', '++c', 'java script'],
-        marks: 9,
-      ),
-    ]);
+    // ignore: avoid_print
+    print('HomeworkRemoteDataSource.getQuestionList -> quizId=$homeWorkId');
+    try {
+      final responseEither = await dioClient.post(
+        Constants.getOneQuiz,
+        data: {'id': homeWorkId},
+      );
+      return responseEither.fold(
+        (failure) => Left(failure),
+        (response) {
+          try {
+            final List<dynamic> data = response.data['data'] as List<dynamic>;
+            // ignore: avoid_print
+            print('HomeworkRemoteDataSource.getQuestionList: fetched=${data.length}');
+            final questions = data.whereType<Map<String, dynamic>>().map((q) {
+              final answersRaw = (q['answers']?.toString() ?? '').trim();
+              final options = answersRaw.isNotEmpty
+                  ? answersRaw.split(' - ').map((e) => e.trim()).where((e) => e.isNotEmpty).toList()
+                  : <String>[];
+              return QuestionModel(
+                questionNumber: q['id'] is int ? q['id'] as int : int.tryParse(q['id'].toString()) ?? 0,
+                question: q['title']?.toString() ?? '',
+                options: options,
+                marks: q['score'] is int ? q['score'] as int : int.tryParse(q['score'].toString()) ?? 0,
+                correctAnswer: q['right_answer']?.toString() ?? '',
+              );
+            }).toList();
+            return Right(questions);
+          } catch (e) {
+            return Left(UnknownFailure(message: 'تنسيق أسئلة الاختبار غير صالح'));
+          }
+        },
+      );
+    } catch (e) {
+      return Left(UnknownFailure(message: 'خطأ غير معروف: ${e.toString()}'));
+    }
+  }
+
+  String _mapSubjectIdToName(dynamic subjectId) {
+    final id = subjectId is int ? subjectId : int.tryParse(subjectId?.toString() ?? '') ?? 0;
+    switch (id) {
+      case 1:
+        return 'لغة عربية';
+      case 2:
+        return 'علوم';
+      case 3:
+        return 'رياضيات';
+      default:
+        return 'اختبار';
+    }
   }
 }

@@ -42,4 +42,28 @@ class NotificationModel {
       deepLink: deepLink,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'sentTime': sentTime.toIso8601String(),
+      'isRead': isRead,
+      'imageUrl': imageUrl,
+      'deepLink': deepLink,
+    };
+  }
+
+  factory NotificationModel.fromEntity(NotificationEntity entity) {
+    return NotificationModel(
+      id: entity.id,
+      title: entity.title,
+      body: entity.body,
+      sentTime: entity.sentTime,
+      isRead: entity.isRead,
+      imageUrl: entity.imageUrl,
+      deepLink: entity.deepLink,
+    );
+  }
 }

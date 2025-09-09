@@ -140,7 +140,11 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 20),
                           
                           // الرسم البياني
-                          ProgressChartWidget(stats: state.stats),
+                          ProgressChartWidget(
+                            stats: state.stats,
+                            trendStartDate: state.attendanceTrend.startDate,
+                            trendCodes: state.attendanceTrend.codes,
+                          ),
                           const SizedBox(height: 20),
                           
                           // الإجراءات السريعة

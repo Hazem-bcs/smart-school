@@ -5,12 +5,14 @@ import '../models/home_stats_model.dart';
 import '../models/quick_action_model.dart';
 import '../models/achievement_model.dart';
 import '../models/promo_model.dart';
+import '../models/attendance_trend_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<Either<Failure, HomeStatsModel>> getHomeStats();
   Future<Either<Failure, List<QuickActionModel>>> getQuickActions();
   Future<Either<Failure, List<AchievementModel>>> getAchievements();
   Future<Either<Failure, List<PromoModel>>> getPromos();
+  Future<Either<Failure, AttendanceTrendModel>> getAttendanceTrend({required DateTime startDate});
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -258,6 +260,27 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       return Right(promos);
     } catch (e) {
       return Left(ServerFailure(message: 'خطأ في تحميل الإعلانات: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AttendanceTrendModel>> getAttendanceTrend({required DateTime startDate}) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (DateTime.now().millisecondsSinceEpoch % 10 == 1) {
+        return const Left(ServerFailure(message: 'فشل في تحميل اتجاه الحضور'));
+      }
+
+      // ثابت مؤقتًا: 7 أيام بدءًا من startDate
+      final List<int> codes = [2, 1, 0, 2, 2, 2, 2];
+      final fake = {
+        'start_date': startDate.toIso8601String().substring(0, 10),
+        'codes': codes,
+      };
+
+      return Right(AttendanceTrendModel.fromJson(fake));
+    } catch (e) {
+      return Left(ServerFailure(message: 'خطأ في تحميل اتجاه الحضور: ${e.toString()}'));
     }
   }
 }
