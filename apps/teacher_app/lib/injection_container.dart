@@ -407,7 +407,7 @@ Future<void> setupDependencies() async {
 
   // Repository
   getIt.registerLazySingleton<ScheduleRepository>(
-    () => ScheduleRepositoryImpl(getIt<ScheduleRemoteDataSource>()),
+    () => ScheduleRepositoryImpl(getIt<ScheduleRemoteDataSource>(), getIt<LocalDataSource>()),
   );
 
   // Use Cases

@@ -39,11 +39,11 @@ class _WeekPickerState extends State<WeekPicker> {
     }
   }
 
-  // دالة مساعدة لإيجاد أول يوم في الأسبوع (الأحد، كما في صورتك)
+  // دالة مساعدة لإيجاد أول يوم في الأسبوع (الإثنين كبداية الأسبوع)
   DateTime _findStartOfWeek(DateTime date) {
-    // الأحد هو يوم 0 في الدالة weekday في Dart (الإثنين هو 1، وهكذا حتى السبت 6)
-    // لذا نطرح عدد الأيام التي مضت من بداية الأسبوع للوصول إلى الأحد
-    return date.subtract(Duration(days: date.weekday % 7));
+    // Dart: Monday=1 ... Sunday=7. نجعل الإثنين هو بداية الأسبوع
+    final int mondayBased = date.weekday == DateTime.sunday ? 7 : date.weekday; // الأحد=7
+    return date.subtract(Duration(days: mondayBased - 1));
   }
 
   // للانتقال إلى الأسبوع السابق
@@ -64,18 +64,10 @@ class _WeekPickerState extends State<WeekPicker> {
 
   // نختار اليوم المقابل في الأسبوع الجديد (مثلاً، إذا كان المختار "أربعاء"، نختار الأربعاء في الأسبوع الجديد)
   void _selectCorrespondingDay() {
-    int selectedDayOfWeek =
-        widget
-            .selectedDate
-            .weekday; // رقم اليوم في الأسبوع (1 للإثنين، 7 للأحد)
-    // يجب أن نحول رقم اليوم ليتناسب مع أن الأحد هو 0 لبداية الأسبوع لدينا
-    int daysToAdd = selectedDayOfWeek % 7;
-    // إذا كان اليوم هو الأحد (7)، يصبح 0
-    if (selectedDayOfWeek == DateTime.sunday) {
-      daysToAdd = 0;
-    }
-
-    DateTime newSelectedDate = _currentWeekStart.add(Duration(days: daysToAdd));
+    // Monday-first index: الإثنين=0 ... الأحد=6
+    final int weekday = widget.selectedDate.weekday; // 1..7
+    final int indexFromMonday = (weekday == DateTime.sunday) ? 6 : (weekday - 1);
+    final DateTime newSelectedDate = _currentWeekStart.add(Duration(days: indexFromMonday));
     widget.onDateSelected(
       newSelectedDate,
     ); // نُبلغ الصفحة الرئيسية بالتاريخ الجديد المختار
@@ -121,7 +113,7 @@ class _WeekPickerState extends State<WeekPicker> {
                 onPressed: _goToPreviousWeek,
               ),
               Text(
-                // عرض الشهر والسنة باللغة العربية
+                // عرض الشهر والسنة (يمكن لاحقاً تعريب الأسماء بشكل كامل)
                 DateFormat('MMMM yyyy', 'en').format(_currentWeekStart),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
@@ -156,7 +148,7 @@ class _WeekPickerState extends State<WeekPicker> {
                     child: Column(
                       children: [
                         Text(
-                          // اسم اليوم (أحد، إثنين...) باللغة العربية
+                          // اسم اليوم (اختصار) - سيقابل الإثنين أولاً
                           DateFormat('EEE', 'en').format(day),
                           style: theme.textTheme.bodySmall?.copyWith(
                             color:

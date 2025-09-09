@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'failures.dart';
 
@@ -32,7 +33,53 @@ Failure handleDioException(DioException error) {
 
 Failure _handleBadResponse(DioException error) {
   final statusCode = error.response?.statusCode ?? 500;
-  final message = error.response?.data?['message']?.toString() ??
+  final dynamic data = error.response?.data;
+
+  String? extractedMessage;
+  if (data is Map) {
+    // Try common message keys from typical APIs
+    const possibleKeys = ['message', 'error', 'detail', 'error_description'];
+    for (final key in possibleKeys) {
+      if (data[key] != null) {
+        extractedMessage = data[key].toString();
+        break;
+      }
+    }
+    // Fallback to full map string if no key matched
+    extractedMessage ??= data.toString();
+  } else if (data is List) {
+    // If list of errors, stringify first item or the whole list
+    extractedMessage = data.isNotEmpty ? data.first.toString() : data.toString();
+  } else if (data is String) {
+    // If it's a string, try to parse JSON to extract a message, else use the string directly
+    final trimmed = data.trim();
+    if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+        (trimmed.startsWith('[') && trimmed.endsWith(']'))){
+      try {
+        final decoded = json.decode(trimmed);
+        if (decoded is Map && decoded.isNotEmpty) {
+          const possibleKeys = ['message', 'error', 'detail', 'error_description'];
+          for (final key in possibleKeys) {
+            if (decoded[key] != null) {
+              extractedMessage = decoded[key].toString();
+              break;
+            }
+          }
+          extractedMessage ??= decoded.toString();
+        } else if (decoded is List && decoded.isNotEmpty) {
+          extractedMessage = decoded.first.toString();
+        } else {
+          extractedMessage = trimmed;
+        }
+      } catch (_) {
+        extractedMessage = trimmed;
+      }
+    } else {
+      extractedMessage = trimmed;
+    }
+  }
+
+  final message = extractedMessage ??
       error.response?.statusMessage ??
       'Server error occurred';
 

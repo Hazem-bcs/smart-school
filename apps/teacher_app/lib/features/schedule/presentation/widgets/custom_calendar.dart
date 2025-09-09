@@ -123,7 +123,8 @@ class _CustomCalendarState extends State<CustomCalendar>
   }
 
   Widget _buildDaysOfWeek(ThemeData theme, bool isDark) {
-    const days = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    // Dart: weekday => 1=Monday ... 7=Sunday
+    const days = ['إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت', 'أحد'];
     
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -155,7 +156,8 @@ class _CustomCalendarState extends State<CustomCalendar>
     final daysInMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month + 1, 0).day;
     final firstDayOfMonth = DateTime(widget.currentMonth.year, widget.currentMonth.month, 1);
     // Convert to Sunday = 0, Monday = 1, etc.
-    final firstWeekday = firstDayOfMonth.weekday == 7 ? 0 : firstDayOfMonth.weekday;
+    // Align grid so that column 0 = Monday
+    final firstWeekday = firstDayOfMonth.weekday - 1; // Monday=0 ... Sunday=6
     
     return SlideTransition(
       position: _slideAnimation,

@@ -36,7 +36,7 @@ class NotificationService {
       if (kDebugMode) print("Teacher app opened by notification: ${message.data}");
     });
 
-    await _getFCMToken();
+    await _getFCMToken(); 
     await _initilizeLocalNotifications();
     await _getInitialNotification();
   }
@@ -69,7 +69,6 @@ class NotificationService {
       'osVersion': deviceInfo['osVersion'] ?? deviceInfo['systemVersion'] ?? deviceInfo['version'] ?? deviceInfo['platform'] ?? 'unknown',
       'device': deviceInfo,
     };
-
     final result = await dioClient.post(url, data: payload);
     result.fold(
       (failure) {

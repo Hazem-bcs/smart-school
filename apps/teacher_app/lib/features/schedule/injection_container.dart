@@ -1,5 +1,6 @@
 import 'package:core/network/dio_client.dart';
 import 'package:get_it/get_it.dart';
+import 'package:teacher_app/core/local_data_source.dart';
 import 'package:teacher_app/injection_container.dart';
 import 'data/data_sources/schedule_remote_data_source.dart';
 import 'data/repositories/schedule_repository_impl.dart';
@@ -14,10 +15,13 @@ Future<void> initScheduleDependencies() async {
   sl.registerLazySingleton<ScheduleRemoteDataSource>(
     () => ScheduleRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
+  sl.registerLazySingleton<LocalDataSource>(
+    () => LocalDataSourceImpl(),
+  );
 
   // Repositories
   sl.registerLazySingleton<ScheduleRepository>(
-    () => ScheduleRepositoryImpl(sl()),
+    () => ScheduleRepositoryImpl(sl(), sl()),
   );
 
   // Use Cases

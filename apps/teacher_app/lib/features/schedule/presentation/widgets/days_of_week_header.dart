@@ -6,7 +6,8 @@ class DaysOfWeekHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const days = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    // Monday-first order to match Dart weekday (1=Mon..7=Sun)
+    const days = ['إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت', 'أحد'];
     
     return Padding(
       padding: EdgeInsets.symmetric(

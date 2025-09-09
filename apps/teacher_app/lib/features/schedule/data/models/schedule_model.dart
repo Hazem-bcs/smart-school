@@ -29,12 +29,16 @@ class ScheduleModel {
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
     return ScheduleModel(
-      id: json['id'] ?? '',
+      id: json['id'] != null ? json['id'].toString() : '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       startTime: DateTime.parse(json['startTime'] ?? DateTime.now().toIso8601String()),
       endTime: DateTime.parse(json['endTime'] ?? DateTime.now().toIso8601String()),
-      className: json['className'] ?? '',
+      className: json['className'] ?? _composeClassName(
+        grade: json['grade']?.toString(),
+        classroom: json['classroom']?.toString(),
+        section: json['section']?.toString(),
+      ),
       subject: json['subject'] ?? '',
       teacherId: json['teacherId'] ?? '',
       location: json['location'] ?? '',
@@ -121,5 +125,13 @@ class ScheduleModel {
       default:
         return ScheduleStatus.upcoming;
     }
+  }
+
+  static String _composeClassName({String? grade, String? classroom, String? section}) {
+    final parts = <String>[];
+    if (grade != null && grade.trim().isNotEmpty) parts.add(grade.trim());
+    if (classroom != null && classroom.trim().isNotEmpty) parts.add(classroom.trim());
+    if (section != null && section.trim().isNotEmpty) parts.add(section.trim());
+    return parts.join(' ').trim();
   }
 } 

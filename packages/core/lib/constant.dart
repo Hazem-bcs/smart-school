@@ -1,6 +1,6 @@
 
 class Constants {
-  static String baseUrl = 'http://10.116.166.164:8000'; // Default fallback URL
+  static String baseUrl = 'https://7499646fc491.ngrok-free.app'; // Default fallback URL
 
   static String loginEndpoint = '/api/login';
   static String logoutEndpoint = '/api/logout';
@@ -19,4 +19,6 @@ class Constants {
   // Attendance
   static String getAttendanceDetailsEndpoint = '/api/attendance-summary';
   static String getAttendanceSummaryEndpoint = '';
+  // Schedule
+  static String getScheduleForDateEndpoint = '/api/teacher_schedule';
 }

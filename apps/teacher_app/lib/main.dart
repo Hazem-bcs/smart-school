@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:teacher_app/firebase_options.dart';
 import 'app.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'injection_container.dart' as di;
@@ -30,7 +31,9 @@ void main() async {
 }
 
 Future<void> _initializeFirebase() async {
-  await Firebase.initializeApp();
+    await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(
     NotificationService.firebaseMessagingBackgroundHandler,
   );
