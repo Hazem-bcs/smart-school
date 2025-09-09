@@ -6,7 +6,12 @@ import 'package:core/widgets/index.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_school/widgets/app_bar_widget.dart';
 import 'dart:io';
+import 'package:get_it/get_it.dart';
+import 'package:core/network/dio_client.dart';
 import '../../domain/entities/assignment_entity.dart';
+import '../../data/data_sources/assignment_remote_data_source.dart';
+import '../../data/repositories_impl/assignment_repository_impl.dart';
+import '../../domain/usecases/submit_assignment_usecase.dart';
 
 class AssignmentDetailsPage extends StatefulWidget {
   final AssignmentEntity assignment;
@@ -82,9 +87,46 @@ class _AssignmentDetailsPageState extends State<AssignmentDetailsPage>
     }
   }
 
-  void _submitAssignment() {
-    // TODO: Implement actual submission logic (e.g., to a server)
-    Navigator.pop(context, true); // Close the page and return a result
+  Future<void> _submitAssignment() async {
+    final scaffold = ScaffoldMessenger.of(context);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      final dioClient = GetIt.I.isRegistered<DioClient>() ? GetIt.I<DioClient>() : null;
+      final dataSource = AssignmentRemoteDataSourceImpl(dioClient: dioClient);
+      final repo = AssignmentRepositoryImpl(dataSource);
+      final useCase = SubmitAssignmentUseCase(repo);
+
+      final result = await useCase(
+        assignmentId: widget.assignment.assignmentId,
+        studentId: '123',
+        answerText: _submissionTextController.text.trim(),
+        imagePath: _selectedImage?.path,
+      );
+
+      result.fold(
+        (failure) {
+          scaffold.showSnackBar(
+            SnackBar(content: Text(failure.message)),
+          );
+        },
+        (_) {
+          scaffold.showSnackBar(
+            const SnackBar(content: Text('تم إرسال المهمة بنجاح')),
+          );
+          Navigator.pop(context, true);
+        },
+      );
+    } catch (e) {
+      scaffold.showSnackBar(
+        SnackBar(content: Text('حدث خطأ غير متوقع: $e')),
+      );
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 
   @override
@@ -540,6 +582,7 @@ class AssignmentTeacherImageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool isNetwork = imageUrl.startsWith('http');
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -578,48 +621,74 @@ class AssignmentTeacherImageSection extends StatelessWidget {
           Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
+              child: isNetwork
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 200,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: SmartSchoolLoading(
+                              type: LoadingType.pulse,
+                              size: 40,
+                              showMessage: false,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                                SizedBox(height: 8),
+                                Text('فشل في تحميل الصورة'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 200,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.error_outline, color: Colors.red, size: 48),
+                                SizedBox(height: 8),
+                                Text('الصورة غير متوفرة في الأصول'),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    child: const Center(
-                      child: SmartSchoolLoading(
-                        type: LoadingType.pulse,
-                        size: 40,
-                        showMessage: false,
-                      ),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error_outline, color: Colors.red, size: 48),
-                          SizedBox(height: 8),
-                          Text('فشل في تحميل الصورة'),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
           ),
         ],

@@ -83,8 +83,8 @@ class _AssignmentsListPageState extends State<AssignmentsListPage>
   Future<List<AssignmentEntity>> _fetchAssignments() async {
     final result = await getAssignmentsUseCase('class_a');
     return result.fold(
-          (failure) => throw failure,
-          (assignments) {
+      (failure) => throw failure.message,
+      (assignments) {
         _allAssignments = assignments;
         _applyFilter();
         return _allAssignments;

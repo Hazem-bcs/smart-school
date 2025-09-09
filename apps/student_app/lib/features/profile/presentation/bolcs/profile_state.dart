@@ -19,4 +19,18 @@ final class GetDataLoadingState extends ProfileState {}
   ProfileErrorState({required this.message});
 }
 
+final class UpdateProfileLoadingState extends ProfileState {}
+
+final class UpdateProfileSuccessState extends ProfileState {
+  final UserEntity userEntity;
+
+  UpdateProfileSuccessState({required this.userEntity});
+}
+
+final class UpdateProfileErrorState extends ProfileState {
+  final String message;
+
+  UpdateProfileErrorState({required this.message});
+}
+
 

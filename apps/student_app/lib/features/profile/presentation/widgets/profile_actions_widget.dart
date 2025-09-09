@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domain/entities/user_entity.dart';
 import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_text_styles.dart';
 import 'package:core/theme/constants/app_spacing.dart';
-import '../pages/edit_profile_page.dart';
+import 'package:smart_school/routing/app_routes.dart';
+import '../bolcs/profile_bloc.dart';
 
 class ProfileActionsWidget extends StatelessWidget {
   final UserEntity user;
@@ -45,12 +47,14 @@ class ProfileActionsWidget extends StatelessWidget {
         ],
       ),
       child: ElevatedButton.icon(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => EditProfilePage(currentUser: user),
-            ),
+        onPressed: () async {
+          await Navigator.of(context).pushNamed(
+            AppRoutes.editProfile,
+            arguments: user,
           );
+          if (context.mounted) {
+            context.read<ProfileBloc>().add(GetProfileDataEvent());
+          }
         },
         icon: Icon(
           Icons.edit,

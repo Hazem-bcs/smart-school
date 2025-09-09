@@ -39,6 +39,8 @@ import 'package:resource/domain/use_cases/get_resource_list_use_case.dart';
 import 'package:resource/injection_container.dart' as resource_di;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_school/features/ai_tutor/presentation/bloc/tutor_chat_bloc.dart';
+import 'package:smart_school/features/notification/presintation/bloc/notification_bloc.dart';
+import 'package:smart_school/features/schedule/data/data_sources/schedule_local_data_source.dart';
 import 'package:smart_school/features/schedule/data/data_sources/schedule_remote_data_source.dart';
 import 'package:smart_school/features/schedule/data/repositories/schedule_repository_impl.dart';
 import 'package:smart_school/features/schedule/domain/repositories/schedule_repository.dart';
@@ -87,7 +89,6 @@ import 'features/authentication/presentation/blocs/auth_bloc.dart';
 import 'features/dues/presentation/blocs/dues_bloc.dart';
 import 'features/quiz/presentation/blocs/home_work_bloc/homework_bloc.dart';
 import 'features/quiz/presentation/blocs/question_bloc/question_bloc.dart';
-import 'features/notification/presintation/bloc/notification_bloc.dart';
 import 'features/profile/presentation/bolcs/profile_bloc.dart';
 import 'features/resource/presintation/blocs/resource_bloc.dart';
 import 'features/subject/presentation/blocs/subject/subject_bloc.dart';
@@ -123,13 +124,16 @@ Future<void> setupDependencies() async {
     () => AITutorRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<ScheduleRemoteDataSource>(
-    () => ScheduleRemoteDataSourceImpl(),
+    () => ScheduleRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
   getIt.registerLazySingleton<SettingsRemoteDataSource>(
     () => SettingsRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
   getIt.registerLazySingleton<SettingsLocalDataSource>(
     () => SettingsLocalDataSourceImpl(prefs: getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<ScheduleLocalDataSource>(
+    () => ScheduleLocalDataSourceImpl(prefs: getIt<SharedPreferences>()),
   );
 
   // Repository
@@ -148,6 +152,7 @@ Future<void> setupDependencies() async {
 
   getIt.registerLazySingleton<ScheduleRepository>(
     () => ScheduleRepositoryImpl(
+      localDataSource: getIt<ScheduleLocalDataSource>(),
       remoteDataSource: getIt<ScheduleRemoteDataSource>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
@@ -197,7 +202,10 @@ Future<void> setupDependencies() async {
 
   // ---------------- Profile Feature ----------------
   getIt.registerFactory(
-    () => ProfileBloc(getUserProfileUseCase: getIt<GetUserProfileUseCase>()),
+    () => ProfileBloc(
+      getUserProfileUseCase: getIt<GetUserProfileUseCase>(),
+      updateUserProfileUseCase: getIt<UpdateUserProfileUseCase>(),
+    ),
   );
 
   // ---------------- Subject Feature ----------------
@@ -210,17 +218,7 @@ Future<void> setupDependencies() async {
     ),
   );
 
-  // ---------------- Notification Feature ----------------
-  getIt.registerLazySingleton(
-    () => NotificationBloc(
-      getNotificationListUseCase: getIt<GetNotificationListUseCase>(),
-      addNotificationUseCase: getIt(),
-      markAsReadUseCase: getIt(),
-      deleteNotificationUseCase: getIt(),
-      clearNotificationsUseCase: getIt(),
-      markAllAsReadUseCase: getIt(),
-    ),
-  );
+
 
   // ---------------- Resource Feature ----------------
   getIt.registerFactory(
@@ -280,5 +278,17 @@ Future<void> setupDependencies() async {
 
   // Theme BLoC
   getIt.registerFactory(() => ThemeBloc());
+
+    // ---------------- Notification Feature ----------------
+  getIt.registerLazySingleton(
+    () => NotificationBloc(
+      getNotificationListUseCase: getIt<GetNotificationListUseCase>(),
+      addNotificationUseCase: getIt(),
+      markAsReadUseCase: getIt(),
+      deleteNotificationUseCase: getIt(),
+      clearNotificationsUseCase: getIt(),
+      markAllAsReadUseCase: getIt(),
+    ),
+  );
 
 }

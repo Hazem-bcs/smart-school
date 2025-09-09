@@ -148,12 +148,10 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
           print('🔍 AnimatedScheduleList: Loaded ${state.schedules.length} schedules');
           print('🔍 AnimatedScheduleList: Schedules: ${state.schedules.map((s) => s.title).toList()}');
           
-          // Update animations when data changes
+          // Update animations when data changes (synchronously to avoid double tap issue)
           if (_animationControllers.length != state.schedules.length) {
             print('🔍 AnimatedScheduleList: Updating animations from ${_animationControllers.length} to ${state.schedules.length}');
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _updateAnimations(state.schedules.length);
-            });
+            _updateAnimations(state.schedules.length);
           }
 
           return Column(
@@ -335,13 +333,15 @@ class _AnimatedScheduleListState extends State<AnimatedScheduleList>
   }
 
   String _getDateString() {
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    // Dart weekday: Mon=1..Sun=7. Map accordingly so labels match selected day.
+    const days = ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
     const months = [
       'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
       'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
     ];
     
-    final dayName = days[widget.selectedDate.weekday - 1];
+    final dayIndex = widget.selectedDate.weekday - 1; // 0..6 where 0=Mon, 6=Sun
+    final dayName = days[dayIndex];
     final monthName = months[widget.selectedDate.month - 1];
     final dayNumber = widget.selectedDate.day;
     final year = widget.selectedDate.year;

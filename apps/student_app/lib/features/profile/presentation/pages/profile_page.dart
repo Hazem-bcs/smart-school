@@ -4,7 +4,6 @@ import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_strings.dart';
 import 'package:core/theme/constants/app_spacing.dart';
 import 'package:smart_school/widgets/app_bar_widget.dart';
-import 'package:core/widgets/index.dart';
 import '../bolcs/profile_bloc.dart';
 import '../widgets/index.dart';
 

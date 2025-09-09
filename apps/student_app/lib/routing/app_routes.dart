@@ -7,6 +7,7 @@ import 'package:auth/domain/auth_repository.dart';
 import 'package:attendance/presentation/blocs/attendance_bloc.dart';
 import 'package:attendance/presentation/blocs/attendance_details_bloc.dart';
 import 'package:attendance/presentation/pages/attendance_page.dart';
+import 'package:smart_school/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:smart_school/features/quiz/presentation/pages/one_quiz_page.dart';
 import 'package:smart_school/features/teacher/presentation/pages/teacher_details_page.dart';
 import '../injection_container.dart' as di;
@@ -28,6 +29,7 @@ import '../features/profile/presentation/bolcs/profile_bloc.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/resource/presintation/blocs/resource_bloc.dart';
 import '../features/resource/presintation/pages/resource_page.dart';
+import 'package:core/domain/entities/user_entity.dart';
 import '../features/subject/presentation/blocs/subject/subject_bloc.dart';
 import '../features/subject/presentation/blocs/subject_list/subject_list_bloc.dart';
 import '../features/subject/presentation/pages/subjects_page.dart';
@@ -35,7 +37,6 @@ import '../features/subject/presentation/pages/subject_details_page.dart';
 import '../features/teacher/presentation/blocs/teacher_list_bloc.dart';
 import '../features/teacher/presentation/blocs/teacher_details_bloc.dart';
 import '../features/teacher/presentation/pages/teachers_page.dart';
-import '../features/notification/presintation/bloc/notification_bloc.dart';
 import '../features/notification/presintation/pages/notification_page.dart';
 import '../features/settings/presentation/blocs/settings_bloc.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
@@ -85,6 +86,8 @@ class AppRoutes {
   
   // Navigation drawer
   static const String appDrawer = '/appDrawer';
+  
+  static const String editProfile = '/editProfile';
 
   /// Generate routes with proper BLoC initialization
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -124,7 +127,6 @@ class AppRoutes {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => di.getIt<HomeBloc>()),
-              BlocProvider(create: (_) => di.getIt<NotificationBloc>()),
             ],
             child: const HomePage(),
           ),
@@ -163,6 +165,15 @@ class AppRoutes {
           builder: (_) => BlocProvider(
             create: (_) => di.getIt<ProfileBloc>(),
             child: const ProfilePage(),
+          ),
+          settings: settings,
+        );
+      case editProfile:
+        final user = settings.arguments as UserEntity;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.getIt<ProfileBloc>(),
+            child: EditProfilePage(currentUser: user),
           ),
           settings: settings,
         );

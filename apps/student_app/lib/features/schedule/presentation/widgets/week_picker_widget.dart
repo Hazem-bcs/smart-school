@@ -38,11 +38,11 @@ class _WeekPickerState extends State<WeekPicker> {
   }
 
   DateTime _findStartOfWeek(DateTime date) {
-    // في Dart، الأحد = 7، الإثنين = 1، الثلاثاء = 2، إلخ
-    // نحتاج إلى العودة إلى الأحد (بداية الأسبوع)
-    final daysFromSunday = date.weekday == 7 ? 0 : date.weekday;
-    final result = date.subtract(Duration(days: daysFromSunday));
-    print('🔍 WeekPicker: _findStartOfWeek - Input: $date (${date.weekday}), Days from Sunday: $daysFromSunday, Result: $result (${result.weekday})');
+    // Dart: Monday=1..Sunday=7. We want week start = Sunday.
+    // Days to subtract to reach Sunday: if Sunday (7) => 0, else weekday.
+    final int daysToSubtract = date.weekday % 7; // Mon=1..Sat=6, Sun=0
+    final result = DateTime(date.year, date.month, date.day).subtract(Duration(days: daysToSubtract));
+    print('🔍 WeekPicker: _findStartOfWeek - Input: $date (${date.weekday}), Subtract: $daysToSubtract, Result: $result (${result.weekday})');
     return result;
   }
 
@@ -61,17 +61,10 @@ class _WeekPickerState extends State<WeekPicker> {
   }
 
   void _selectCorrespondingDay() {
-    // حساب اليوم المقابل في الأسبوع الجديد
-    // إذا كان اليوم المختار هو الأحد (7)، نضيف 0 يوم
-    // إذا كان الإثنين (1)، نضيف 1 يوم، وهكذا
-    int daysToAdd;
-    if (widget.selectedDate.weekday == 7) {
-      daysToAdd = 0; // الأحد
-    } else {
-      daysToAdd = widget.selectedDate.weekday; // الإثنين = 1، الثلاثاء = 2، إلخ
-    }
-
-    DateTime newSelectedDate = _currentWeekStart.add(Duration(days: daysToAdd));
+    // Monday=1..Sunday=7 → index 0..6, where 0=Mon, 6=Sun.
+    // Our _currentWeekStart is always Sunday, so offset = (weekday % 7).
+    final int offsetFromSunday = widget.selectedDate.weekday % 7; // Sun=0, Mon=1, ..., Sat=6
+    final DateTime newSelectedDate = _currentWeekStart.add(Duration(days: offsetFromSunday));
     print('🔍 WeekPicker: _selectCorrespondingDay - Original: ${widget.selectedDate} (${widget.selectedDate.weekday}), New: $newSelectedDate (${newSelectedDate.weekday})');
     widget.onDateSelected(newSelectedDate);
   }

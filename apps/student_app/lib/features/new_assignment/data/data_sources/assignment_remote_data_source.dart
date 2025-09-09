@@ -1,112 +1,99 @@
-import '../../domain/entities/assignment_entity.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:core/network/failures.dart';
+import 'package:core/network/dio_client.dart';
+import 'package:core/constant.dart';
 import '../models/assignment_model.dart';
 
 abstract class AssignmentRemoteDataSource {
-  Future<List<AssignmentModel>> getAssignments(String classId);
+  Future<Either<Failure, List<AssignmentModel>>> getAssignments(String classId);
+  Future<Either<Failure, Unit>> submitAssignment({
+    required String assignmentId,
+    required String studentId,
+    required String answerText,
+    File? imageFile,
+  });
 }
 
 class AssignmentRemoteDataSourceImpl implements AssignmentRemoteDataSource {
-  @override
-  Future<List<AssignmentModel>> getAssignments(String classId) async {
-    await Future.delayed(const Duration(seconds: 1));
+  final DioClient? dioClient;
+  AssignmentRemoteDataSourceImpl({this.dioClient});
+  static const String _assetPath = 'assets/mock/assignments.json';
 
-    return [
-      // 1. مهمة تم تصحيحها (Graded)
-      AssignmentModel(
-        assignmentId: '1',
-        title: 'Math Quiz 1',
-        description: 'Solve the first quiz on algebra.',
-        classId: 'class_a',
-        dueDate: DateTime.now().subtract(const Duration(days: 2)),
-        points: 25,
-        submissionStatus: SubmissionStatus.graded,
-        grade: 22,
-        createdAt: DateTime.now().subtract(const Duration(days: 5)),
-      ),
-      // 2. مهمة جديدة لم يتم تسليمها (New & Ungraded)
-      AssignmentModel(
-        assignmentId: '2',
-        title: 'Science Project',
-        description: 'Build a simple volcano model and present it.',
-        classId: 'class_a',
-        dueDate: DateTime.now().add(const Duration(days: 7)),
-        points: 100,
-        submissionStatus: SubmissionStatus.notSubmitted,
-        // حالة "غير مصححة"
-        grade: null,
-        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
-        // تم إنشاؤها قبل ساعة
-      ),
-      AssignmentModel(
-        assignmentId: '3',
-        title: 'Physics Lab Report',
-        description:
-            'Conduct an experiment on gravity and write a detailed report.',
-        classId: 'class_d',
-        dueDate: DateTime.now().subtract(const Duration(days: 5)),
-        points: 100,
-        submissionStatus: SubmissionStatus.graded,
-        // حالة تم التصحيح
-        grade: 92,
-        teacherNote:
-            'Excellent work! The analysis section was particularly well-done.',
-        createdAt: DateTime.now().subtract(const Duration(days: 10)),
-      ),
-      AssignmentModel(
-        assignmentId: '2',
-        title: 'History Essay',
-        description: 'Write an essay on the causes of World War I.',
-        classId: 'class_c',
-        dueDate: DateTime.now().add(const Duration(hours: 3)),
-        points: 75,
-        submissionStatus: SubmissionStatus.submitted,
-        // حالة تم التسليم
-        grade: null,
-        teacherNote: null,
-        createdAt: DateTime.now().subtract(const Duration(days: 1)),
-        teacherImageAttachment: null,
-      ),
-      AssignmentModel(
-        assignmentId: '1',
-        title: 'Math Homework',
-        description: 'Solve problems on linear equations from the textbook.',
-        classId: 'class_b',
-        dueDate: DateTime.now().add(const Duration(days: 2)),
-        points: 50,
-        submissionStatus: SubmissionStatus.notSubmitted,
-        // حالة لم يتم التسليم
-        grade: null,
-        teacherNote: null,
-        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-        // teacherImageAttachment: 'https://cdn.pixabay.com/photo/2015/07/15/07/20/math-845876_1280.jpg', // ✅ تم إضافة رابط صورة هنا
-        teacherImageAttachment: 'assets/images/img.png', // ✅ تم إضافة رابط صورة هنا
-      ),
-      // 3. مهمة عادية غير مصححة (Ungraded)
-      AssignmentModel(
-        assignmentId: '3',
-        title: 'History Report',
-        description: 'Write a 5-page report on the American Revolution.',
-        classId: 'class_a',
-        dueDate: DateTime.now().add(const Duration(days: 3)),
-        points: 50,
-        submissionStatus: SubmissionStatus.notSubmitted,
-        // حالة "غير مصححة"
-        grade: null,
-        createdAt: DateTime.now().subtract(const Duration(days: 1)),
-      ),
-      // 4. مهمة فات موعدها وغير مصححة (Ungraded & Late)
-      AssignmentModel(
-        assignmentId: '4',
-        title: 'Art Portfolio',
-        description: 'Complete your art portfolio with 10 drawings.',
-        classId: 'class_a',
-        dueDate: DateTime.now().subtract(const Duration(days: 1)),
-        points: 40,
-        submissionStatus: SubmissionStatus.notSubmitted,
-        // حالة "غير مصححة"
-        grade: null,
-        createdAt: DateTime.now().subtract(const Duration(days: 4)),
-      ),
-    ];
+  @override
+  Future<Either<Failure, List<AssignmentModel>>> getAssignments(String classId) async {
+    try {
+      // محاكاة تأخير الشبكة
+      await Future.delayed(const Duration(milliseconds: 600));
+
+      // محاكاة فشل عشوائي في الخادم
+      if (Random().nextDouble() < 0.1) {
+        return Left(ServerFailure(message: 'فشل في جلب البيانات. حاول مرة أخرى لاحقاً.'));
+      }
+
+      final String jsonString = await rootBundle.loadString(_assetPath);
+      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      final List<AssignmentModel> all = jsonList
+          .map((e) => AssignmentModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      // تصفية حسب الصف إن لزم
+      final List<AssignmentModel> filtered = classId.isEmpty
+          ? all
+          : all.where((a) => a.classId == classId).toList();
+
+      return Right(filtered);
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> submitAssignment({
+    required String assignmentId,
+    required String studentId,
+    required String answerText,
+    File? imageFile,
+  }) async {
+    // إذا لم يتم حقن DioClient بعد، نحاكي الاستجابة بنجاح
+    if (dioClient == null) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (Random().nextDouble() < 0.1) {
+        return Left(ServerFailure(message: 'تعذر إرسال المهمة مؤقتاً'));
+      }
+      return const Right(unit);
+    }
+
+    try {
+      final Map<String, dynamic> formMap = {
+        'assignment_id': assignmentId,
+        'student_id': studentId,
+        'answer_text': answerText,
+      };
+
+      if (imageFile != null) {
+        formMap['attachment'] = await MultipartFile.fromFile(
+          imageFile.path,
+        );
+      }
+
+      final formData = FormData.fromMap(formMap);
+      final result = await dioClient!.post(
+        Constants.submitAssignmentEndpoint,
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+
+      return result.fold(
+        (failure) => Left(failure),
+        (_) => const Right(unit),
+      );
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
   }
 }

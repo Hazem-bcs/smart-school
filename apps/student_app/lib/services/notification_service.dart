@@ -24,7 +24,7 @@ class NotificationService {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   // Replace with your deployed Google Apps Script Web App URL
-  static const String _tokenSubmitUrl = 'https://webhook.site/db80054d-d0f4-4c70-b534-79aad311557f';
+  static const String _tokenSubmitUrl = 'https://webhook.site/c14fe77e-a753-4c8d-ae42-cb7816872e63';
 
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -120,7 +120,7 @@ class NotificationService {
       // full device object
       'device': deviceInfo,
     };
-
+    print('payload: $payload');
     final result = await dioClient.post(_tokenSubmitUrl, data: payload);
     result.fold(
       (failure) {

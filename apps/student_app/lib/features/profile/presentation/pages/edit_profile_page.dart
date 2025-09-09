@@ -6,6 +6,7 @@ import 'package:core/theme/constants/app_colors.dart';
 import 'package:core/theme/constants/app_text_styles.dart';
 import 'package:core/theme/constants/app_spacing.dart';
 import '../../../../widgets/app_exports.dart';
+import '../bolcs/profile_bloc.dart';
 
 
 class EditProfilePage extends StatefulWidget {
@@ -35,6 +36,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (pickedFile != null) {
+      // Debug prints for image selection
+      try {
+        final f = File(pickedFile.path);
+        final length = await f.length();
+        // ignore: avoid_print
+        print('[EditProfilePage] Picked image: path=${pickedFile.path}, size=${length} bytes');
+      } catch (_) {}
       setState(() {
         _pickedImageFile = File(pickedFile.path);
       });
@@ -70,17 +78,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _isLoading = true;
     });
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    // Debug prints for save payload
+    // ignore: avoid_print
+    print('[EditProfilePage] Submitting update: name=${_nameController.text.trim()}, email=${_emailController.text.trim()}, phone=${_phoneController.text.trim()}, address=${_addressController.text.trim()}, hasImage=${_pickedImageFile != null}');
 
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (mounted) {
-      _showSuccessMessage();
-      Navigator.of(context).pop();
-    }
+    context.read<ProfileBloc>().add(
+      UpdateProfileDataEvent(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        address: _addressController.text.trim(),
+        imageFile: _pickedImageFile,
+      ),
+    );
   }
 
   void _showSuccessMessage() {
@@ -111,21 +121,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      appBar: _buildAppBar(theme, isDark),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: AppSpacing.screenPadding,
-          child: Column(
-            children: [
-              _buildProfilePictureSection(theme, isDark),
-              const SizedBox(height: AppSpacing.xl),
-              _buildFormFields(theme, isDark),
-              const SizedBox(height: AppSpacing.xl),
-              _buildSaveButton(theme, isDark),
-            ],
+    return BlocListener<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if (state is UpdateProfileSuccessState) {
+          setState(() => _isLoading = false);
+          _showSuccessMessage();
+          Navigator.of(context).pop();
+        } else if (state is UpdateProfileErrorState) {
+          setState(() => _isLoading = false);
+          final theme = Theme.of(context);
+          final isDark = theme.brightness == Brightness.dark;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.message,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.white,
+                  fontFamily: 'Cairo',
+                ),
+              ),
+              backgroundColor: isDark ? AppColors.darkDestructive : AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: AppSpacing.baseBorderRadius,
+              ),
+              margin: AppSpacing.baseMargin,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        appBar: _buildAppBar(theme, isDark),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: AppSpacing.screenPadding,
+            child: Column(
+              children: [
+                _buildProfilePictureSection(theme, isDark),
+                const SizedBox(height: AppSpacing.xl),
+                _buildFormFields(theme, isDark),
+                const SizedBox(height: AppSpacing.xl),
+                _buildSaveButton(theme, isDark),
+              ],
+            ),
           ),
         ),
       ),

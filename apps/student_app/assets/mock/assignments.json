@@ -1,0 +1,82 @@
+[
+  {
+    "assignmentId": "1",
+    "title": "Math Quiz 1",
+    "description": "Solve the first quiz on algebra.",
+    "classId": "class_a",
+    "dueDate": "2025-09-10T12:00:00.000Z",
+    "points": 25,
+    "submissionStatus": 2,
+    "grade": 22,
+    "teacherNote": "Excellent work! The analysis section was particularly well-done.",
+    "createdAt": "2025-09-05T08:00:00.000Z",
+    "teacherImageAttachment": "https://images.unsplash.com/photo-1509223197845-458d87318791?w=1200"
+  },
+  {
+    "assignmentId": "2",
+    "title": "Science Project",
+    "description": "Build a simple volcano model and present it.",
+    "classId": "class_a",
+    "dueDate": "2025-09-20T15:00:00.000Z",
+    "points": 100,
+    "submissionStatus": 0,
+    "grade": null,
+    "teacherNote": null,
+    "createdAt": "2025-09-08T10:00:00.000Z",
+    "teacherImageAttachment": "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=1200"
+  },
+  {
+    "assignmentId": "3",
+    "title": "Physics Lab Report",
+    "description": "Conduct an experiment on gravity and write a detailed report.",
+    "classId": "class_a",
+    "dueDate": "2025-09-01T09:00:00.000Z",
+    "points": 100,
+    "submissionStatus": 2,
+    "grade": 92,
+    "teacherNote": "Great detail on methodology.",
+    "createdAt": "2025-08-30T12:00:00.000Z",
+    "teacherImageAttachment": null
+  },
+  {
+    "assignmentId": "4",
+    "title": "History Essay",
+    "description": "Write an essay on the causes of World War I.",
+    "classId": "class_c",
+    "dueDate": "2025-09-12T18:00:00.000Z",
+    "points": 75,
+    "submissionStatus": 1,
+    "grade": null,
+    "teacherNote": null,
+    "createdAt": "2025-09-07T11:00:00.000Z",
+    "teacherImageAttachment": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200"
+  },
+  {
+    "assignmentId": "5",
+    "title": "Math Homework",
+    "description": "Solve problems on linear equations from the textbook.",
+    "classId": "class_a",
+    "dueDate": "2025-09-14T08:00:00.000Z",
+    "points": 50,
+    "submissionStatus": 0,
+    "grade": null,
+    "teacherNote": null,
+    "createdAt": "2025-09-09T09:00:00.000Z",
+    "teacherImageAttachment": "https://images.unsplash.com/photo-1554774853-aae0a22c8aa4?w=1200"
+  },
+  {
+    "assignmentId": "6",
+    "title": "Art Portfolio",
+    "description": "Complete your art portfolio with 10 drawings.",
+    "classId": "class_a",
+    "dueDate": "2025-09-06T10:00:00.000Z",
+    "points": 40,
+    "submissionStatus": 0,
+    "grade": null,
+    "teacherNote": null,
+    "createdAt": "2025-09-02T12:00:00.000Z",
+    "teacherImageAttachment": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200"
+  }
+]
+
+

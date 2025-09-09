@@ -1,4 +1,5 @@
 import '../../domain/entities/schedule_entity.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleModel extends ScheduleEntity {
   ScheduleModel({
@@ -18,17 +19,17 @@ class ScheduleModel extends ScheduleEntity {
 
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
     return ScheduleModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      startTime: DateTime.parse(json['startTime'] ?? DateTime.now().toIso8601String()),
-      endTime: DateTime.parse(json['endTime'] ?? DateTime.now().toIso8601String()),
-      className: json['className'] ?? '',
-      subject: json['subject'] ?? '',
-      teacherId: json['teacherId'] ?? '',
-      location: json['location'] ?? '',
-      type: _parseScheduleType(json['type'] ?? 'class'),
-      status: _parseScheduleStatus(json['status'] ?? 'scheduled'),
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      description: (json['description'] ?? '').toString(),
+      startTime: _parseDateTime(json['startTime'] ?? json['start_time']),
+      endTime: _parseDateTime(json['endTime'] ?? json['end_time']),
+      className: json['className']?.toString() ?? json['class_name']?.toString() ?? '',
+      subject: json['subject']?.toString() ?? '',
+      teacherId: json['teacherId']?.toString() ?? json['teacher_id']?.toString() ?? '',
+      location: json['location']?.toString() ?? '',
+      type: _parseScheduleType((json['type'] ?? 'class').toString()),
+      status: _parseScheduleStatus((json['status'] ?? 'upcoming').toString()),
     );
   }
 
@@ -46,6 +47,21 @@ class ScheduleModel extends ScheduleEntity {
         return ScheduleType.breakTime;
       default:
         return ScheduleType.classType;
+    }
+  }
+
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) return DateTime.now();
+    if (value is DateTime) return value;
+    final str = value.toString();
+    try {
+      return DateTime.parse(str);
+    } catch (_) {
+      try {
+        return DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse(str, true).toLocal();
+      } catch (_) {
+        return DateTime.now();
+      }
     }
   }
 
