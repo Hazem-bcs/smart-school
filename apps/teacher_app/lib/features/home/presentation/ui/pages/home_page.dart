@@ -70,10 +70,7 @@ class HomePage extends StatelessWidget {
                         AssignmentsSection(assignments: state.assignments, onTap: (_) {}),
                         const SizedBox(height: 16),
                       ],
-                      NotificationsSection(
-                        notifications: state.notifications,
-                        onNotificationTap: () {},
-                      ),
+                    
                       const SizedBox(height: 16),
                       QuickActionsSection(
                         onCreateAssignment: () => Navigator.of(context).pushNamed('/new-assignment'),

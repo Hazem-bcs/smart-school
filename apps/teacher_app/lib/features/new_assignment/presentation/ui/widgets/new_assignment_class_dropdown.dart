@@ -24,6 +24,8 @@ class NewAssignmentClassDropdown extends StatelessWidget {
             bottom: ResponsiveHelper.getSpacing(context, mobile: 16, tablet: 20, desktop: 24),
           ),
           child: DropdownButtonFormField<String>(
+            isExpanded: true,
+            isDense: true,
             decoration: InputDecoration(
               labelText: 'اختر الفصول/الطلاب',
               filled: true,
@@ -71,11 +73,32 @@ class NewAssignmentClassDropdown extends StatelessWidget {
               size: 28,
             ),
             value: selectedClass,
+            selectedItemBuilder: (BuildContext context) {
+              return availableClasses.map((String classItem) {
+                return Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    classItem,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }).toList();
+            },
             items: availableClasses.map((String classItem) {
               return DropdownMenuItem<String>(
                 value: classItem,
                 child: Text(
                   classItem,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
                     fontSize: 16,

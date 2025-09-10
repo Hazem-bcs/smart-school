@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/widgets/app_exports.dart';
-import 'package:smart_school/widgets/modern_design/modern_effects.dart' as modern_effects;
 import 'package:core/theme/index.dart';
 import 'package:core/widgets/index.dart';
 import '../../domain/entities/zoom_meeting.dart';
@@ -28,7 +27,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Zoom Sessions',
+        title: 'جلسات زووم',
         gradientType: GradientType.primary,
         actions: [
           AppBarActions.refresh(
@@ -43,7 +42,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
         builder: (context, state) {
           if (state is ZoomMeetingsLoading) {
             return const SmartSchoolLoading(
-              message: 'جاري تحميل جلسات Zoom...',
+              message: 'جاري تحميل جلسات زووم...',
               type: LoadingType.ripple,
             );
           } else if (state is ZoomMeetingsLoaded) {
@@ -59,7 +58,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
                     height: MediaQuery.of(context).size.height - AppBar().preferredSize.height,
                     child: const Center(
                       child: Text(
-                        'No upcoming Zoom sessions currently.',
+                        'لا توجد جلسات زووم قادمة حالياً.',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
@@ -98,7 +97,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Error: ${state.message}',
+                            'خطأ: ${state.message}',
                             style: const TextStyle(fontSize: 18, color: Colors.red),
                             textAlign: TextAlign.center,
                           ),
@@ -107,7 +106,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
                             onPressed: () {
                               context.read<ZoomMeetingsBloc>().add(const GetZoomMeetings());
                             },
-                            child: const Text('Retry'),
+                            child: const Text('إعادة المحاولة'),
                           ),
                         ],
                       ),
@@ -117,7 +116,7 @@ class _ZoomMeetingsListPageState extends State<ZoomMeetingsListPage> {
               ),
             );
           }
-          return const Center(child: Text('Initializing Zoom sessions...'));
+          return const Center(child: Text('جارٍ تهيئة جلسات زووم...'));
         },
       ),
     );

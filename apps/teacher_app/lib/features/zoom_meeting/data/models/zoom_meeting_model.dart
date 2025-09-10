@@ -80,4 +80,4 @@ class ZoomMeetingModel {
     meetingId: entity.meetingId,
     password: entity.password,
   );
-} 
+}

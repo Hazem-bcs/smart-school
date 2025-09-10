@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../blocs/zoom_meeting_state.dart';
 import 'info_row.dart';
 
@@ -68,6 +69,20 @@ class ScheduleMeetingSuccessDialog extends StatelessWidget {
                     value: state.meetingUrl,
                     isDark: isDark,
                     isUrl: true,
+                    onTap: () async {
+                      final String url = state.meetingUrl;
+                      // حاول فتح تطبيق زووم مباشرة إذا أمكن
+                      final Uri? candidate = Uri.tryParse(url) ?? Uri.tryParse(Uri.encodeFull(url));
+                      if (candidate != null) {
+                        final bool openedApp = await launchUrl(candidate, mode: LaunchMode.externalNonBrowserApplication);
+                        if (openedApp) return;
+                        final bool openedExternal = await launchUrl(candidate, mode: LaunchMode.externalApplication);
+                        if (openedExternal) return;
+                        final bool openedDefault = await launchUrl(candidate, mode: LaunchMode.platformDefault);
+                        if (openedDefault) return;
+                        await launchUrl(candidate, mode: LaunchMode.inAppBrowserView);
+                      }
+                    },
                   ),
                 ],
               ),

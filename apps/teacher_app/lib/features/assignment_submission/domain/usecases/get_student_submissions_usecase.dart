@@ -7,7 +7,7 @@ class GetStudentSubmissionsUseCase {
   final SubmissionRepository repository;
   GetStudentSubmissionsUseCase(this.repository);
 
-  Future<Either<Failure, List<StudentSubmission>>> call() {
-    return repository.getStudentSubmissions();
+  Future<Either<Failure, List<StudentSubmission>>> call(String assignmentId) {
+    return repository.getStudentSubmissions(assignmentId);
   }
 } 

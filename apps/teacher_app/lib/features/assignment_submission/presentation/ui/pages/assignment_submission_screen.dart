@@ -227,8 +227,7 @@ class _AssignmentSubmissionViewState extends State<_AssignmentSubmissionView> {
                           const StudentCard(),
                           const SizedBox(height: 24),
                           const StudentResponseCard(),
-                          const SizedBox(height: 24),
-                          const ImageCarousel(),
+                          
                           const SizedBox(height: 24),
                           const GradingForm(),
                           const SizedBox(height: 32),

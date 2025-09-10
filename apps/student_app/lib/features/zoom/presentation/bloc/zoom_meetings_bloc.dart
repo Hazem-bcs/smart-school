@@ -36,18 +36,18 @@ class ZoomMeetingsBloc extends Bloc<ZoomMeetingsEvent, ZoomMeetingsState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ConnectionFailure:
-        return "No Internet Connection. Please check your network.";
+        return "لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.";
       case ServerFailure:
-        return "Server Error. Please try again later.";
+        return "خطأ في الخادم. يرجى المحاولة لاحقاً.";
       case ValidationFailure:
         return (failure as ValidationFailure)
             .message; // Assuming message property exists
       case UnAuthenticated:
-        return "Authentication required. Please log in.";
+        return "المصادقة مطلوبة. يرجى تسجيل الدخول.";
       case CacheFailure:
-        return "Cache Error. Data might be outdated.";
+        return "خطأ في الذاكرة المؤقتة. قد تكون البيانات قديمة.";
       default:
-        return "An unexpected error occurred.";
+        return failure.message.isNotEmpty ? failure.message : "حدث خطأ غير متوقع.";
     }
   }
 }

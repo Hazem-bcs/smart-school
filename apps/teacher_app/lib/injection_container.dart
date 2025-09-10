@@ -260,7 +260,10 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<AssignmentRemoteDataSource>(
-    () => AssignmentRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
+    () => AssignmentRemoteDataSourceImpl(
+      dioClient: getIt<DioClient>(),
+      localDataSource: getIt<LocalDataSource>(),
+    ),
   );
 
   // Repository
@@ -289,6 +292,7 @@ Future<void> setupDependencies() async {
   getIt.registerLazySingleton<NewAssignmentRemoteDataSource>(
     () => NewAssignmentRemoteDataSourceImpl(
       dioClient: getIt<DioClient>(),
+      localDataSource: getIt<LocalDataSource>(),
     ),
   );
   getIt.registerLazySingleton<NewAssignmentLocalDataSource>(
@@ -357,7 +361,10 @@ Future<void> setupDependencies() async {
   // ========================================
   // Data Source
   getIt.registerLazySingleton<ZoomMeetingRemoteDataSource>(
-    () => ZoomMeetingRemoteDataSourceImpl(),
+    () => ZoomMeetingRemoteDataSourceImpl(
+      dioClient: getIt<DioClient>(),
+      localDataSource: getIt<LocalDataSource>(),
+    ),
   );
 
   // Repository

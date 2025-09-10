@@ -5,6 +5,7 @@ class InfoRow extends StatelessWidget {
   final String value;
   final bool isDark;
   final bool isUrl;
+  final VoidCallback? onTap;
 
   const InfoRow({
     super.key,
@@ -12,6 +13,7 @@ class InfoRow extends StatelessWidget {
     required this.value,
     required this.isDark,
     this.isUrl = false,
+    this.onTap,
   });
 
   @override
@@ -32,12 +34,15 @@ class InfoRow extends StatelessWidget {
         ),
         Expanded(
           child: isUrl
-              ? SelectableText(
-                  value,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6),
-                    decoration: TextDecoration.underline,
+              ? InkWell(
+                  onTap: onTap,
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6),
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 )
               : Text(

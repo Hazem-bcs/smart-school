@@ -237,7 +237,10 @@ Future<void> setupDependencies() async {
 
   // Data Sources
   getIt.registerLazySingleton<ZoomMeetingsRemoteDataSource>(
-    () => ZoomMeetingsRemoteDataSourceImpl(dio: getIt()),
+    () => ZoomMeetingsRemoteDataSourceImpl(
+      dioClient: getIt<DioClient>(),
+      localDataSource: getIt<SettingsLocalDataSource>(),
+    ),
   );
 
   // Repositories

@@ -29,7 +29,7 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
         {"monthName": "يونيو",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 6},
         {"monthName": "يوليو",   "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 7},
         {"monthName": "أغسطس",  "attendanceCount": 0,  "absenceCount": 0,  "monthNumber": 8},
-        {"monthName": "سبتمبر", "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 9},
+        {"monthName": "سبتمبر", "attendanceCount": 1, "absenceCount": 0,  "monthNumber": 9},
         {"monthName": "أكتوبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 10},
         {"monthName": "نوفمبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 11},
         {"monthName": "ديسمبر",  "attendanceCount": 0, "absenceCount": 0,  "monthNumber": 12},

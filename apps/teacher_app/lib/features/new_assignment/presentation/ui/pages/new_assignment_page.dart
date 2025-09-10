@@ -185,11 +185,7 @@ class _NewAssignmentPageState extends State<NewAssignmentPage>
                         validator: validateDescription,
                       ),
                       
-                      NewAssignmentAttachmentsSection(
-                        isDark: isDark,
-                        onAddFromDrive: _onAddFromDrive,
-                        onUploadFile: _onUploadFile,
-                      ),
+                      
                       NewAssignmentPointsField(
                         controller: _pointsController,
                         isDark: isDark,

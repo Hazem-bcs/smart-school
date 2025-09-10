@@ -1,6 +1,6 @@
 
 class Constants {
-  static String baseUrl = 'http://10.116.166.164:8000'; // Default fallback URL
+  static String baseUrl = 'https://d4341e103222.ngrok-free.app'; // Default fallback URL
 
   static String loginEndpoint = '/api/login';
   static String logoutEndpoint = '/api/logout';
@@ -30,4 +30,20 @@ class Constants {
     // Assignments
   static String submitAssignmentEndpoint = '/api/submit_assignment';
   static String getAllClasses = '/api/teacher_classes';
+   // zoom
+   static String createZoomMeetingsEndpoint = '/api/create_teacher_meeting';
+   static String getZoomMeetingsEndpoint = '/api/get_teacher_meeting';
+  // assginment
+  static String createAssignmentEndpoint = '/api/create_assignment';
+  static String getAllAssignmentsEndpoint = '/api/get_assignment_teacher';
+  static String gradeAssignmentByIdEndpoint = '/api/grade_Submission';
+  static String markAssignmentAsGradedEndpoint = '/api/completed_assignment';
+  static String getSubmitAssignmentByIdEndpoint = '/api/get_assignment_submit';
+  // assginment student
+  static String getStudentAssignmentsEndpoint = '/api/get_assignment';
+  static String submitStudentAssignmentEndpoint = '/api/submit_assignment';
+
+  // student zoom 
+  static String getStudentZoom = '/api/get_zoom_student';
+
 }

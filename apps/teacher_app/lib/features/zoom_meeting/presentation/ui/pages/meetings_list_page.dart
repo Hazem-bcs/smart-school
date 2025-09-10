@@ -36,12 +36,20 @@ class _MeetingsListPageState extends State<MeetingsListPage> {
         child: BlocConsumer<MeetingsListBloc, MeetingsListState>(
           listener: (context, state) async {
             if (state is MeetingJoinLinkReady) {
-              final uri = Uri.parse(state.url);
-              // ********************************************************
-              // مؤقتاً: فتح الرابط مباشرة. عند الجاهزية يمكن إضافة تتبع/تأكيد.
-              // ********************************************************
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              final String url = state.url;
+              final Uri? candidate = Uri.tryParse(url) ?? Uri.tryParse(Uri.encodeFull(url));
+              if (candidate != null) {
+                // حاول فتحه بتطبيق زووم مباشرة إن أمكن
+                final bool openedApp = await launchUrl(candidate, mode: LaunchMode.externalNonBrowserApplication);
+                if (openedApp) return;
+                // جرّب الفتح خارج التطبيق، ثم افتراضي النظام، ثم داخل التطبيق
+                final bool openedExternal = await launchUrl(candidate, mode: LaunchMode.externalApplication);
+                if (!openedExternal) {
+                  final bool openedDefault = await launchUrl(candidate, mode: LaunchMode.platformDefault);
+                  if (!openedDefault) {
+                    await launchUrl(candidate, mode: LaunchMode.inAppBrowserView);
+                  }
+                }
               }
             }
           },
@@ -130,8 +138,8 @@ class _MeetingsListPageState extends State<MeetingsListPage> {
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              // Increase tile height further to avoid overflow and improve spacing
-              childAspectRatio: crossAxisCount == 1 ? 1.6 : 1.5,
+              // جعل البطاقات أطول لتستوعب كافة المحتويات (ID/Password)
+              childAspectRatio: crossAxisCount == 1 ? 1.0 : 1.12,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -306,9 +314,68 @@ class _MeetingCardState extends State<_MeetingCard> {
                 ],
               );
 
+              final hasMeetingId = (m.meetingId ?? '').isNotEmpty;
+              final hasPassword = (m.password ?? '').isNotEmpty;
+              final creds = (hasMeetingId || hasPassword)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Wrap(
+                        spacing: 16,
+                        runSpacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          if (hasMeetingId)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.confirmation_number_rounded, size: 16, color: theme.colorScheme.primary),
+                                const SizedBox(width: 6),
+                                Text('معرّف الاجتماع: ${m.meetingId}', style: theme.textTheme.bodyMedium),
+                              ],
+                            ),
+                          if (hasPassword)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.lock_rounded, size: 16, color: theme.colorScheme.primary),
+                                const SizedBox(width: 6),
+                                Text('كلمة المرور: ${m.password}', style: theme.textTheme.bodyMedium),
+                              ],
+                            ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink();
+
               final joinButton = ElevatedButton.icon(
-                onPressed: () {
-                  // طلب الرابط عبر BLoC (مع API وهمي في DataSource)
+                onPressed: () async {
+                  // إذا كان لدينا بيانات الاجتماع، حاول الفتح عبر تطبيق زووم أولاً
+                  final String? meetingId = m.meetingId;
+                  final String? pwd = m.password;
+                  if (meetingId != null && meetingId.isNotEmpty) {
+                    final String scheme = 'zoomus://zoom.us/join?confno=$meetingId${(pwd != null && pwd.isNotEmpty) ? '&pwd=$pwd' : ''}';
+                    final Uri? zoomAppUri = Uri.tryParse(scheme);
+                    if (zoomAppUri != null) {
+                      final bool openedZoomApp = await launchUrl(zoomAppUri, mode: LaunchMode.externalNonBrowserApplication);
+                      if (openedZoomApp) return;
+                    }
+                  }
+
+                  // إذا كان لدينا رابط مباشر من الخادم، حاول كذلك بترتيب يفضّل التطبيق
+                  final String? directUrl = m.meetingUrl;
+                  if (directUrl != null && directUrl.isNotEmpty) {
+                    final Uri? candidate = Uri.tryParse(directUrl) ?? Uri.tryParse(Uri.encodeFull(directUrl));
+                    if (candidate != null) {
+                      final bool openedApp = await launchUrl(candidate, mode: LaunchMode.externalNonBrowserApplication);
+                      if (openedApp) return;
+                      final bool openedExternal = await launchUrl(candidate, mode: LaunchMode.externalApplication);
+                      if (openedExternal) return;
+                      final bool openedDefault = await launchUrl(candidate, mode: LaunchMode.platformDefault);
+                      if (openedDefault) return;
+                      final bool openedInApp = await launchUrl(candidate, mode: LaunchMode.inAppBrowserView);
+                      if (openedInApp) return;
+                    }
+                  }
                   context.read<MeetingsListBloc>().add(JoinMeetingRequested(widget.meeting.meetingId ?? widget.meeting.id));
                 },
                 icon: const Icon(Icons.video_call_rounded, size: 18),
@@ -326,6 +393,7 @@ class _MeetingCardState extends State<_MeetingCard> {
                     title,
                     const SizedBox(height: 8),
                     meta,
+                    creds,
                     const SizedBox(height: 12),
                     SizedBox(width: double.infinity, child: joinButton),
                   ] else ...[
@@ -339,6 +407,7 @@ class _MeetingCardState extends State<_MeetingCard> {
                               title,
                               const SizedBox(height: 8),
                               meta,
+                              creds,
                             ],
                           ),
                         ),

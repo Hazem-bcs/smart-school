@@ -106,18 +106,18 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 
-                // PromoSlider
-                BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    if (state is HomeLoaded) {
-                      return PromoSlider(promos: state.promos);
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-                
-                // مسافة بعد الـ Slider
-                const SizedBox(height: 24),
+                  // // PromoSlider
+                  // BlocBuilder<HomeBloc, HomeState>(
+                  //   builder: (context, state) {
+                  //     if (state is HomeLoaded) {
+                  //       return PromoSlider(promos: state.promos);
+                  //     }
+                  //     return const SizedBox.shrink();
+                  //   },
+                  // ),
+                  
+                  // // مسافة بعد الـ Slider
+                  // const SizedBox(height: 24),
                 
                 // Home Stats and Progress
                 BlocBuilder<HomeBloc, HomeState>(

@@ -9,20 +9,51 @@ class ZoomMeetingsCardWidget extends StatelessWidget {
 
   const ZoomMeetingsCardWidget({super.key, required this.meeting});
 
-  void _launchZoomLink(BuildContext context) async {
-    final Uri url = Uri.parse(meeting.zoomLink);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not launch Zoom meeting: ${meeting.zoomLink}'),
-          backgroundColor: Colors.red,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+  Future<void> _launchZoomLink(BuildContext context) async {
+    final String raw = meeting.zoomLink.trim();
+    if (raw.isEmpty) {
+      _showError(context, 'رابط الاجتماع غير متوفر');
+      return;
     }
+
+    Uri? candidate = Uri.tryParse(raw) ?? Uri.tryParse(Uri.encodeFull(raw));
+    if (candidate == null) {
+      _showError(context, 'رابط غير صالح');
+      return;
+    }
+
+    try {
+      final bool openedApp = await launchUrl(candidate, mode: LaunchMode.externalNonBrowserApplication);
+      if (openedApp) return;
+    } catch (_) {}
+
+    try {
+      final bool openedExternal = await launchUrl(candidate, mode: LaunchMode.externalApplication);
+      if (openedExternal) return;
+    } catch (_) {}
+
+    try {
+      final bool openedDefault = await launchUrl(candidate, mode: LaunchMode.platformDefault);
+      if (openedDefault) return;
+    } catch (_) {}
+
+    try {
+      final bool openedInApp = await launchUrl(candidate, mode: LaunchMode.inAppBrowserView);
+      if (openedInApp) return;
+    } catch (_) {}
+
+    _showError(context, 'تعذر فتح رابط Zoom');
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override

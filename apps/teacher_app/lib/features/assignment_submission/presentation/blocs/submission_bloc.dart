@@ -32,7 +32,7 @@ class SubmissionBloc extends Bloc<SubmissionEvent, SubmissionState> {
     emit(SubmissionLoading());
     _currentAssignmentId = event.assignmentId;
     
-    final result = await getStudentSubmissionsUseCase();
+    final result = await getStudentSubmissionsUseCase(event.assignmentId);
     result.fold(
       (failure) {
         // في حالة فشل تحميل البيانات، نعرض خطأ مع إمكانية إعادة المحاولة

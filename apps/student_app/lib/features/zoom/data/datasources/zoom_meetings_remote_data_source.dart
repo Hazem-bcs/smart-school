@@ -1,101 +1,107 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
+import 'package:core/constant.dart';
+import 'package:core/network/dio_client.dart';
+import 'package:dio/dio.dart' show DioException, DioExceptionType, RequestOptions, Response;
 import '../../data/models/zoom_meeting_model.dart';
+import 'package:smart_school/features/settings/data/datasources/settings_local_data_source.dart';
 
 abstract class ZoomMeetingsRemoteDataSource {
   Future<List<ZoomMeetingModel>> getAllZoomMeetings();
 }
 
 class ZoomMeetingsRemoteDataSourceImpl implements ZoomMeetingsRemoteDataSource {
-  final Dio dio;
+  final DioClient dioClient;
+  final SettingsLocalDataSource localDataSource;
 
-  ZoomMeetingsRemoteDataSourceImpl({required this.dio});
+  ZoomMeetingsRemoteDataSourceImpl({required this.dioClient, required this.localDataSource});
 
   @override
   Future<List<ZoomMeetingModel>> getAllZoomMeetings() async {
-    // const String apiUrl = '';
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
-      final List<Map<String, dynamic>> dummyJsonList = [
-        {
-          'id': 'dummy1',
-          'topic': 'Dummy Chapter 1: Calculus Basics',
-          'className': 'Mathematics',
-          'teacher': 'Mr. Dummy Teacher',
-          'dateTime':
-              DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
-          'zoomLink': 'https://zoom.us/dummy/1',
-          'isLive': true,
-        },
-        {
-          'id': 'dummy2',
-          'topic': 'Dummy Introduction to Data Structures',
-          'className': 'Computer Science',
-          'teacher': 'Ms. Dummy Code',
-          'dateTime':
-              DateTime.now().add(const Duration(days: 1)).toIso8601String(),
-          'zoomLink': 'https://zoom.us/dummy/2',
-          'isLive': false,
-        },
-        {
-          'id': 'dummy3',
-          'topic': 'Dummy History of Ancient Egypt',
-          'className': 'History',
-          'teacher': 'Prof. Dummy Scholar',
-          'dateTime':
-              DateTime.now()
-                  .add(const Duration(days: 2, hours: 3))
-                  .toIso8601String(),
-          'zoomLink': 'https://zoom.us/dummy/3',
-          'isLive': false,
-        },
-        {
-          'id': 'dummy4',
-          'topic': 'Dummy Physics Fundamentals',
-          'className': 'Physics',
-          'teacher': 'Dr. Dummy Einstein',
-          'dateTime':
-              DateTime.now()
-                  .subtract(const Duration(hours: 2))
-                  .toIso8601String(), // Past meeting
-          'zoomLink': 'https://zoom.us/dummy/4',
-          'isLive': false,
-        },
-      ];
-
-      // Convert dummy JSON to ZoomMeetingModel list
-      return dummyJsonList
-          .map((json) => ZoomMeetingModel.fromJson(json))
-          .toList();
-      // --- End of Dummy Data Section ---
-
-      /*
-      // --- Original API Call (Commented out) ---
-      final response = await dio.get(apiUrl);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonList = response.data;
-        return jsonList
-            .map((json) => ZoomMeetingModel.fromJson(json))
-            .toList();
-      } else {
+      final int? studentId = await localDataSource.getId();
+      if (studentId == null) {
+        // تصرّف كمصادقة مفقودة ليتعامل معها المستودع بشكل صحيح
         throw DioException(
-          requestOptions: response.requestOptions,
-          response: response,
+          requestOptions: RequestOptions(path: Constants.getStudentZoom),
           type: DioExceptionType.badResponse,
-          error: 'Failed to load Zoom meetings: ${response.statusCode}',
+          response: Response(
+            requestOptions: RequestOptions(path: Constants.getStudentZoom),
+            statusCode: 401,
+            data: {'message': 'غير مصرح. الرجاء تسجيل الدخول مجدداً'},
+          ),
         );
       }
-      */
-    } on DioException catch (e) {
-      // Keep error handling for other potential issues (e.g., if somehow accessed with real API)
-      throw DioException(
-        requestOptions: e.requestOptions,
-        error:
-            e.error ??
-            'Failed to connect to the server (dummy data should prevent this in most cases)',
-        type: e.type,
+      final responseEither = await dioClient.post(
+        Constants.getStudentZoom,
+        data: {
+          'student_id': studentId,
+        },
       );
+
+      return responseEither.fold((failure) {
+        // مرر رسالة واضحة عبر DioException ليتم تحويلها في المستودع إلى Failure مناسب
+        throw DioException(
+          requestOptions: RequestOptions(path: Constants.getStudentZoom),
+          type: DioExceptionType.unknown,
+          response: Response(
+            requestOptions: RequestOptions(path: Constants.getStudentZoom),
+            statusCode: 500,
+            data: {'message': failure.message},
+          ),
+        );
+      }, (response) {
+        final dynamic data = response.data;
+        List<dynamic> items;
+
+        if (data is Map<String, dynamic>) {
+          final int status = data['status'] is int ? data['status'] as int : 500;
+          if (status != 200) {
+            final String message = data['message']?.toString() ?? 'حدث خطأ في الخادم';
+            throw DioException(
+              requestOptions: RequestOptions(path: Constants.getStudentZoom),
+              type: DioExceptionType.badResponse,
+              response: Response(
+                requestOptions: RequestOptions(path: Constants.getStudentZoom),
+                statusCode: status,
+                data: {'message': message},
+              ),
+            );
+          }
+          final dynamic wrapped = data['data'];
+          if (wrapped is List) {
+            items = wrapped;
+          } else if (wrapped is String) {
+            try {
+              final dynamic decoded = jsonDecode(wrapped);
+              items = decoded is List ? decoded : <dynamic>[];
+            } catch (_) {
+              items = <dynamic>[];
+            }
+          } else {
+            items = <dynamic>[];
+          }
+        } else if (data is String) {
+          try {
+            final Map<String, dynamic> map = jsonDecode(data) as Map<String, dynamic>;
+            final dynamic wrapped = map['data'];
+            items = wrapped is List ? wrapped : <dynamic>[];
+          } catch (_) {
+            items = <dynamic>[];
+          }
+        } else if (data is List) {
+          items = data;
+        } else {
+          items = <dynamic>[];
+        }
+
+        return items
+            .whereType<Map<String, dynamic>>()
+            .map((e) => ZoomMeetingModel.fromJson(e))
+            .toList();
+      });
+    } catch (e) {
+      rethrow;
     }
   }
 }

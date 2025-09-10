@@ -10,8 +10,8 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
   SubmissionRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, List<StudentSubmission>>> getStudentSubmissions() async {
-    final result = await remoteDataSource.getStudentSubmissions();
+  Future<Either<Failure, List<StudentSubmission>>> getStudentSubmissions(String assignmentId) async {
+    final result = await remoteDataSource.getStudentSubmissions(assignmentId);
     return result.fold(
       (failure) => Left(failure),
       (models) => Right(models
